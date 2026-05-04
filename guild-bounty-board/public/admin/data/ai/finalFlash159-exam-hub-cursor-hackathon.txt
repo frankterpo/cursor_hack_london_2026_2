@@ -1,0 +1,7 @@
+- All 13 commits land between 06:50 and 10:31 UTC on the event day (median spacing ~10.7 minutes) with zero activity before T0 or after T1, so the timing matches an in-window hackathon cadence.
+- Metrics flag `has_bulk_commits` and `has_merge_commits`, which I see reflected in the merge of feature branches (`fe/implement`) and large uploads, but those merges and the biggest diffs still occurred during the allowed window—no out-of-window spikes.
+- The project is an “Exam Hub” with a simplified FastAPI backend for folders, exams, questions, attempts, uploads, and dashboards, aimed at easy demoing without auth/notifications (`backend/README.md:1`).
+- The backend follows a modern structure (core config, database connection, app/api/services layers, SQLAlchemy/Pydantic plus SQLite/Uvicorn), while the frontend is a React/Vite app (per the tree and `frontend/README.md:1`), so the stack aligns with quick AI-assisted prototyping.
+- Given the short window, regular commit cadence, and coherent feature set spanning front/back, there are no blatant red flags beyond the expected busy bulk merges.
+
+Overall authenticity assessment: looks consistent with a hackathon project

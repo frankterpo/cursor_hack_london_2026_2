@@ -1,0 +1,9 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+nvbinh15-hoggle,0,fbf55e5b31a7a6505c6820cbf8c8f82e99f0a435,2025-11-29T08:29:59+00:00,,149.98,150,0,3,0,0,1,0,0,Add plan and cursor rules
+nvbinh15-hoggle,1,02037b5d352e7a4b2219a39255514de64c57a257,2025-11-29T08:36:11+00:00,6.20,156.18,1510,0,18,0,0,1,0,1,Implement basic structure
+nvbinh15-hoggle,2,1695e3f87acd4287b5a5dd27cc912e4be38dd456,2025-11-29T09:44:15+00:00,68.07,224.25,970,556,12,0,0,1,0,0,"Checkpoint: update story line, remove accio"
+nvbinh15-hoggle,3,82a54748af6cac22e110a599d35383818f6bc3d3,2025-11-29T09:56:12+00:00,11.95,236.20,111,30,4,0,0,1,0,0,Checkpoint: lumos working
+nvbinh15-hoggle,4,1091942c58cf6700c6f1cd9502fe393f187d5004,2025-11-29T09:58:10+00:00,1.97,238.17,534,6,4,0,0,1,0,0,Init cursor spell
+nvbinh15-hoggle,5,ed37defcc989111fea9aa310bed8a096d12180f7,2025-11-29T10:28:01+00:00,29.85,268.02,187,85,4,0,0,1,0,0,Fix leviosa
+nvbinh15-hoggle,6,c826c9c49e7668707d46f00d975af3772b637a34,2025-11-29T10:46:19+00:00,18.30,286.32,115,10,4,0,0,1,0,0,Update
+nvbinh15-hoggle,7,416423257fc5dcb8e86c22d5b56b5d3f6c796f3a,2025-11-29T10:57:25+00:00,11.10,297.42,91,107,8,0,0,1,0,0,Use 2d for cursor

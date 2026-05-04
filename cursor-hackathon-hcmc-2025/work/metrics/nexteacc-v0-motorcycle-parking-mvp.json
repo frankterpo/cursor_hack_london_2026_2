@@ -1,0 +1,34 @@
+{
+  "repo_id": "nexteacc-v0-motorcycle-parking-mvp",
+  "repo": "https://github.com/nexteacc/v0-motorcycle-parking-mvp",
+  "remote_url": "https://github.com/nexteacc/v0-motorcycle-parking-mvp",
+  "default_branch": "main",
+  "t0": "2025-11-29T06:00:00+00:00",
+  "t1": "2025-11-29T12:00:00+00:00",
+  "generated_at": "2025-11-30T07:42:10.822451+00:00",
+  "summary": {
+    "total_commits": 26,
+    "total_commits_before_t0": 4,
+    "total_commits_during_event": 15,
+    "total_commits_after_t1": 7,
+    "total_loc_added": 13569,
+    "total_loc_deleted": 4427,
+    "max_loc_added_single_commit": 6699,
+    "max_files_changed_single_commit": 42,
+    "median_minutes_between_commits": 11.116666666666667,
+    "median_minutes_between_commits_during_event": 9.600000000000001
+  },
+  "time_distribution": {
+    "commits_0_3h": 3,
+    "commits_3_6h": 12,
+    "commits_6_12h": 0,
+    "commits_12_24h": 0,
+    "commits_after_24h": 0
+  },
+  "flags": {
+    "has_commits_before_t0": true,
+    "has_bulk_commits": false,
+    "has_large_initial_commit_after_t0": false,
+    "has_merge_commits": false
+  }
+}

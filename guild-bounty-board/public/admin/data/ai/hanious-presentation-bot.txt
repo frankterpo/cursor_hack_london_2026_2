@@ -1,0 +1,6 @@
+- Timeline: 11 commits during the 6‑hour hacking window (3 in 0–3h, 8 in 3–6h) and five follow-up commits after T1 with no pre-event activity, matching a focused sprint (`work/metrics/hanious-presentation-bot.json:9` and `work/metrics/hanious-presentation-bot.json:21`).
+- Heavy volume (31k LOC added/14k deleted) combined with a `has_bulk_commits` flag and one change touching 38 files/11k LOC means judges should double-check that the big deltas genuinely happened during the event rather than coming from prior work (`work/metrics/hanious-presentation-bot.json:9` and `work/metrics/hanious-presentation-bot.json:16`).
+- README says this is an AI-powered presentation creator with audio generation, transcription, multi-format export, and presentation modes, built on React/Vite/Tailwind/Zustand with demo persistence in localStorage (`presentation-bot/presentation-bot/README.md:3` and `presentation-bot/presentation-bot/README.md:7`).
+- Front-end is tied to bespoke AWS Lambda helpers (audio/transcription/export), e.g., `SLAI-audio.py`, indicating real backend work rather than a pure UI itch (`presentation-bot/lambda/SLAI-audio.py:1`).
+
+Overall authenticity assessment: looks consistent with a hackathon project

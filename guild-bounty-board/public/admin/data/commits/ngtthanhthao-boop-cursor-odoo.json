@@ -1,0 +1,38 @@
+{
+  "rows": [
+    {
+      "repo_id": "ngtthanhthao-boop-cursor-odoo",
+      "seq_index": "0",
+      "sha": "9c79f89938e0fc646fdcab08ca5dcc1fbb7cfd03",
+      "author_time_iso": "2025-11-29T08:50:05+00:00",
+      "minutes_since_prev_commit": "",
+      "minutes_since_t0": "170.08",
+      "insertions": "1",
+      "deletions": "0",
+      "files_changed": "1",
+      "is_merge": "0",
+      "is_before_t0": "0",
+      "is_during_event": "1",
+      "is_after_t1": "0",
+      "flag_bulk_commit": "0",
+      "subject": "first commit"
+    },
+    {
+      "repo_id": "ngtthanhthao-boop-cursor-odoo",
+      "seq_index": "1",
+      "sha": "fadce8e4b70aeb732d6ec39dae6f8ebde8236723",
+      "author_time_iso": "2025-11-29T08:53:40+00:00",
+      "minutes_since_prev_commit": "3.58",
+      "minutes_since_t0": "173.67",
+      "insertions": "3768",
+      "deletions": "0",
+      "files_changed": "37",
+      "is_merge": "0",
+      "is_before_t0": "0",
+      "is_during_event": "1",
+      "is_after_t1": "0",
+      "flag_bulk_commit": "1",
+      "subject": "Add staff_manager module"
+    }
+  ]
+}

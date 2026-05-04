@@ -1,0 +1,3111 @@
+{
+  "event_format": {
+    "event_name": "Cursor x Briefcase London hackathon",
+    "event_tagline": "Human out of the loop in high-risk financial workflows",
+    "event_dates": "2026-04-30",
+    "event_location": "London",
+    "hack_id": "cursor-briefcase-london-2026",
+    "timeline": {
+      "t0": "2026-04-30T10:00:00+01:00",
+      "t1": "2026-04-30T18:00:00+01:00",
+      "submissions_close": "2026-04-30T18:00:00+01:00",
+      "judging_closes": "2026-04-30T19:30:00+01:00",
+      "winners_announced": "2026-04-30T20:00:00+01:00"
+    },
+    "main_tracks": [
+      {
+        "id": "Money-Movement",
+        "name": "Money Movement",
+        "short": "Money Movement",
+        "summary": "Agents that actually move money. A wrong action means real money is gone.",
+        "description": "Workflows where your agent moves money — paying invoices, running payroll, sending refunds, transferring between accounts. The risk is direct: get it wrong and the money is gone. The human-in-the-loop question: how big is too big to act alone, what counts as suspicious, and who can the agent trust?",
+        "examples": [
+          "Agent that auto-pays small invoices and escalates the rest",
+          "Payroll runner that pauses when something looks off",
+          "Refund bot that handles routine cases and asks before the rest"
+        ]
+      },
+      {
+        "id": "Financial-Intelligence",
+        "name": "Financial Intelligence",
+        "short": "Financial Intelligence",
+        "summary": "Agents that read, interpret, and explain. A wrong answer means a wrong decision downstream.",
+        "description": "Agents that read and interpret money — categorising transactions, spotting fraud, explaining bank lines, answering \"what is this charge for?\". The risk is indirect: a wrong answer becomes a wrong decision downstream. The human-in-the-loop question: how confident is the agent really, and which edge cases deserve a human eye?",
+        "examples": [
+          "Agent that categorises transactions and flags the ones it isn't sure about",
+          "Fraud detector that asks a human when the signal is mixed",
+          "Bot that explains every line on a bank statement"
+        ]
+      }
+    ],
+    "rubric": {
+      "core_max_points": 7,
+      "side_bonus_cap": 3,
+      "total_cap": 10,
+      "criteria": [
+        {
+          "id": "concrete_workflow_value",
+          "name": "Concrete Workflow Value",
+          "points": 2,
+          "description": "Does it replace or compress a real finance workflow a human does today?"
+        },
+        {
+          "id": "track_fit",
+          "name": "Track Fit",
+          "points": 2,
+          "description": "How purely does the submission embody its chosen track (money movement vs financial intelligence)?"
+        },
+        {
+          "id": "human_in_the_loop_decision",
+          "name": "Human-in-the-Loop Decision",
+          "points": 1,
+          "description": "Does the system know when a human should be in the loop vs not? Thresholds, confidence gates, escalation paths."
+        },
+        {
+          "id": "technical_execution",
+          "name": "Technical Execution",
+          "points": 1,
+          "description": "Architecture quality, tool design, latency, integrations that actually work."
+        },
+        {
+          "id": "demo_clarity",
+          "name": "Demo Clarity",
+          "points": 1,
+          "description": "Can the judge, in 90 seconds, see exactly what this agent does and why it matters?"
+        }
+      ]
+    },
+    "judge_bonus_bucket": {
+      "name": "Judge Bonus Bucket",
+      "max_points": 3,
+      "description": "Three sponsor-aligned buckets (1 + 1 + 1 points). Judges score each bucket independently — 3 bonus total."
+    },
+    "side_quests": [
+      {
+        "id": "best_use_cursor",
+        "name": "Best use of Cursor",
+        "points": 1,
+        "blurb": "How effectively the build used Cursor — editor, agents, and workflow — end to end."
+      },
+      {
+        "id": "best_use_specter",
+        "name": "Best use of Specter",
+        "points": 1,
+        "blurb": "Standout use of Specter's API, MCP, or data for market intelligence in the product."
+      },
+      {
+        "id": "best_use_llm_models",
+        "name": "Best use of LLM models",
+        "points": 1,
+        "blurb": "Smart or effective use of models — APIs, routing, evals, or multi-model design."
+      }
+    ],
+    "prizes": [
+      {
+        "tier": "first",
+        "name": "1st place",
+        "value": "£2,000 + 6 months Cursor Ultra",
+        "description": "Top-scoring submission across both tracks. Cash and half a year on Cursor's top tier."
+      },
+      {
+        "tier": "second",
+        "name": "2nd place",
+        "value": "4 months Cursor Ultra",
+        "description": "Runner-up across both tracks."
+      },
+      {
+        "tier": "third",
+        "name": "3rd place",
+        "value": "3 months Cursor Ultra",
+        "description": "Third highest score across both tracks."
+      }
+    ],
+    "judges": [
+      {
+        "name": "Ján Stehlík",
+        "title": "Co-Founder & CTO",
+        "role": "Briefcase",
+        "focus": "AI accounting automation",
+        "linkedin": "https://www.linkedin.com/in/jan-stehlik-5855aa123/",
+        "photo_url": "/judges/jan.jpg",
+        "avatar_color": "#429aaa"
+      },
+      {
+        "name": "Alec Barber",
+        "title": "Member of Technical Staff",
+        "role": "OpenAI",
+        "focus": "LLM evals · agents",
+        "linkedin": "https://www.linkedin.com/in/alec-barber/",
+        "photo_url": "/judges/alec.jpg",
+        "avatar_color": "#32737f"
+      },
+      {
+        "name": "Umberto Belluzzo",
+        "title": "Investor",
+        "role": "Earlybird Venture Capital",
+        "focus": "AI compute · deeptech VC",
+        "linkedin": "https://www.linkedin.com/in/umberto-belluzzo/",
+        "photo_url": "/judges/umberto.png",
+        "avatar_color": "#6dc9db"
+      },
+      {
+        "name": "David Gelberg",
+        "title": "No10 Innovation Fellow",
+        "role": "10 Downing Street",
+        "focus": "Gov AI deployment",
+        "linkedin": "https://www.linkedin.com/in/davidgelberg/",
+        "photo_url": "/judges/david.jpg",
+        "avatar_color": "#214d55"
+      },
+      {
+        "name": "Jamesin Seidel",
+        "title": "General Partner",
+        "role": "Chapter One",
+        "focus": "Pre-seed AI · infra",
+        "linkedin": "https://www.linkedin.com/in/jamesin-seidel-5325b147/",
+        "photo_url": "/judges/jamesin.png",
+        "avatar_color": "#53c0d4"
+      }
+    ],
+    "sponsors": [
+      {
+        "name": "Cursor",
+        "tier": "host"
+      },
+      {
+        "name": "Briefcase",
+        "tier": "design-partner"
+      },
+      {
+        "name": "Specter",
+        "tier": "market-intelligence"
+      },
+      {
+        "name": "OpenAI",
+        "tier": "models"
+      },
+      {
+        "name": "Vercel",
+        "tier": "infra"
+      },
+      {
+        "name": "Anthropic",
+        "tier": "models"
+      }
+    ]
+  },
+  "by_repo": {
+    "https://github.com/ngtthanhthao-boop/cursor-odoo.git": {
+      "project": "IDB Team - Odoo + Cursor",
+      "raw_project_names": [
+        "IDB Team",
+        "IDB Team - Odoo + Cursor"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:19:10",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": "Their product combined with Cursor can lower the time to develop a new app within 1 week. They are a company and invested in building with Cursor for 2 years.",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 19:19:34",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 4,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 4,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 5.5,
+        "bonus_total": 0,
+        "grand_total": 5.5
+      },
+      "average_score": 5.5
+    },
+    "https://github.com/thtcsec/CursorHackathon": {
+      "project": "Quantum Bug ; Product name: AirDraw",
+      "raw_project_names": [
+        "Quantum Bug ; Product name: AirDraw",
+        "Team: Quantum Bug ; Product name: AirDraw"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:24:55",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": "good idea",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 19:25:16",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 6,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 6,
+          "notes": "they can technically show the camera detect hands drawing and answering but there is a glitch that the AI cannot detect what is being drawn",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 19:25:19",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": "Very compelling drawing demo, a lot of features integrated in a short amount of time",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 3,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 7.333,
+        "bonus_total": 0,
+        "grand_total": 7.333
+      },
+      "average_score": 7.333
+    },
+    "https://github.com/vhpx/dodo": {
+      "project": "Dodo",
+      "raw_project_names": [
+        "Dodo"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:29:37",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 5,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 5,
+          "notes": "their idea is good but the demo  did not really work smoothly",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 19:29:59",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 5,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 5,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 19:30:31",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": "AI investigation game",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 3,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 5.667,
+        "bonus_total": 0,
+        "grand_total": 5.667
+      },
+      "average_score": 5.667
+    },
+    "https://github.com/captain-corgi/cursor-hackathon-29NOV25": {
+      "project": "Team Corgi",
+      "raw_project_names": [
+        "Team Corgi"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:32:51",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 5,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 5,
+          "notes": "Token usage tracker dashboard and cost estimator",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 19:33:10",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": "their demo works, short and sweet",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 19:33:30",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 5,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 5,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 3,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 6,
+        "bonus_total": 0,
+        "grand_total": 6
+      },
+      "average_score": 6
+    },
+    "https://github.com/thsunkid/lightshow-threejs": {
+      "project": "Spotlightify",
+      "raw_project_names": [
+        "Spotlightify"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:37:38",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 9,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 9,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 19:38:30",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": "Nice effects and well put together UI, good sync with music",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 8,
+        "bonus_total": 0,
+        "grand_total": 8
+      },
+      "average_score": 8
+    },
+    "https://github.com/PhanMai010203/testcase": {
+      "project": "generate testcase",
+      "raw_project_names": [
+        "generate testcase"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:38:25",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 6,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 6,
+          "notes": "I cannot really connect what they are trying solve",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 21:24:16",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 5,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 5,
+          "notes": "Test case generator from UI mocks or screens. Formats in the case that their own company expects, like a test spec",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 21:24:20",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 3,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 6,
+        "bonus_total": 0,
+        "grand_total": 6
+      },
+      "average_score": 6
+    },
+    "https://github.com/knamnguyen/duma.so": {
+      "project": "Duma",
+      "raw_project_names": [
+        "Duma"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:41:18",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": "Small group event swiping app like Tinder + Luma, good presentation humor",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 19:41:22",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 9,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 9,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 19:41:29",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": "the speaker could speak well and show the app functioning",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 3,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 8,
+        "bonus_total": 0,
+        "grand_total": 8
+      },
+      "average_score": 8
+    },
+    "https://github.com/huyencute11/hackathon": {
+      "project": "3Wolfs",
+      "raw_project_names": [
+        "3Wolfs"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:44:57",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": "Platform for coordinating relief to disaster victims, a bit basic, but very timely and useful",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 19:44:59",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 5,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 5,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 19:45:15",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": "A typical AI for good project and the speakers can show the app functioning",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 3,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 6.667,
+        "bonus_total": 0,
+        "grand_total": 6.667
+      },
+      "average_score": 6.667
+    },
+    "https://github.com/PhucNg2k/CursorHackathon": {
+      "project": "Cursor DreamTeam",
+      "raw_project_names": [
+        "Cursor DreamTeam"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:47:49",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 5,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 5,
+          "notes": "a trivial demo",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 19:47:49",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 4,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 4,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 4.5,
+        "bonus_total": 0,
+        "grand_total": 4.5
+      },
+      "average_score": 4.5
+    },
+    "https://github.com/Welkie/Cursor-Hackathon-2025": {
+      "project": "HaiCaChua",
+      "raw_project_names": [
+        "HaiCaChua"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:51:46",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 1,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 7,
+        "bonus_total": 0,
+        "grand_total": 7
+      },
+      "average_score": 7
+    },
+    "https://github.com/SubaruLenz/Hackathon-backend": {
+      "project": "AI personal finance assistant",
+      "raw_project_names": [
+        "AI personal finance assistant",
+        "FinancialFriend",
+        "finance Flow"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:51:46",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 6,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 6,
+          "notes": "a realistic idea and the demo barely works",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 21:27:54",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 4,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 4,
+          "notes": "Financial advisor for personal spending habits with AI chat",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 21:28:15",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 5,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 5,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 3,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 5,
+        "bonus_total": 0,
+        "grand_total": 5
+      },
+      "average_score": 5
+    },
+    "https://github.com/nvbinh15/hoggle": {
+      "project": "Hoggle",
+      "raw_project_names": [
+        "Hoggle"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:55:14",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 9,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 9,
+          "notes": "Harry potter universe AR simulation, very fun demo, cool technical demo with a fun theme",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 19:55:16",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 9,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 9,
+          "notes": "fun :)) ",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 9,
+        "bonus_total": 0,
+        "grand_total": 9
+      },
+      "average_score": 9
+    },
+    "https://github.com/finalFlash159/exam-hub-cursor-hackathon": {
+      "project": "ExamBuddy",
+      "raw_project_names": [
+        "ExamBuddy"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 19:58:12",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": "Platform for students to prepare for exam by generating tests for the student to take. Good use-case, good demo",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 19:58:34",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 8,
+        "bonus_total": 0,
+        "grand_total": 8
+      },
+      "average_score": 8
+    },
+    "https://github.com/dxv2k/upvotify": {
+      "project": "Upvotify",
+      "raw_project_names": [
+        "Upvotify"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:01:55",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": "Reddit analytics using AI, which subreddits to target based on your website along with best practices. Basically an AI consultant for Reddit content strategy. Includes notifications and keyword tracking. Assign customer targeting score. If this is real and it actually works, would be a very useful platform for Reddit",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 20:02:41",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 7.5,
+        "bonus_total": 0,
+        "grand_total": 7.5
+      },
+      "average_score": 7.5
+    },
+    "https://github.com/supernovalx/tinder4decision-next": {
+      "project": "Decidr",
+      "raw_project_names": [
+        "Decidr"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:06:12",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": "\"20 questions\" for solving personal problems. AI as question generator you just swipe. Tinder for dilemas",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 20:06:16",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 9,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 9,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 8.5,
+        "bonus_total": 0,
+        "grand_total": 8.5
+      },
+      "average_score": 8.5
+    },
+    "https://github.com/thaiviet07/greennoddles": {
+      "project": "Dalo",
+      "raw_project_names": [
+        "Dalo"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:08:48",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 5,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 5,
+          "notes": "Rephraser for Zalo using AI. Will auto-change your tone",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 20:09:09",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 6,
+        "bonus_total": 0,
+        "grand_total": 6
+      },
+      "average_score": 6
+    },
+    "https://github.com/meteordefect/olyetta": {
+      "project": "OLYETTA",
+      "raw_project_names": [
+        "OLYETTA"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:11:37",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": "AI co-host for interview, will ask you questions, can make a youtube video or podcast together",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 20:11:37",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 8,
+        "bonus_total": 0,
+        "grand_total": 8
+      },
+      "average_score": 8
+    },
+    "https://github.com/KCBF/CKHack": {
+      "project": "Eduflow",
+      "raw_project_names": [
+        "Eduflow",
+        "Eduflow by Kody"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:14:55",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 5,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 5,
+          "notes": "Kind of like \"Brilliant\" for certain skills, like photography, physics. Like a collection of interactive web demos for different topics. Also anime girl",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 20:15:14",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 9,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 9,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 7,
+        "bonus_total": 0,
+        "grand_total": 7
+      },
+      "average_score": 7
+    },
+    "https://github.com/vincenthsh/cursor-hcmc": {
+      "project": "Cacophony",
+      "raw_project_names": [
+        "Cacophony"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:17:54",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": "Apples to Apples but with AI music generation using Suno. ",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 20:18:15",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 9,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 9,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 8.5,
+        "bonus_total": 0,
+        "grand_total": 8.5
+      },
+      "average_score": 8.5
+    },
+    "https://github.com/theRaven1312/cursor-hackathon-2025": {
+      "project": "GeoSnap",
+      "raw_project_names": [
+        "GeoSnap"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:21:45",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": "Combo of Google maps, Instagram. Like a \"highlights\" based visual map",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 20:21:53",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 7.5,
+        "bonus_total": 0,
+        "grand_total": 7.5
+      },
+      "average_score": 7.5
+    },
+    "https://github.com/TienDat8605/CursorHackathon": {
+      "project": "FloodSim Sandbox",
+      "raw_project_names": [
+        "FloodSim Sandbox"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:29:03",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 20:29:07",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": "Simulate the flood in an area based on geography",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 7.5,
+        "bonus_total": 0,
+        "grand_total": 7.5
+      },
+      "average_score": 7.5
+    },
+    "https://github.com/EntyG/BaeFit": {
+      "project": "BaeFit",
+      "raw_project_names": [
+        "BaeFit",
+        "BaeFit - Megumin Virtual Assistant"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:33:24",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": "Nutrition tracker with Megumin as mascot chat app.",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 20:33:28",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 9,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 9,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 8,
+        "bonus_total": 0,
+        "grand_total": 8
+      },
+      "average_score": 8
+    },
+    "https://github.com/CursorHackathonDevAI2025VN/finding-team-game": {
+      "project": "HackTeamMatch",
+      "raw_project_names": [
+        "HackTeamMatch"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:36:44",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 5,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 5,
+          "notes": "Hackathon team matching app. Fill out your skills, find other complementary team members. Has AI for suggestions",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 20:36:47",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 6,
+        "bonus_total": 0,
+        "grand_total": 6
+      },
+      "average_score": 6
+    },
+    "https://github.com/GenyoNguyen/YouTubeLM": {
+      "project": "YouTubeLM",
+      "raw_project_names": [
+        "YouTubeLM"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:39:41",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 5,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 5,
+          "notes": "A Youtube coach, helps you get more out of watching a video via summaries, Q&A, and quizzes. Like NotebookLM for Youtube. With timestamp based review",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 20:40:02",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 9,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 9,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 7,
+        "bonus_total": 0,
+        "grand_total": 7
+      },
+      "average_score": 7
+    },
+    "https://github.com/lenhatquang97/hackathon-repo": {
+      "project": "1800-CreditCrawler",
+      "raw_project_names": [
+        "1800-CreditCrawler"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:43:17",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 5,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 5,
+          "notes": "Like \"Screen Time\" but as a web app. AI assisted insights into screen time usage",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 20:43:56",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 6,
+        "bonus_total": 0,
+        "grand_total": 6
+      },
+      "average_score": 6
+    },
+    "https://github.com/vphuocthinh2006/Smart-Resume-Analyzer": {
+      "project": "AI JOB FINDING ASSISTANT",
+      "raw_project_names": [
+        "AI JOB FINDING ASSISTANT"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:46:54",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 4,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 4,
+          "notes": "Gives resume feedback given a JD, AI powered",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 20:47:00",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 6,
+        "bonus_total": 0,
+        "grand_total": 6
+      },
+      "average_score": 6
+    },
+    "https://github.com/HhaMinh0310/workdate.dev": {
+      "project": "Really want a girlfriend:))",
+      "raw_project_names": [
+        "Really want a girlfriend:))"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:52:01",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 4,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 4,
+          "notes": "Gamify doing things together with social responsibility. Can also find a buddy, networking/dating app",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 20:52:20",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 6,
+        "bonus_total": 0,
+        "grand_total": 6
+      },
+      "average_score": 6
+    },
+    "https://github.com/billmnguyen/fretlab": {
+      "project": "FretLab",
+      "raw_project_names": [
+        "FretLab"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:54:52",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": "Team of 13/14 year old duo. Guitar tabs from a song, for learning. Really compelling young dynamic duo.",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 20:55:07",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 8,
+        "bonus_total": 0,
+        "grand_total": 8
+      },
+      "average_score": 8
+    },
+    "https://github.com/lethanhan97/cursor-hackathon-hcmc-2025-cuso-cru": {
+      "project": "The CủSỏ Cru",
+      "raw_project_names": [
+        "The CủSỏ Cru"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 20:58:42",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 9,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 9,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 20:59:11",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": "Face based music player for livestreamers. Really energetic demo, and cool tech PoC",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 8,
+        "bonus_total": 0,
+        "grand_total": 8
+      },
+      "average_score": 8
+    },
+    "https://github.com/Travis-Houston/Luminus.ai.git": {
+      "project": "Luminus.ai",
+      "raw_project_names": [
+        "Luminus.ai"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:02:31",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 4,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 4,
+          "notes": "AI assistant for HR analytics",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 21:02:49",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 6,
+        "bonus_total": 0,
+        "grand_total": 6
+      },
+      "average_score": 6
+    },
+    "https://github.com/CrimsonDisk/Find-it": {
+      "project": "Find it!",
+      "raw_project_names": [
+        "Find it!"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:08:48",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 3,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 3,
+          "notes": "Classic find the difference procedurally generated on a web UI. Big draw is no ads",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 21:08:54",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 6,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 6,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 4.5,
+        "bonus_total": 0,
+        "grand_total": 4.5
+      },
+      "average_score": 4.5
+    },
+    "https://github.com/mquang248/Cursor_Hackathon_Project": {
+      "project": "HISTORYLENS",
+      "raw_project_names": [
+        "HISTORYLENS",
+        "HISTORYLENS - LĂNG KÍNH LỊCH SỬ"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:12:29",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 5,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 5,
+          "notes": "Simulated social media network about past events to learn history. A more brain rot way to learn history.",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 21:12:30",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 6.5,
+        "bonus_total": 0,
+        "grand_total": 6.5
+      },
+      "average_score": 6.5
+    },
+    "https://github.com/Smiling-17/hackathon.git": {
+      "project": "CyberGuard",
+      "raw_project_names": [
+        "CyberGuard"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:16:16",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 21:16:18",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 4,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 4,
+          "notes": "Demo didn't really work",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 5.5,
+        "bonus_total": 0,
+        "grand_total": 5.5
+      },
+      "average_score": 5.5
+    },
+    "https://github.com/DioAnh/anhquan": {
+      "project": "Enduca",
+      "raw_project_names": [
+        "Enduca"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:31:17",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 4,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 4,
+          "notes": "Education platform for young kids. Kids can quiz themselves on Youtube videos. Practice difficult real life situations. ",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 21:31:18",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 6,
+        "bonus_total": 0,
+        "grand_total": 6
+      },
+      "average_score": 6
+    },
+    "https://github.com/trandinhduc/CursorHKT_Git": {
+      "project": "VN Support",
+      "raw_project_names": [
+        "VN Support"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:35:14",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 1,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 7,
+        "bonus_total": 0,
+        "grand_total": 7
+      },
+      "average_score": 7
+    },
+    "https://github.com/huythanhnguyen/hackathon_cursor_29_Nov": {
+      "project": "BillionaireTwin (Thanh/Giang/Dung)",
+      "raw_project_names": [
+        "BillionaireTwin",
+        "BillionaireTwin (Thanh/Giang/Dung)"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:38:36",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 4,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 4,
+          "notes": "Use face vectors to match with closest billionaire twin",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 21:38:42",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 5,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 5,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 4.5,
+        "bonus_total": 0,
+        "grand_total": 4.5
+      },
+      "average_score": 4.5
+    },
+    "https://github.com/kics223w1/fe-cursor": {
+      "project": "CursorSharing",
+      "raw_project_names": [
+        "CursorSharing"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:41:51",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 21:42:08",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 3,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 3,
+          "notes": "A platform for sharing how you use Cursor and showing aggregate user reported stats. Basically a Cursor survey site",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 5,
+        "bonus_total": 0,
+        "grand_total": 5
+      },
+      "average_score": 5
+    },
+    "https://github.com/itsmesailee/Off-Clock": {
+      "project": "Off Clock",
+      "raw_project_names": [
+        "Off Clock",
+        "off clock"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:44:59",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 5,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 5,
+          "notes": "A digital ritual app for clocking out of work. Like a mindfulness app for end of day",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 21:45:19",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 6,
+        "bonus_total": 0,
+        "grand_total": 6
+      },
+      "average_score": 6
+    },
+    "https://github.com/ltrphung0620/CursorAI-Hackathon/tree/dc09c52451be103c6e53643d688a0a512b9341ce/V2H": {
+      "project": "SmartPrep AI",
+      "raw_project_names": [
+        "SmartPrep AI"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:49:21",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 6,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 6,
+          "notes": "Test prep for students, upload knowledge, build graph, create quizes based on student level",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 21:49:24",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 5,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 5,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 5.5,
+        "bonus_total": 0,
+        "grand_total": 5.5
+      },
+      "average_score": 5.5
+    },
+    "https://github.com/dinhthuan98personal/PromptOfPrompt": {
+      "project": "Lười Prompt",
+      "raw_project_names": [
+        "Lười Prompt"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:53:10",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 3,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 3,
+          "notes": "AI prompt optimizer. Input prompt, get feedback and improvement suggestions",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 21:53:18",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 6,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 6,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 4.5,
+        "bonus_total": 0,
+        "grand_total": 4.5
+      },
+      "average_score": 4.5
+    },
+    "https://github.com/VinhVU273/Visual-Dashboard": {
+      "project": "UA in the game",
+      "raw_project_names": [
+        "UA in the game"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 21:57:42",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 3,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 3,
+          "notes": "A top down view for creative marketers. Upload many videos. AI analyzes patterns and copy, extract patterns.",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 21:57:51",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 5,
+        "bonus_total": 0,
+        "grand_total": 5
+      },
+      "average_score": 5
+    },
+    "https://github.com/agent-kali/menu-oi": {
+      "project": "Menu Oi",
+      "raw_project_names": [
+        "Menu Oi"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 22:00:37",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 5,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 5,
+          "notes": "QR menu solution for restaurants. All web driven. Owner can create menu, customer just scan, multi language support",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 22:00:59",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 6.5,
+        "bonus_total": 0,
+        "grand_total": 6.5
+      },
+      "average_score": 6.5
+    },
+    "https://github.com/neiltron/apple-health-mcp": {
+      "project": "HanaCare Health Kit",
+      "raw_project_names": [
+        "HanaCare Health Kit"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 22:04:44",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 5,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 5,
+          "notes": "MCP server for healthcare data from wearables, to chat with your health",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 22:05:00",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 6.5,
+        "bonus_total": 0,
+        "grand_total": 6.5
+      },
+      "average_score": 6.5
+    },
+    "https://github.com/TanDoan1234/MediScanAI": {
+      "project": "MediScan AI",
+      "raw_project_names": [
+        "MediScan AI"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 22:07:27",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 22:08:35",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 4,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 4,
+          "notes": "Health advice based on camera and images",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 5.5,
+        "bonus_total": 0,
+        "grand_total": 5.5
+      },
+      "average_score": 5.5
+    },
+    "https://github.com/hanious/presentation-bot": {
+      "project": "SLAI",
+      "raw_project_names": [
+        "SLAI"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 22:12:56",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 7,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 7,
+          "notes": "Slide generation AI. Enter text and style, get slides out",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 22:12:58",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 7.5,
+        "bonus_total": 0,
+        "grand_total": 7.5
+      },
+      "average_score": 7.5
+    },
+    "https://github.com/zakharteshukov/cursorHackathon": {
+      "project": "World Bias AI",
+      "raw_project_names": [
+        "World Bias",
+        "World Bias AI"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 22:17:19",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 9,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 9,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 22:17:52",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 8,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 8,
+          "notes": "Young student team of 3. Tackling bias in world news. Analyzes sources for credibility and bias. ",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 8.5,
+        "bonus_total": 0,
+        "grand_total": 8.5
+      },
+      "average_score": 8.5
+    },
+    "https://github.com/quanngynx/VNG.cursor-hackathon": {
+      "project": "PizzaScammer",
+      "raw_project_names": [
+        "PizzaScammer",
+        "ZALO_NUTRICHAT"
+      ],
+      "responses": [
+        {
+          "timestamp": "11/29/2025 22:20:19",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 4,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 4,
+          "notes": "Food idea and nutrition generator based on user intent. Also generates recipies in a nice UI. Comes with AI generated images. Estimate health impact from consumption",
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        },
+        {
+          "timestamp": "11/29/2025 22:20:44",
+          "judge": null,
+          "track": null,
+          "core_scores": {},
+          "bonus_bucket_scores": {},
+          "core_total": 6,
+          "bonus_total_raw": 0,
+          "bonus_total_capped": 0,
+          "total_score": 6,
+          "notes": null,
+          "validation": {
+            "bonus_bucket_overflow": false,
+            "core_score_overflow": false
+          }
+        }
+      ],
+      "judge_count": 2,
+      "legacy_mode": true,
+      "averages": {
+        "core_scores": {
+          "concrete_workflow_value": 0,
+          "track_fit": 0,
+          "human_in_the_loop_decision": 0,
+          "technical_execution": 0,
+          "demo_clarity": 0
+        },
+        "bonus_bucket_scores": {
+          "best_use_cursor": 0,
+          "best_use_specter": 0,
+          "best_use_llm_models": 0
+        },
+        "core_total": 5,
+        "bonus_total": 0,
+        "grand_total": 5
+      },
+      "average_score": 5
+    }
+  },
+  "unmapped_responses": []
+}

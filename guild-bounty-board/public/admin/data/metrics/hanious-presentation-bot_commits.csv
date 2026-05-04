@@ -1,0 +1,17 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+hanious-presentation-bot,0,5756179524a54e9f83e5385490216c5f5bb1ffea,2025-11-29T07:38:17+00:00,,98.28,3,0,1,0,0,1,0,0,RUle
+hanious-presentation-bot,1,7f4eef8136270b73597ecae247954aa844725719,2025-11-29T07:51:19+00:00,13.03,111.32,1319,0,1,0,0,1,0,1,Plan
+hanious-presentation-bot,2,52f363853dce3ff6f5e597e532ea53e6aef80cdc,2025-11-29T08:36:43+00:00,45.40,156.72,11316,0,31,0,0,1,0,1,FE with Cognito
+hanious-presentation-bot,3,60d2b478446b0d81c53a48e5a5442eafa5a0f22f,2025-11-29T09:19:13+00:00,42.50,199.22,108,85,7,0,0,1,0,0,Update Cognito
+hanious-presentation-bot,4,9984be909fdd73bb446ee3b8bc3c3a3f60ab6c1c,2025-11-29T09:24:17+00:00,5.07,204.28,9,670,5,0,0,1,0,0,Sua cai deo gif v
+hanious-presentation-bot,5,e216794a4a8909159248ab78898a39512f29ab8f,2025-11-29T09:46:25+00:00,22.13,226.42,60,58,1,0,0,1,0,0,Update plan.md
+hanious-presentation-bot,6,03bcb831926b9cedaff0d039062c0d111a26fa49,2025-11-29T09:46:28+00:00,0.05,226.47,1292,0,6,1,0,1,0,1,Merge branch 'main' of https://github.com/hanious/presentation-bot
+hanious-presentation-bot,7,4f19dd599d7dbc3ed9d4f5dea260c1bc462e473d,2025-11-29T10:49:44+00:00,63.27,289.73,0,12001,31,0,0,1,0,0,Remove all jackshit
+hanious-presentation-bot,8,ceb320ef7878a21a00ae1c524ee2f2008cbbed3c,2025-11-29T11:43:25+00:00,53.68,343.42,1322,0,16,0,0,1,0,1,Update backend lambda and API Gateway
+hanious-presentation-bot,9,c884aae21773feaff061211b5f0f113b9a99e2c7,2025-11-29T11:52:58+00:00,9.55,352.97,8721,0,38,0,0,1,0,1,front
+hanious-presentation-bot,10,650a86ff4b65341399cb94277e06cdaa05e03c25,2025-11-29T11:55:09+00:00,2.18,355.15,1,4,2,1,0,1,0,0,Merge branch 'main' of https://github.com/hanious/presentation-bot
+hanious-presentation-bot,11,15d1dbe8ef099b68aeb8dee60e51792730d91fdc,2025-11-29T12:34:36+00:00,39.45,394.60,1123,33,12,0,0,0,1,1,VIBE FIX
+hanious-presentation-bot,12,f51cacbc3a397a3c600d34e3da2d785f746d9de0,2025-11-29T13:30:10+00:00,55.57,450.17,4071,1226,9,0,0,0,1,1,vibe fixed
+hanious-presentation-bot,13,9911b1dadca0fc22106e48d00500a62d26bbe2aa,2025-11-29T13:54:40+00:00,24.50,474.67,874,10,7,0,0,0,1,0,vibe fixed ver 2
+hanious-presentation-bot,14,f29ee26f54c1f1966bc95fc76c30a4f71f88084a,2025-11-29T14:12:12+00:00,17.53,492.20,387,34,3,0,0,0,1,0,vibe fixed ver 3
+hanious-presentation-bot,15,ced00ae5c78943931c71d217f1e7a6884af2518e,2025-11-29T14:46:53+00:00,34.68,526.88,694,102,6,0,0,0,1,0,vibe fixed 4

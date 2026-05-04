@@ -1,0 +1,7 @@
+- Timing: Repository shows only the one full “first commit” added within the 3–6 h slot of the event window (metrics report `commits_3_6h`: 1, none before or after), so activity is entirely confined to the hackathon but lacks iterative commits.
+- Volume: That single commit added ~8K LOC across 32 files (`max_loc_added_single_commit`: 8031, `has_bulk_commits`: true), which triggered the large-bulk flag but can reflect a complete initial build during the window.
+- Product: README describes a serverless Next.js 14 tarot reading experience with Groq LLaMA-powered interpretations, a grid of 22 Major Arcana cards, and a strict 3-card selection flow built with shadcn/ui and TailwindCSS (`README.md:1`, `README.md:7`).
+- Scope: Source tree includes App Router pages under `src/app`, an `/api/fortune` Groq handler, `TarotCard` component, and relevant data + utility files, matching what’d be expected for a quick modern AI-enhanced Next.js demo.
+- Pattern note: With only a single commit, there’s no visible iterative progress or testing run history, so judges may want to double-check that the large initial commit wasn’t staged before the event and that mock responses are documented for when the Groq key is missing.
+
+Overall authenticity assessment: looks consistent with a hackathon project

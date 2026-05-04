@@ -1,0 +1,7 @@
+- Timing fits a focused sprint: all four commits touch the repo within a single day, three (with a 6.25‑minute median gap) fall squarely inside the 06:00‑12:00 UTC window, but the latest push (30de8f7) lands at ~12:29 UTC—just after T1—so judges should note that polish came post deadline.  
+- Bulk commit behavior is flagged: one snapshot adds ~3,341 LOC across 14 files, so confirm this isn’t pre-prepared work slipped in, but since it’s also during the 3‑6h period it may simply be aggressive feature expansion.  
+- Product intent (per the README and `App.tsx`) is “DisasterConnect,” an AI Studio/React front end that streams Gemini voice calls into a dispatcher, shows incidents on a Leaflet map, and lists reports in a floating card.  
+- Code scope is reasonable for a hackathon using modern tooling: React + Tailwind UI, real-time Leaflet map, an audio visualizer, and lightweight state for reports; no backend beyond calling Gemini Live—manageable in a few hours.  
+- Notable pattern: `GeminiLiveService` in `services/geminiService.ts` wires up audio capture, Gemini Live tool calls, and fallback location logic, showing they leaned on AI tooling for the bulk of logic while keeping the UI snug around it.
+
+Overall authenticity assessment: looks consistent with a hackathon project

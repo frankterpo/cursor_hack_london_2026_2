@@ -1,0 +1,7 @@
+- All four commits land between 17:11 and 18:29 +07:00 on 2025-11-29 (10:11–11:29 UTC), which fits entirely inside the 06:00–12:00 event window with no pre- or post-event activity; the reported ~27 min median spacing just reflects the gap between the middle commits.
+- The metrics flag “bulk commit” due to a ~13 k LOC initial push, but that’s the first commit in this tiny history and seems to capture the whole Vite/React/Tailwind scaffold rather than hidden prior work.
+- The README describes an “AI Landing Page Generator” that wires a prompt interface, Gemini AI analysis, live preview, drag/drop editor, Monaco code editor, and export/publish flows into one SPA experience (`README.md`).
+- The code tree (Vite entrypoints, services for Gemini/export, and 20+ focused components/hooks under `src/`) matches that scope, so the modern React + Tailwind setup aligns with what a small hackathon team could assemble in a few hours using AI tools.
+- Notable pattern: while the structure is sizeable, the repo only holds four commits, suggesting most work happened in the early bulk drop and that authors probably pushed a near-complete prototype rather than iterating over many micro-commits.
+
+Overall authenticity assessment: looks consistent with a hackathon project

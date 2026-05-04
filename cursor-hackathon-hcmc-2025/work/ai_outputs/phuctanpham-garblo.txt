@@ -1,0 +1,7 @@
+- Consumer App README pitches a Next.js 14 Progressive Web App with install/offline/push capabilities plus automated GitHub Pages deployment and workflow-driven self-validation, so the product focus is on a polished PWA experience (`frontend/consumer-app/README.md:1`).
+- The actual UI revolves around a swipe/matches/chat/profile flow for a dating-style experience, with state management, transitions, and modal logic orchestrated in `frontend/consumer-app/src/app/page.tsx:1`.
+- Metrics show 38 of 42 commits happening inside the 6-hour hackathon window (every ~1.5 minutes), with only four preparation commits before T0, which fits an intense coding sprint rather than pre-built work.
+- A single bulk commit during the event (`1f0218f`) added ~24K lines to wire up GitHub Pages deployment; such large auto-generated commits are worth flagging but can happen when scaffolding a new static site.
+- Judges should note the flood of rapid workflow tweaks and deploy tests (many “fix/test/trigger” commits) as the team stabilized automated validation—consistent with using modern tooling/AI assistants to iterate on infra without reshaping actual app logic.
+
+Overall authenticity assessment: looks consistent with a hackathon project

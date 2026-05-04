@@ -1,0 +1,29 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+ken-kuro-cursor-hackathon,0,f7b7a3a4a9ca51f6d67662746d55e8eddca88e9c,2025-11-29T09:12:52+00:00,,192.87,187,0,2,0,0,1,0,0,docs: initial project setup with README and gitignore
+ken-kuro-cursor-hackathon,1,954bc52b63cc3d3d0018756d6a3024ae14217378,2025-11-29T09:13:01+00:00,0.15,193.02,44,0,2,0,0,1,0,0,feat(backend): initialize Node.js + Express + TypeScript project
+ken-kuro-cursor-hackathon,2,660f3d069daac60edd06ca9ab9b84a5c3a4781da,2025-11-29T09:13:11+00:00,0.17,193.18,418,0,4,0,0,1,0,0,"feat(backend): add TypeScript schemas for Incident, Rescuer, SupplyNeeds"
+ken-kuro-cursor-hackathon,3,66740c39c3f54ce9c9611633e17a1621215a779c,2025-11-29T09:13:19+00:00,0.13,193.32,235,0,1,0,0,1,0,0,feat(backend): implement saturation calculation algorithm
+ken-kuro-cursor-hackathon,4,f967d6c4f954a48b29dbe61b57f57011115d5eb1,2025-11-29T09:13:29+00:00,0.17,193.48,278,0,1,0,0,1,0,0,feat(backend): implement priority-based routing algorithm
+ken-kuro-cursor-hackathon,5,cbe01ee8cb758af1304a93dd64759692751fe7df,2025-11-29T09:13:38+00:00,0.15,193.63,184,0,2,0,0,1,0,0,feat(backend): add trust scoring and anti-troll system
+ken-kuro-cursor-hackathon,6,39450efb226b7bd87a35d5cc072c74b8b71a72c3,2025-11-29T09:13:49+00:00,0.18,193.82,441,0,1,0,0,1,0,0,feat(backend): add in-memory data store with seed data
+ken-kuro-cursor-hackathon,7,b320189f0197dc4760924a0e7084170a7d82c62b,2025-11-29T09:13:58+00:00,0.15,193.97,677,0,3,0,0,1,0,0,feat(backend): add REST API routes for incidents and rescuers
+ken-kuro-cursor-hackathon,8,d992d649b9693edd3b88437e5f6657a7b0eb3d19,2025-11-29T09:14:05+00:00,0.12,194.08,264,0,1,0,0,1,0,0,feat(backend): add Socket.io real-time event handlers
+ken-kuro-cursor-hackathon,9,1d96717e814f5706db8a9daa5a3c69865e2162ec,2025-11-29T09:14:15+00:00,0.17,194.25,116,0,1,0,0,1,0,0,feat(backend): add Express server with Socket.io integration
+ken-kuro-cursor-hackathon,10,de5eecc5ecf5fc772e5e8af9394faeca30cd0bee,2025-11-29T09:14:23+00:00,0.13,194.38,266,0,1,0,0,1,0,0,feat(backend): add Gemini AI integration for message triage
+ken-kuro-cursor-hackathon,11,c1661f783223da05157f71cb82120539070b1ed2,2025-11-29T09:14:32+00:00,0.15,194.53,197,0,8,0,0,1,0,0,feat(frontend): initialize React + Vite + TypeScript + Tailwind project
+ken-kuro-cursor-hackathon,12,4d75d742651242df11005adf0cbfa1e891a098ab,2025-11-29T09:14:40+00:00,0.13,194.67,323,0,2,0,0,1,0,0,feat(frontend): add TypeScript types and global styles
+ken-kuro-cursor-hackathon,13,3f19564857b0a1fbf0c6e706c2b6927f445cddd7,2025-11-29T09:15:04+00:00,0.40,195.07,706,0,5,0,0,1,0,0,feat(frontend): add React hooks and API client
+ken-kuro-cursor-hackathon,14,782ce68dc0caad8d155c73831063d0476b90f9ca,2025-11-29T09:15:15+00:00,0.18,195.25,318,0,3,0,0,1,0,0,feat(frontend): add reusable UI components
+ken-kuro-cursor-hackathon,15,49cc936783ad8681230955f0c01f517413080a25,2025-11-29T09:16:03+00:00,0.80,196.05,208,0,1,0,0,1,0,0,feat(frontend): add Google Maps integration with fallback
+ken-kuro-cursor-hackathon,16,16e626ab8c8568dd8faa9ae21dd1ae002e05896e,2025-11-29T09:16:12+00:00,0.15,196.20,401,0,2,0,0,1,0,0,feat(frontend): add Coordinator Dashboard
+ken-kuro-cursor-hackathon,17,2dba0521b56fc6f2b647a558de9a4f2d4a5da1cf,2025-11-29T09:16:19+00:00,0.12,196.32,391,0,1,0,0,1,0,0,feat(frontend): add Rescuer Mobile View
+ken-kuro-cursor-hackathon,18,e8dc306a08f711843e8202a62ac172ae864bbc47,2025-11-29T09:16:28+00:00,0.15,196.47,97,0,3,0,0,1,0,0,feat(frontend): add App entry point with role selection
+ken-kuro-cursor-hackathon,19,05fad810c28d2f6b94ef1251e00f3fbb670d7b9c,2025-11-29T09:16:38+00:00,0.17,196.63,252,0,9,0,0,1,0,0,feat(docker): add Docker and Docker Compose configuration
+ken-kuro-cursor-hackathon,20,9e5dcec0be702efa2bc61007f09ddef62e3a53e7,2025-11-29T09:17:10+00:00,0.53,197.17,15,0,2,0,0,1,0,0,docs: add environment variable examples
+ken-kuro-cursor-hackathon,21,d97e9b26a888ddc1d9ce24ce9c81b7dd703b6f1d,2025-11-29T09:17:18+00:00,0.13,197.30,5935,0,2,0,0,1,0,1,chore: add package lock files for reproducible builds
+ken-kuro-cursor-hackathon,22,1de06c25b3b131fe4593962dab859b6cdacb5be5,2025-11-29T09:25:17+00:00,7.98,205.28,64,0,1,0,0,1,0,0,docs: add Product Requirements Document
+ken-kuro-cursor-hackathon,23,c7faa1a5c1eaec0af409df147297ab158998c160,2025-11-29T09:54:07+00:00,28.83,234.12,232,17,1,0,0,1,0,0,"feat(dashboard): add tabbed panel with incidents, rescuers, and supply overview"
+ken-kuro-cursor-hackathon,24,3b4b1047d673c5185b3380e9c84be99e7920a974,2025-11-29T09:54:18+00:00,0.18,234.30,180,15,1,0,0,1,0,0,feat(rescuer): add mission map and Google Maps navigation
+ken-kuro-cursor-hackathon,25,48eede0499918575f96ad5adb685b419aafea3a6,2025-11-29T09:55:31+00:00,1.22,235.52,113,19,2,0,0,1,0,0,feat(map): enhance incident markers with better visibility
+ken-kuro-cursor-hackathon,26,1c2ff51da39a8a8d963865d54eb85a74aaedcbc4,2025-11-29T09:55:40+00:00,0.15,235.67,391,9,2,0,0,1,0,0,feat(demo): add demo mode with distance simulation
+ken-kuro-cursor-hackathon,27,fe3bbce2021dcbc3ec93416087487e5cda3063b1,2025-11-29T09:55:48+00:00,0.13,235.80,165,1,3,0,0,1,0,0,feat(api): add demo reset endpoint for hackathon presentations

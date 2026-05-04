@@ -1,0 +1,8 @@
+- All 56 commits in the 6‑hour event window (none before T0) with median spacing under a minute suggests intense in‑hackathon activity rather than post hoc dumping.
+- Flag `has_bulk_commits` plus a max single-commit delta of 5,674 LOC hints at a few large pushes—common near deadlines but worth a quick spot check for “mega” commits that could mask prebuilt work.
+- Post-event activity (11 commits after T1) is limited, indicating the core work ended with the hackathon window rather than being backfilled later.
+- README/docs plus the well-structured `src`, `db`, and `docs` folders portray a multiplayer AI song battle game (“Cacophony Game”) with Supabase/Suno integration and concrete gameplay flow; scope is large but coherent and aligns with hype around AI tools.
+- The codebase looks like a modern TypeScript/Vite + Supabase project with multiple components, hooks, and utilities, so the technical breadth feels achievable with current AI-assisted workflows rather than impossible in a short sprint.
+- Notable pattern: extremely frequent commits (median ~35 seconds during the event) could stem from automated saves or rapid collaboration; worth checking if those are meaningful changes or automated formatting.
+
+Overall authenticity assessment: looks consistent with a hackathon project

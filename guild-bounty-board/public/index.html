@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/cursor-cube-briefcase-32.png" sizes="32x32">
+    <title>Cursor Guild: Bounty Board</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0b0b;
+            --accent-green: #3dffa3;
+            --dark-green: #1a332a;
+            --card-bg: #161616;
+            --border-color: #2a2a2a;
+            --gold: #f1c40f;
+            --status-red: #ff4b4b;
+            --pixel-border: 4px;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #fff;
+            font-family: 'Press Start 2P', cursive;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            image-rendering: pixelated;
+        }
+
+        .logo-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .logo-cube {
+            width: 80px;
+            height: 80px;
+            image-rendering: crisp-edges;
+        }
+
+        .logo-wordmark {
+            height: 40px;
+            image-rendering: crisp-edges;
+        }
+
+        h1 {
+            color: var(--accent-green);
+            text-shadow: 4px 4px 0px #000;
+            font-size: 1.8rem;
+            margin: 10px 0;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-family: 'VT323', monospace;
+            font-size: 1.6rem;
+            color: #666;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .admin-link-row {
+            margin-top: 18px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .admin-link {
+            appearance: none;
+            border: 3px solid var(--border-color);
+            background: #121212;
+            color: var(--accent-green);
+            padding: 10px 14px;
+            text-decoration: none;
+            font-size: 0.5rem;
+            font-family: 'Press Start 2P', cursive;
+            line-height: 1;
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 35px;
+            cursor: pointer;
+            border-radius: 0;
+        }
+
+        .admin-link:hover {
+            border-color: var(--accent-green);
+            background: #000;
+        }
+
+        .admin-link--gold {
+            color: var(--gold);
+            border-color: #6f5600;
+        }
+
+        .admin-link--gold:hover {
+            border-color: var(--gold);
+        }
+
+        .modal-shell {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-shell.is-open {
+            display: flex;
+        }
+
+        .modal-card {
+            width: min(760px, 100%);
+            border: 4px solid var(--border-color);
+            background: #101010;
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.7);
+            padding: 20px;
+        }
+
+        .modal-title {
+            color: var(--accent-green);
+            font-size: 0.72rem;
+            margin-bottom: 14px;
+        }
+
+        .modal-copy,
+        .modal-status,
+        .modal-list {
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            line-height: 1.2;
+            color: #cfcfcf;
+        }
+
+        .modal-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin: 14px 0;
+        }
+
+        .modal-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .modal-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .modal-field--full {
+            grid-column: 1 / -1;
+        }
+
+        .modal-label {
+            color: var(--gold);
+            font-size: 0.48rem;
+        }
+
+        .modal-input,
+        .modal-select,
+        .modal-textarea {
+            width: 100%;
+            border: 3px solid var(--border-color);
+            background: #0c0c0c;
+            color: #f6f6f6;
+            padding: 10px 12px;
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            line-height: 1.1;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .modal-input:focus,
+        .modal-select:focus,
+        .modal-textarea:focus {
+            border-color: var(--accent-green);
+        }
+
+        .modal-select {
+            appearance: none;
+        }
+
+        .modal-textarea {
+            min-height: 86px;
+            resize: vertical;
+        }
+
+        .modal-hint {
+            font-family: 'VT323', monospace;
+            font-size: 1rem;
+            color: #9d9d9d;
+            line-height: 1.1;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+            justify-content: flex-end;
+            padding-top: 14px;
+            border-top: 2px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .modal-btn {
+            border: 3px solid var(--border-color);
+            background: #121212;
+            color: var(--accent-green);
+            padding: 10px 16px;
+            text-decoration: none;
+            font-size: 0.5rem;
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 38px;
+            min-width: 120px;
+            transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease, color 0.12s ease;
+        }
+
+        .modal-btn:hover {
+            border-color: var(--accent-green);
+            background: #000;
+            transform: translate(1px, 1px);
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-btn--close {
+            color: #f3d6d6;
+            border-color: #7a4040;
+            background: linear-gradient(180deg, #2a1212 0%, #180909 100%);
+        }
+
+        .modal-btn--close:hover {
+            border-color: #ff8f8f;
+            background: linear-gradient(180deg, #381515 0%, #1f0b0b 100%);
+        }
+
+        #submit-project-form {
+            color: #06150d;
+            border-color: #77ffbd;
+            background: linear-gradient(180deg, #afffd8 0%, #49ffae 18%, #20b56f 100%);
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 4px 4px 0 rgba(0, 0, 0, 0.55);
+        }
+
+        #submit-project-form:hover {
+            color: #031009;
+            border-color: #71ffd2;
+            background: linear-gradient(180deg, #6effc0 0%, #2bc07a 100%);
+        }
+
+        .modal-status {
+            margin-top: 16px;
+            min-height: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 8px 10px;
+        }
+
+        .modal-status--error {
+            color: #ff8f8f;
+            border-color: rgba(255, 75, 75, 0.45);
+            background: rgba(255, 75, 75, 0.08);
+        }
+
+        .modal-status--success {
+            color: var(--accent-green);
+            border-color: rgba(61, 255, 163, 0.4);
+            background: rgba(61, 255, 163, 0.08);
+        }
+
+        .filters {
+            margin-bottom: 40px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            background: rgba(11, 11, 11, 0.9);
+            padding: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-btn {
+            background: #111;
+            border: 2px solid var(--border-color);
+            color: #555;
+            padding: 10px 14px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.55rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+            background: #000;
+        }
+
+        .page-shell {
+            width: 100%;
+            max-width: 1400px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .panel {
+            border: 4px solid var(--border-color);
+            background: rgba(14, 14, 14, 0.96);
+            box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.7);
+            padding: 20px;
+        }
+
+        .panel-title {
+            color: var(--accent-green);
+            font-size: 0.75rem;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-title::before {
+            content: "";
+            width: 14px;
+            height: 14px;
+            background: var(--accent-green);
+            box-shadow: 3px 3px 0 #000;
+            display: inline-block;
+        }
+
+        .overview-copy {
+            font-family: 'VT323', monospace;
+            font-size: 1.35rem;
+            line-height: 1.3;
+            color: #c3c3c3;
+        }
+
+        .overview-lead {
+            color: #ededed;
+            font-size: 1.55rem;
+        }
+
+        .points-grid {
+            display: grid;
+            grid-template-columns: 1.25fr 1fr 1fr;
+            gap: 14px;
+        }
+
+        .point-card {
+            border: 3px solid #313131;
+            background: linear-gradient(180deg, #161616 0%, #101010 100%);
+            padding: 16px;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+        }
+
+        .point-card-title {
+            color: var(--accent-green);
+            font-size: 0.58rem;
+            margin-bottom: 10px;
+        }
+
+        .point-card-copy,
+        .point-card-list {
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            line-height: 1.25;
+            color: #c2c2c2;
+        }
+
+        .point-card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .point-total {
+            font-size: 2.2rem;
+            color: var(--gold);
+        }
+
+        .road-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .road-card {
+            background: linear-gradient(180deg, #171717 0%, #101010 100%);
+            border: 3px solid #353535;
+            padding: 16px;
+            min-height: 270px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.35);
+        }
+
+        .road-card.track-always-on {
+            border-color: #2f6c53;
+        }
+
+        .road-card.track-review-qa {
+            border-color: #806b20;
+        }
+
+        .road-card.track-runtime {
+            border-color: #2e5f74;
+        }
+
+        .road-card.track-factory {
+            border-color: #724436;
+        }
+
+        .road-art {
+            height: 62px;
+            border: 2px solid #4a4a4a;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0 6%, transparent 6% 94%, rgba(0, 0, 0, 0.24) 94% 100%),
+                linear-gradient(180deg, #3b3b3b 0%, #232323 18%, #161616 50%, #101010 82%, #070707 100%);
+            box-shadow: inset 0 2px 0 #4a4a4a, inset 0 -2px 0 #050505;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .road-art::before,
+        .road-art::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .road-art::before {
+            background:
+                linear-gradient(180deg, transparent 0 12%, rgba(0, 0, 0, 0.18) 12% 18%, transparent 18% 82%, rgba(255, 255, 255, 0.05) 82% 88%, transparent 88% 100%),
+                repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0 6px, rgba(0, 0, 0, 0.03) 6px 12px);
+            opacity: 0.9;
+        }
+
+        .road-art::after {
+            background-repeat: repeat-x;
+            background-size: 120px 100%;
+            animation: none;
+            will-change: background-position;
+        }
+
+        .road-card:hover .road-art::after {
+            animation: roadDrive 1s linear infinite;
+        }
+
+        .road-card:hover .road-art {
+            box-shadow: inset 0 2px 0 #5b5b5b, inset 0 -2px 0 #050505, 0 0 0 1px rgba(255, 255, 255, 0.03);
+        }
+
+        .road-art--always-on {
+            background:
+                linear-gradient(90deg, rgba(61, 255, 163, 0.22) 0%, transparent 10%, transparent 90%, rgba(61, 255, 163, 0.22) 100%),
+                linear-gradient(180deg, #3b3b3b 0%, #232323 18%, #161616 50%, #101010 82%, #070707 100%);
+        }
+
+        .road-art--always-on::after {
+            background-image:
+                linear-gradient(90deg, transparent 0 18px, #e7fff1 18px 36px, transparent 36px 120px),
+                linear-gradient(180deg, transparent 0 8px, rgba(61, 255, 163, 0.3) 8px 10px, transparent 10px 52px, rgba(61, 255, 163, 0.24) 52px 54px, transparent 54px 100%);
+            background-position: 0 0, 0 0;
+        }
+
+        .road-art--review-qa {
+            background:
+                linear-gradient(90deg, rgba(247, 213, 92, 0.2) 0%, transparent 12%, transparent 88%, rgba(247, 213, 92, 0.2) 100%),
+                linear-gradient(180deg, #3b3b3b 0%, #232323 18%, #161616 50%, #101010 82%, #070707 100%);
+        }
+
+        .road-art--review-qa::after {
+            background-image:
+                linear-gradient(90deg, transparent 0 14px, #f7e59c 14px 24px, transparent 24px 54px, #f7e59c 54px 64px, transparent 64px 120px),
+                repeating-linear-gradient(90deg, rgba(247, 213, 92, 0.16) 0 8px, transparent 8px 32px);
+            background-size: 120px 100%, 80px 100%;
+            background-position: 0 0, 0 0;
+        }
+
+        .road-art--runtime {
+            background:
+                linear-gradient(90deg, rgba(140, 233, 255, 0.22) 0%, transparent 10%, transparent 90%, rgba(140, 233, 255, 0.22) 100%),
+                linear-gradient(180deg, #3b3b3b 0%, #232323 18%, #161616 50%, #101010 82%, #070707 100%);
+        }
+
+        .road-art--runtime::after {
+            background-image:
+                linear-gradient(90deg, transparent 0 18px, #bdf6ff 18px 26px, transparent 26px 58px, #bdf6ff 58px 66px, transparent 66px 120px),
+                linear-gradient(180deg, transparent 0 11px, rgba(140, 233, 255, 0.3) 11px 13px, transparent 13px 28px, rgba(140, 233, 255, 0.2) 28px 30px, transparent 30px 45px, rgba(140, 233, 255, 0.3) 45px 47px, transparent 47px 100%);
+            background-position: 0 0, 0 0;
+        }
+
+        .road-art--factory {
+            background:
+                linear-gradient(90deg, rgba(154, 95, 63, 0.24) 0%, transparent 9%, transparent 91%, rgba(154, 95, 63, 0.24) 100%),
+                linear-gradient(180deg, #3b3b3b 0%, #232323 18%, #161616 50%, #101010 82%, #070707 100%);
+        }
+
+        .road-art--factory::after {
+            background-image:
+                linear-gradient(90deg, transparent 0 16px, #ffd2b5 16px 28px, transparent 28px 60px, #ffd2b5 60px 72px, transparent 72px 120px),
+                repeating-linear-gradient(90deg, rgba(154, 95, 63, 0.18) 0 10px, transparent 10px 26px);
+            background-size: 120px 100%, 52px 100%;
+            background-position: 0 0, 0 0;
+        }
+
+        .road-name {
+            color: #f6f6f6;
+            font-size: 0.72rem;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+
+        .road-description,
+        .road-meta,
+        .mission-kicker {
+            font-family: 'VT323', monospace;
+            color: #b8b8b8;
+        }
+
+        .road-description {
+            font-size: 1.15rem;
+            line-height: 1.2;
+            min-height: 52px;
+        }
+
+        .road-rules {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .road-rule {
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+            padding: 10px;
+        }
+
+        .road-rule-title {
+            font-size: 0.48rem;
+            color: #f5f5f5;
+            margin-bottom: 6px;
+        }
+
+        .road-rule-copy {
+            font-family: 'VT323', monospace;
+            font-size: 1.05rem;
+            line-height: 1.15;
+            color: #bcbcbc;
+        }
+
+        .road-meta {
+            font-size: 1.1rem;
+            color: #d8d8d8;
+            font-family: 'VT323', monospace;
+        }
+
+        .coin-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 14px;
+        }
+
+        .coin-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            border: 3px solid #8a6b03;
+            background: linear-gradient(180deg, #f7d24b 0%, #b98100 100%);
+            color: #231300;
+            padding: 10px 14px 10px 10px;
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
+            min-height: 56px;
+            position: relative;
+        }
+
+        .coin-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 3px solid #7b5c01;
+            background: radial-gradient(circle at 30% 30%, #fff3a1 0%, #ffd54b 35%, #d08c00 100%);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.55rem;
+            color: #6c4300;
+            flex-shrink: 0;
+        }
+
+        .coin-sponsor-logo {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            object-fit: contain;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 2px;
+        }
+
+        .coin-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .coin-name {
+            font-size: 0.57rem;
+            line-height: 1.4;
+        }
+
+        .coin-value {
+            font-family: 'VT323', monospace;
+            font-size: 1.15rem;
+        }
+
+        .coin-note {
+            margin-top: 14px;
+            font-family: 'VT323', monospace;
+            font-size: 1.15rem;
+            line-height: 1.2;
+            color: #d3d3d3;
+        }
+
+        /* Tech Partners */
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 18px;
+        }
+
+        .partner-card {
+            border: 3px solid var(--border-color);
+            background: #101010;
+            padding: 18px;
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .partner-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .partner-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 4px;
+            border: 2px solid #333;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 3px;
+            object-fit: contain;
+        }
+
+        .partner-name {
+            font-size: 0.62rem;
+            color: var(--accent-green);
+            letter-spacing: 1px;
+        }
+
+        .partner-tagline {
+            font-family: 'VT323', monospace;
+            font-size: 1.25rem;
+            color: #ccc;
+        }
+
+        .partner-desc {
+            font-family: 'VT323', monospace;
+            font-size: 1.05rem;
+            line-height: 1.3;
+            color: #999;
+        }
+
+        .partner-notice {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1px dashed var(--accent-green);
+            background: rgba(61, 255, 163, 0.04);
+            padding: 8px 14px;
+            font-family: 'VT323', monospace;
+            font-size: 1rem;
+            line-height: 1.2;
+            color: var(--accent-green);
+            text-align: center;
+        }
+
+        .partner-notice--gold {
+            border-color: var(--gold);
+            background: rgba(241, 196, 15, 0.04);
+            color: var(--gold);
+        }
+
+        .notice-icon {
+            display: none;
+        }
+
+        .partner-link {
+            display: inline-block;
+            border: 2px solid var(--accent-green);
+            color: var(--accent-green);
+            padding: 8px 14px;
+            text-decoration: none;
+            font-size: 0.5rem;
+            text-align: center;
+            transition: all 0.15s;
+        }
+
+        .partner-link:hover {
+            background: var(--accent-green);
+            color: #0b0b0b;
+        }
+
+        .partner-link--gold {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .partner-link--gold:hover {
+            background: var(--gold);
+            color: #0b0b0b;
+        }
+
+        /* Judges */
+        .judges-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .judge-card {
+            border: 3px solid var(--border-color);
+            background: #101010;
+            padding: 18px;
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .judge-card:hover {
+            border-color: var(--accent-green);
+            box-shadow: 4px 4px 0 rgba(61, 255, 163, 0.15);
+        }
+
+        .judge-photo {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid #333;
+            object-fit: cover;
+            image-rendering: auto;
+            filter: grayscale(30%);
+            transition: filter 0.2s;
+        }
+
+        .judge-card:hover .judge-photo {
+            filter: grayscale(0%);
+            border-color: var(--accent-green);
+        }
+
+        .judge-name {
+            font-size: 0.55rem;
+            color: var(--accent-green);
+            letter-spacing: 2px;
+        }
+
+        .judge-org {
+            font-family: 'VT323', monospace;
+            font-size: 1.05rem;
+            color: #888;
+        }
+
+        @media (max-width: 720px) {
+            .judges-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Eric section */
+        .eric-section {
+            margin-top: 24px;
+            border-top: 2px solid #222;
+            padding-top: 20px;
+        }
+
+        .eric-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .eric-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            font-size: 0.55rem;
+            color: #0b0b0b;
+            background: var(--accent-green);
+            letter-spacing: 2px;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .eric-subtitle {
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            color: #999;
+            font-style: italic;
+        }
+
+        .eric-desc {
+            font-family: 'VT323', monospace;
+            font-size: 1.1rem;
+            line-height: 1.4;
+            color: #aaa;
+            margin-bottom: 18px;
+        }
+
+        .eric-tweets {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .eric-tweet-link {
+            display: block;
+            border: 2px solid #282828;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+            max-width: 280px;
+            opacity: 0.85;
+        }
+
+        .eric-tweet-link:hover {
+            border-color: var(--accent-green);
+            box-shadow: 3px 3px 0 rgba(61, 255, 163, 0.1);
+            opacity: 1;
+        }
+
+        .eric-tweet-img {
+            width: 100%;
+            display: block;
+        }
+
+        .tweet-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .tweet-modal.is-open {
+            display: flex;
+        }
+
+        .tweet-modal-content {
+            position: relative;
+            max-width: 600px;
+            width: 90%;
+            cursor: default;
+        }
+
+        .tweet-modal-img {
+            width: 100%;
+            display: block;
+            border: 3px solid #333;
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.6);
+        }
+
+        .tweet-modal-x-btn {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            padding: 6px 14px;
+            font-size: 0.45rem;
+            font-family: 'Press Start 2P', monospace;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #555;
+            text-decoration: none;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .tweet-modal-x-btn:hover {
+            border-color: var(--accent-green);
+            background: rgba(0, 0, 0, 0.9);
+            color: var(--accent-green);
+        }
+
+        /* Prizes */
+        .prizes-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .prize-card {
+            border: 3px solid var(--border-color);
+            background: #101010;
+            padding: 24px 18px;
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .prize-card--1st {
+            border-color: var(--gold);
+            box-shadow: 4px 4px 0 rgba(241, 196, 15, 0.2), inset 0 0 30px rgba(241, 196, 15, 0.03);
+        }
+
+        .prize-card--2nd {
+            border-color: #aaa;
+            box-shadow: 4px 4px 0 rgba(170, 170, 170, 0.15);
+        }
+
+        .prize-card--3rd {
+            border-color: #cd7f32;
+            box-shadow: 4px 4px 0 rgba(205, 127, 50, 0.15);
+        }
+
+        .prize-place {
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+        }
+
+        .prize-card--1st .prize-place { color: var(--gold); }
+        .prize-card--2nd .prize-place { color: #ccc; }
+        .prize-card--3rd .prize-place { color: #cd7f32; }
+
+        .prize-trophy {
+            font-size: 2rem;
+            line-height: 1;
+            image-rendering: pixelated;
+        }
+
+        .prize-card--1st .prize-trophy { color: var(--gold); text-shadow: 0 0 12px rgba(241, 196, 15, 0.4); }
+        .prize-card--2nd .prize-trophy { color: #ccc; }
+        .prize-card--3rd .prize-trophy { color: #cd7f32; }
+
+        .prize-reward {
+            font-size: 0.55rem;
+            color: var(--accent-green);
+            letter-spacing: 1px;
+        }
+
+        .prize-tier {
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            color: #999;
+        }
+
+        @media (max-width: 720px) {
+            .prizes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 8-bit pinched fingers wallpaper */
+        .pinch-grid {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 80px);
+            grid-auto-rows: 80px;
+            overflow: hidden;
+        }
+
+        .pinch-grid span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            opacity: 0.04;
+            will-change: transform;
+            transform-origin: bottom center;
+        }
+
+        .page-shell {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Ambient scanlines */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.05) 50%);
+            background-size: 100% 4px;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        /* CRT flicker */
+        @keyframes flicker {
+            0% {
+                opacity: 0.97;
+            }
+
+            5% {
+                opacity: 0.95;
+            }
+
+            10% {
+                opacity: 0.9;
+            }
+
+            15% {
+                opacity: 0.95;
+            }
+
+            30% {
+                opacity: 0.98;
+            }
+
+            45% {
+                opacity: 0.93;
+            }
+
+            60% {
+                opacity: 0.95;
+            }
+
+            100% {
+                opacity: 0.98;
+            }
+        }
+
+        @keyframes roadDrive {
+            from {
+                background-position: 0 0, 0 0;
+            }
+
+            to {
+                background-position: -120px 0, -120px 0;
+            }
+        }
+        @media (max-width: 720px) {
+            body {
+                padding: 14px;
+            }
+
+            h1 {
+                font-size: 1.25rem;
+            }
+
+            .subtitle {
+                font-size: 1.15rem;
+            }
+
+            .panel {
+                padding: 16px;
+            }
+
+            .road-grid,
+            .points-grid,
+            .coin-strip,
+            .modal-form {
+                grid-template-columns: 1fr;
+            }
+
+            .road-name,
+            .coin-name {
+                font-size: 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="pinch-grid" id="pinch-grid"></div>
+    <div class="header">
+        <div class="logo-row">
+            <img src="cursor-cube-briefcase.png" class="logo-cube" alt="Cursor Cube">
+            <img src="cursor-wordmark.png" class="logo-wordmark" alt="Cursor Wordmark">
+        </div>
+        <h1>GUILD BOUNTY BOARD</h1>
+        <div class="subtitle">Human out of the loop in high-risk financial workflows</div>
+        <div class="admin-link-row">
+            <button class="admin-link admin-link--gold" id="open-submissions-modal" type="button">ALL SUBMISSIONS</button>
+        </div>
+    </div>
+
+    <div class="page-shell">
+        <div class="panel" id="rubric-panel"></div>
+        <div class="panel" id="points-panel"></div>
+        <div class="panel" id="road-panel"></div>
+        <div class="panel" id="coin-panel"></div>
+
+        <!-- Tech Partners -->
+        <!-- Prizes -->
+        <div class="panel" id="prizes-panel">
+            <div class="panel-title">Prizes</div>
+            <div class="prizes-grid">
+                <div class="prize-card prize-card--1st">
+                    <div class="prize-place">1ST</div>
+                    <div class="prize-trophy">&#9733;</div>
+                    <div class="prize-reward">6 MONTHS</div>
+                    <div class="prize-tier">Cursor Ultra</div>
+                </div>
+                <div class="prize-card prize-card--2nd">
+                    <div class="prize-place">2ND</div>
+                    <div class="prize-trophy">&#9733;</div>
+                    <div class="prize-reward">4 MONTHS</div>
+                    <div class="prize-tier">Cursor Ultra</div>
+                </div>
+                <div class="prize-card prize-card--3rd">
+                    <div class="prize-place">3RD</div>
+                    <div class="prize-trophy">&#9733;</div>
+                    <div class="prize-reward">3 MONTHS</div>
+                    <div class="prize-tier">Cursor Ultra</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Judges -->
+        <div class="panel" id="judges-panel">
+            <div class="panel-title">Judges</div>
+            <div class="judges-grid">
+                <a href="https://x.com/DanPerks" target="_blank" rel="noreferrer" class="judge-card">
+                    <img src="judge-dan.png" alt="Dan" class="judge-photo">
+                    <div class="judge-name">DAN</div>
+                    <div class="judge-org">Cursor</div>
+                </a>
+                <a href="https://x.com/davidgelberg" target="_blank" rel="noreferrer" class="judge-card">
+                    <img src="judge-david.png" alt="David" class="judge-photo">
+                    <div class="judge-name">DAVID</div>
+                    <div class="judge-org">10 Downing Street</div>
+                </a>
+                <a href="https://x.com/Monaca97" target="_blank" rel="noreferrer" class="judge-card">
+                    <img src="judge-francesco.png" alt="Francesco" class="judge-photo">
+                    <div class="judge-name">FRANCESCO</div>
+                    <div class="judge-org">Giant Ventures</div>
+                </a>
+                <a href="https://www.linkedin.com/in/peter-devlin/" target="_blank" rel="noreferrer" class="judge-card">
+                    <img src="judge-peter.png" alt="Peter" class="judge-photo">
+                    <div class="judge-name">PETER</div>
+                    <div class="judge-org">Hummingbird Ventures</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="panel" id="partners-panel">
+            <div class="panel-title">Tech Partners</div>
+            <div class="partners-grid">
+                <!-- Specter -->
+                <div class="partner-card">
+                    <div class="partner-header">
+                        <img src="https://media.licdn.com/dms/image/v2/D4E0BAQHYV3gJWMwQ-Q/company-logo_200_200/company-logo_200_200/0/1725877369815/specterhq_logo?e=1779321600&amp;v=beta&amp;t=HHRyh4eqmLYkO3SMPMRQc-GobfUOagqaiYSYuWDATCg" alt="Specter" class="partner-logo" referrerpolicy="no-referrer">
+                        <a href="https://tryspecter.com" target="_blank" rel="noreferrer" class="partner-name" style="text-decoration:none;">SPECTER</a>
+                    </div>
+                    <div class="partner-tagline">Market intelligence · API &amp; MCP</div>
+                    <div class="partner-desc">
+                        Specter provides company and market intelligence APIs and an MCP for agentic workflows. Use it to enrich finance agents with structured firmographic and signal data.
+                    </div>
+                    <div class="partner-notice">
+                        <span class="notice-icon">!</span>
+                        <span>Ping <a href="https://www.linkedin.com/in/francisco-t-334545144/" target="_blank" rel="noreferrer">Francisco</a> for access.</span>
+                    </div>
+                    <a href="https://api.tryspecter.com/api-ref/introduction" target="_blank" rel="noreferrer" class="partner-link">API DOCS &rarr;</a>
+                </div>
+
+                <!-- Cursor -->
+                <div class="partner-card">
+                    <div class="partner-header">
+                        <img src="cursor-cube.png" alt="Cursor" class="partner-logo" style="image-rendering:crisp-edges;">
+                        <a href="https://cursor.com" target="_blank" rel="noreferrer" class="partner-name" style="text-decoration:none;">CURSOR</a>
+                    </div>
+                    <div class="partner-tagline">The AI Code Editor</div>
+                    <div class="partner-desc">
+                        Cursor is the AI-first code editor built for speed. It understands your codebase, writes code with you, and ships features faster than any other tool. The hackathon&rsquo;s official development environment.
+                    </div>
+                    <div class="partner-notice partner-notice--gold">
+                        <span class="notice-icon">$</span>
+                        <span>$100 Cursor credits to be shared on Discord</span>
+                    </div>
+                    <a href="https://cursor.com" target="_blank" rel="noreferrer" class="partner-link partner-link--gold">CURSOR.COM &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-shell" id="submissions-modal">
+        <div class="modal-card" style="width:min(900px,100%);max-height:85vh;overflow-y:auto;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                <div class="modal-title" style="margin:0;">ALL SUBMISSIONS</div>
+                <button class="modal-btn modal-btn--close" id="close-submissions-modal" type="button" style="width:auto;">CLOSE</button>
+            </div>
+            <div id="submissions-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+        </div>
+    </div>
+
+    <div class="modal-shell" id="submit-modal">
+        <div class="modal-card">
+            <div class="modal-title">SUBMIT YOUR TEAM PROJECT</div>
+            <div class="modal-copy">
+                Fill in the required fields below. Your selected track comes from the official road list, so submissions stay clean and judges see the exact same category names.
+            </div>
+            <div class="modal-list">
+                <span>Required: team name, project name, GitHub URL, chosen track, and demo URL.</span>
+                <span>If you submit again later, the latest entry replaces the previous one for that GitHub URL.</span>
+                <span>Your submission then appears in the organizer admin board and judge portal.</span>
+            </div>
+            <form id="submission-form" class="modal-form">
+                <div class="modal-field">
+                    <label class="modal-label" for="submission-team-name">TEAM NAME</label>
+                    <input class="modal-input" id="submission-team-name" name="team_name" type="text" required>
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label" for="submission-project-name">PROJECT NAME</label>
+                    <input class="modal-input" id="submission-project-name" name="project_name" type="text" required>
+                </div>
+                <div class="modal-field modal-field--full">
+                    <label class="modal-label" for="submission-repo-url">GITHUB URL</label>
+                    <input class="modal-input" id="submission-repo-url" name="repo_url" type="url" placeholder="https://github.com/org/repo" required>
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label" for="submission-track">MAIN TRACK</label>
+                    <select class="modal-select" id="submission-track" name="chosen_track" required>
+                        <option value="">Select one road</option>
+                    </select>
+                    <div class="modal-hint">Use the same road your team is building toward.</div>
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label" for="submission-demo-url">DEMO URL</label>
+                    <input class="modal-input" id="submission-demo-url" name="demo_url" type="url" placeholder="https://..." required>
+                </div>
+                <div class="modal-field modal-field--full">
+                    <label class="modal-label" for="submission-description">ONE-LINE DESCRIPTION</label>
+                    <input class="modal-input" id="submission-description" name="description" type="text" placeholder="What does your project do in one sentence?" required maxlength="200">
+                </div>
+                <div class="modal-field modal-field--full">
+                    <label class="modal-label" for="submission-team-members">TEAM MEMBERS</label>
+                    <input class="modal-input" id="submission-team-members" name="team_members" type="text" placeholder="Optional">
+                </div>
+                <div class="modal-field modal-field--full">
+                    <label class="modal-label" for="submission-notes">NOTES</label>
+                    <textarea class="modal-textarea" id="submission-notes" name="notes" placeholder="Optional"></textarea>
+                </div>
+            </form>
+            <div class="modal-actions">
+                <button class="modal-btn" id="submit-project-form" type="submit" form="submission-form">SEND SUBMISSION</button>
+                <button class="modal-btn modal-btn--close" id="close-submit-modal" type="button">CLOSE</button>
+            </div>
+            <div class="modal-status" id="submit-modal-status"></div>
+        </div>
+    </div>
+
+    <script>
+        const TRACK_DETAILS = {
+            'Always-On-Agents': {
+                className: 'track-always-on',
+                artClass: 'road-art--always-on',
+                build: 'Automations triggered by the outside world: schedules, webhooks, PRs, incidents, or messages.',
+                avoid: 'Do not use this road for one-off agent demos that only run because a person manually kicked them off.',
+                label: 'LIVE TRIGGERS + ALWAYS-ON ACTIONS'
+            },
+            'Review-QA': {
+                className: 'track-review-qa',
+                artClass: 'road-art--review-qa',
+                build: 'Testing, verification, debugging, review loops, or reliability systems that inspect software quality.',
+                avoid: 'Do not use this road for general orchestration platforms unless quality control is the core product.',
+                label: 'CHECKPOINTS + QUALITY GATES'
+            },
+            'Agent-Runtime-Tools': {
+                className: 'track-runtime',
+                artClass: 'road-art--runtime',
+                build: 'Tools that improve how agents choose models, use MCPs, invoke skills, or reason about decisions.',
+                avoid: 'Do not use this road for full business workflows unless the main contribution is the runtime primitive itself.',
+                label: 'SKILLS + TOOLS + DECISION LAYERS'
+            },
+            'Software-Factory': {
+                className: 'track-factory',
+                artClass: 'road-art--factory',
+                build: 'Multi-step systems where several agents or stages continuously plan, build, verify, and improve software.',
+                avoid: 'Do not use this road for a single automation or single verifier. This road is about pipelines and coordination.',
+                label: 'PIPELINES + FLEETS + CONTINUOUS IMPROVEMENT'
+            },
+            'Money-Movement': {
+                className: 'track-always-on',
+                artClass: 'road-art--always-on',
+                build: 'Agents that execute money movement — pay, transfer, payroll, refunds — with explicit human-in-the-loop gates where risk is high.',
+                avoid: 'Do not choose this track if the system only reads or categorizes money without executing movement.',
+                label: 'MONEY AT STAKE'
+            },
+            'Financial-Intelligence': {
+                className: 'track-review-qa',
+                artClass: 'road-art--review-qa',
+                build: 'Agents that read, interpret, explain, or flag financial data — fraud signals, categorization, bank-line QA, compliance checks.',
+                avoid: 'Do not choose this track if the hero demo is primarily pushing payments or transfers.',
+                label: 'READ · INTERPRET · DECIDE'
+            }
+        };
+
+        let availableTracks = [];
+
+        function setModalStatus(message, type) {
+            const status = document.getElementById('submit-modal-status');
+            status.textContent = message || '';
+            status.className = 'modal-status';
+            if (type === 'error') {
+                status.classList.add('modal-status--error');
+            }
+            if (type === 'success') {
+                status.classList.add('modal-status--success');
+            }
+        }
+
+        function esc(input) {
+            return String(input || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function populateSubmissionTracks(tracks) {
+            availableTracks = tracks.map((track) => ({
+                id: track.id,
+                name: track.name
+            }));
+            const select = document.getElementById('submission-track');
+            select.innerHTML = `
+                <option value="">Select one road</option>
+                ${availableTracks.map((track) => `<option value="${esc(track.name)}">${esc(track.name)}</option>`).join('')}
+            `;
+        }
+
+        function normalizeSubmissionForm(form) {
+            const formData = new FormData(form);
+            return {
+                team_name: String(formData.get('team_name') || '').trim(),
+                project_name: String(formData.get('project_name') || '').trim(),
+                repo_url: String(formData.get('repo_url') || '').trim(),
+                chosen_track: String(formData.get('chosen_track') || '').trim(),
+                demo_url: String(formData.get('demo_url') || '').trim(),
+                description: String(formData.get('description') || '').trim(),
+                team_members: String(formData.get('team_members') || '').trim(),
+                notes: String(formData.get('notes') || '').trim()
+            };
+        }
+
+        async function submitProjectForm(submission) {
+            setModalStatus('Saving submission...');
+
+            if (!submission.team_name || !submission.project_name || !submission.repo_url || !submission.chosen_track || !submission.demo_url) {
+                throw new Error('Please complete every required field.');
+            }
+
+            const validTracks = new Set(availableTracks.map((track) => track.name));
+            if (!validTracks.has(submission.chosen_track)) {
+                throw new Error('Please choose a valid main track.');
+            }
+
+            const response = await fetch('/api/submissions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(submission)
+            });
+
+            const payload = await response.json();
+            if (!response.ok) {
+                throw new Error(payload.error || 'Submission upload failed.');
+            }
+
+            setModalStatus('Submission saved. The organizer admin and judge portal now use the latest version for that GitHub URL.', 'success');
+        }
+
+        function openSubmitModal() {
+            setModalStatus('');
+            document.getElementById('submit-modal').classList.add('is-open');
+        }
+
+        function closeSubmitModal() {
+            document.getElementById('submit-modal').classList.remove('is-open');
+        }
+
+        function renderRubric(payload) {
+            const panel = document.getElementById('rubric-panel');
+            const format = payload.hackathon_format || {};
+            const trackCount = (format.main_tracks && format.main_tracks.length) || 0;
+            const isLondon = format.hack_id === 'cursor-live-london-q3-2026';
+            if (isLondon) {
+                panel.innerHTML = `
+                <div class="panel-title">World Map</div>
+                <div class="overview-copy">
+                    <div class="overview-lead">Pick <span style="color:var(--accent-green);">one track</span>. Build for high-risk financial workflows.</div>
+                    <br><br>
+                    Each team enters exactly <span style="color:var(--accent-green);">one main track</span> (Money Movement or Financial Intelligence).
+                    Judges score 10 points total: <span style="color:var(--accent-green);">7 core</span> + <span style="color:var(--gold);">3 sponsor bonus</span>.
+                    <br><br>
+                    The ${trackCount || 'two'} tracks below are intentionally distinct. If a project spans both, judges pick the best fit — choose clearly on submission.
+                </div>
+                `;
+                return;
+            }
+            panel.innerHTML = `
+                <div class="panel-title">World Map</div>
+                <div class="overview-copy">
+                    <div class="overview-lead">Pick <span style="color:var(--accent-green);">one road</span>. Build only on that road.</div>
+                    <br><br>
+                    Each team enters exactly <span style="color:var(--accent-green);">one main track</span>.
+                    Side quests are optional bonus coins layered on top of that main entry.
+                    <br><br>
+                    The four roads below are intentionally distinct. If a project bleeds across multiple roads, judges will score it on the road it fits best, so teams should choose their route clearly.
+                </div>
+
+                <div class="eric-section">
+                    <div class="eric-header">
+                        <span class="eric-tag">ERIC</span>
+                        <span class="eric-subtitle">The ideas that never shipped &mdash; until now.</span>
+                    </div>
+                    <div class="eric-desc">
+                        <a href="https://x.com/ericzakariasson" target="_blank" rel="noreferrer" style="color:var(--accent-green);text-decoration:none;">Eric</a> keeps tweeting things he wants built but never ships them himself. Your job is to actually build them. Here&rsquo;s what he&rsquo;s been posting:
+                    </div>
+                    <div class="eric-tweets">
+                        <div class="eric-tweet-link" onclick="openTweetModal('eric-tweet-1.png', 'https://x.com/ericzakariasson')">
+                            <img src="eric-tweet-1.png" alt="Eric tweet" class="eric-tweet-img">
+                        </div>
+                        <div class="eric-tweet-link" onclick="openTweetModal('eric-tweet-2.png', 'https://x.com/ericzakariasson')">
+                            <img src="eric-tweet-2.png" alt="Eric tweet" class="eric-tweet-img">
+                        </div>
+                        <div class="eric-tweet-link" onclick="openTweetModal('eric-tweet-3.png', 'https://x.com/ericzakariasson/status/1978177556424917152')">
+                            <img src="eric-tweet-3.png" alt="Eric tweet" class="eric-tweet-img">
+                        </div>
+                        <div class="eric-tweet-link" onclick="openTweetModal('eric-tweet-4.png', 'https://x.com/ericzakariasson/status/1962573776501252145')">
+                            <img src="eric-tweet-4.png" alt="Eric tweet" class="eric-tweet-img">
+                        </div>
+                    </div>
+
+                    <div class="tweet-modal" id="tweet-modal" onclick="if(event.target===this)closeTweetModal()">
+                        <div class="tweet-modal-content">
+                            <img id="tweet-modal-img" src="" alt="Tweet" class="tweet-modal-img">
+                            <a id="tweet-modal-x-link" href="https://x.com/ericzakariasson" target="_blank" rel="noreferrer" class="tweet-modal-x-btn">VIEW ON X &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPoints(payload) {
+            const panel = document.getElementById('points-panel');
+            const rubric = (payload.hackathon_format && payload.hackathon_format.rubric) || {};
+            const criteria = rubric.criteria || [];
+            const cap = rubric.side_bonus_cap || 3;
+            const format = payload.hackathon_format || {};
+            const isLondon = format.hack_id === 'cursor-live-london-q3-2026';
+            const howCardCopy = isLondon
+                ? `Final score = <span style="color:var(--accent-green);">five core criteria (7 pts)</span> + <span style="color:var(--gold);">three sponsor bonus buckets (1 + 1 + 1, ${esc(cap)} max)</span>.
+                            <br><br>
+                            Judges score each criterion directly. The final total is out of 10.`
+                : `Final score = <span style="color:var(--accent-green);">main road score</span> + <span style="color:var(--gold);">judge bonus bucket</span>.
+                            <br><br>
+                            Every team can earn up to <span style="color:var(--accent-green);">7 core points</span> on its chosen road.
+                            Side quests draw from one judge bonus bucket capped at <span style="color:var(--gold);">+${esc(cap)} pts</span>.`;
+            const maxCardCopy = isLondon
+                ? `7 core points on the chosen track.<br>
+                            Up to ${esc(cap)} bonus points from three 1-point buckets (Cursor · Specter · LLMs).`
+                : `7 core points from one road.<br>
+                            Up to ${esc(cap)} bonus points total from side quests, whether concentrated in one or spread across several.`;
+
+            panel.innerHTML = `
+                <div class="panel-title">Points System</div>
+                <div class="points-grid">
+                    <div class="point-card">
+                        <div class="point-card-title">HOW TEAMS SCORE</div>
+                        <div class="point-card-copy">
+                            ${howCardCopy}
+                        </div>
+                    </div>
+                    <div class="point-card">
+                        <div class="point-card-title">MAIN ROAD SCORE</div>
+                        <div class="point-card-list">
+                            ${criteria.map((criterion) => `<span>${esc(criterion.name)}: <span style="color:var(--accent-green);">${esc(criterion.points)} pts</span></span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="point-card">
+                        <div class="point-card-title">SCORING MAX</div>
+                        <div class="point-total">7 + ${esc(cap)}</div>
+                        <div class="point-card-copy">
+                            ${maxCardCopy}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRoads(payload) {
+            const container = document.getElementById('road-panel');
+            const tracks = (payload.hackathon_format && payload.hackathon_format.main_tracks) || [];
+            populateSubmissionTracks(tracks);
+            const roads = tracks.map((track) => {
+                const detail = TRACK_DETAILS[track.id] || {};
+                return `
+                    <article class="road-card ${esc(detail.className || '')}">
+                        <div class="road-art ${esc(detail.artClass || '')}" aria-hidden="true"></div>
+                        <div class="road-name">${esc(track.name.toUpperCase())}</div>
+                        <div class="road-meta">${esc(detail.label || '')}</div>
+                        <div class="road-description">${esc(track.description)}</div>
+                        <div class="road-rules">
+                            <div class="road-rule">
+                                <div class="road-rule-title">BUILD THIS</div>
+                                <div class="road-rule-copy">${esc(detail.build || '')}</div>
+                            </div>
+                            <div class="road-rule">
+                                <div class="road-rule-title">NOT THIS</div>
+                                <div class="road-rule-copy">${esc(detail.avoid || '')}</div>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            });
+
+            container.innerHTML = `
+                <div class="panel-title">Main Roads</div>
+                <div class="road-grid">${roads.join('')}</div>
+            `;
+        }
+
+        function renderCoins(payload) {
+            const container = document.getElementById('coin-panel');
+            const format = payload.hackathon_format || {};
+            const isLondon = format.hack_id === 'cursor-live-london-q3-2026';
+            const sideChallenges = ((format && format.side_challenges) || [])
+                .filter((c) => c.id !== 'Most-Technically-Ambitious' && c.id !== 'Best-Demo');
+            const cap = (format.rubric && format.rubric.side_bonus_cap) || 3;
+            const coinNote = isLondon
+                ? `Three judge bonus buckets — Cursor, Specter, and LLM models — each scored <span style="color:var(--gold);">0–1</span> (<span style="color:var(--gold);">${esc(cap)}</span> bonus total capped). Example: <span style="color:var(--gold);">1 + 1 + 1</span>, <span style="color:var(--gold);">1 + 1 + 0</span>.`
+                : `Bonus coins are scored from a single judge bonus bucket: <span style="color:var(--gold);">0 to +${esc(cap)} pts total</span>.
+                    A team can win the full bonus by dominating one side quest, or collect smaller bonuses across several side quests.
+                    Example splits: <span style="color:var(--gold);">30</span>, <span style="color:var(--gold);">20 + 10</span>, <span style="color:var(--gold);">15 + 10 + 5</span>.`;
+            container.innerHTML = `
+                <div class="panel-title">Side-Quest Coins</div>
+                <div class="coin-strip">
+                    ${sideChallenges.map((challenge) => `
+                        <div class="coin-chip">
+                            <span class="coin-icon">$</span>
+                            <span class="coin-copy">
+                                <span class="coin-name">${esc(challenge.name.toUpperCase())}</span>
+                            </span>
+                            ${challenge.sponsor_logo ? `<img class="coin-sponsor-logo" src="${esc(challenge.sponsor_logo)}" alt="sponsor" onerror="this.style.display='none'">` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="coin-note">
+                    ${coinNote}
+                </div>
+            `;
+        }
+
+        async function loadBounties() {
+            try {
+                const resp = await fetch('eric-bounties.json');
+                const payload = await resp.json();
+                const subEl = document.querySelector('.header .subtitle');
+                const hf = payload.hackathon_format || {};
+                if (subEl && hf.hack_id === 'cursor-live-london-q3-2026' && hf.tagline) {
+                    subEl.textContent = hf.tagline;
+                }
+                renderRubric(payload);
+                renderPoints(payload);
+                renderRoads(payload);
+                renderCoins(payload);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        const submitBtn = document.getElementById('open-submit-modal');
+        if (submitBtn) submitBtn.addEventListener('click', openSubmitModal);
+        document.getElementById('close-submit-modal').addEventListener('click', closeSubmitModal);
+        document.getElementById('submit-modal').addEventListener('click', (event) => {
+            if (event.target.id === 'submit-modal') {
+                closeSubmitModal();
+            }
+        });
+        document.getElementById('submission-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            try {
+                const form = event.currentTarget;
+                await submitProjectForm(normalizeSubmissionForm(form));
+                form.reset();
+            } catch (error) {
+                setModalStatus(error.message, 'error');
+            }
+        });
+
+        function openTweetModal(src, xUrl) {
+            document.getElementById('tweet-modal-img').src = src;
+            document.getElementById('tweet-modal-x-link').href = xUrl || 'https://x.com/ericzakariasson';
+            document.getElementById('tweet-modal').classList.add('is-open');
+        }
+        function closeTweetModal() {
+            document.getElementById('tweet-modal').classList.remove('is-open');
+        }
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeTweetModal(); });
+
+        async function loadSubmissionsModal() {
+            const list = document.getElementById('submissions-list');
+            list.innerHTML = '<div style="color:#888;font-family:VT323,monospace;font-size:1.15rem;text-align:center;padding:20px;">Loading...</div>';
+            try {
+                const res = await fetch('/api/public-submissions', { cache: 'no-store' });
+                const data = await res.json();
+                const subs = data.submissions || [];
+                if (subs.length === 0) {
+                    list.innerHTML = '<div style="color:#888;font-family:VT323,monospace;font-size:1.15rem;text-align:center;padding:20px;">No submissions yet.</div>';
+                    return;
+                }
+                list.innerHTML = subs.map(s => `
+                    <div style="border:2px solid #282828;padding:14px;display:flex;flex-direction:column;gap:6px;">
+                        <div style="color:var(--accent-green);font-size:0.55rem;font-family:'Press Start 2P',monospace;">${esc((s.project_name || 'Untitled').toUpperCase())}</div>
+                        ${s.description ? `<div style="color:#ccc;font-family:VT323,monospace;font-size:1.05rem;font-style:italic;">${esc(s.description)}</div>` : ''}
+                        <div style="color:#888;font-family:VT323,monospace;font-size:1rem;">Team: ${esc(s.team_name || '?')}${s.team_members ? ' · ' + esc(s.team_members) : ''}</div>
+                        <div style="color:#666;font-family:VT323,monospace;font-size:0.95rem;">Track: ${esc(s.chosen_track || '?')}</div>
+                        <div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;">
+                            ${s.repo_url ? `<a href="${esc(s.repo_url)}" target="_blank" rel="noreferrer" style="color:var(--accent-green);border:1px solid var(--accent-green);padding:4px 10px;text-decoration:none;font-family:VT323,monospace;font-size:0.95rem;">REPO &rarr;</a>` : ''}
+                            ${s.demo_url ? `<a href="${esc(s.demo_url)}" target="_blank" rel="noreferrer" style="color:var(--gold);border:1px solid var(--gold);padding:4px 10px;text-decoration:none;font-family:VT323,monospace;font-size:0.95rem;">DEMO &rarr;</a>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                list.innerHTML = '<div style="color:#ff4444;font-family:VT323,monospace;font-size:1.1rem;text-align:center;padding:20px;">Failed to load submissions.</div>';
+            }
+        }
+
+        document.getElementById('open-submissions-modal').addEventListener('click', async () => {
+            document.getElementById('submissions-modal').classList.add('is-open');
+            await loadSubmissionsModal();
+        });
+        document.getElementById('close-submissions-modal').addEventListener('click', () => {
+            document.getElementById('submissions-modal').classList.remove('is-open');
+        });
+        document.getElementById('submissions-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'submissions-modal') {
+                document.getElementById('submissions-modal').classList.remove('is-open');
+            }
+        });
+
+        loadBounties();
+
+        // Pinch fingers grid + scroll animation
+        (function() {
+            const grid = document.getElementById('pinch-grid');
+            const cols = Math.ceil(window.innerWidth / 80);
+            const rows = Math.ceil(window.innerHeight / 80);
+            const total = cols * rows;
+            const spans = [];
+            for (let i = 0; i < total; i++) {
+                const s = document.createElement('span');
+                s.textContent = '\u{1F90C}';
+                grid.appendChild(s);
+                spans.push(s);
+            }
+
+            function updatePinch() {
+                const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+                const maxRotation = 8;
+                for (let i = 0; i < spans.length; i++) {
+                    const row = Math.floor(i / cols);
+                    const col = i % cols;
+                    const phase = (row * 2.3 + col * 3.7);
+                    const angle = Math.sin((scrollY * 0.006) + phase) * maxRotation;
+                    spans[i].style.transform = 'rotate(' + angle + 'deg)';
+                }
+            }
+            let ticking = false;
+            function onScroll() {
+                if (!ticking) {
+                    ticking = true;
+                    requestAnimationFrame(() => {
+                        updatePinch();
+                        ticking = false;
+                    });
+                }
+            }
+            window.addEventListener('scroll', onScroll, { passive: true });
+            document.addEventListener('scroll', onScroll, { passive: true });
+            updatePinch();
+        })();
+    </script>
+</body>
+
+</html>

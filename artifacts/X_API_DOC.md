@@ -1,0 +1,230 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.x.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# X API
+
+> Programmatic access to X's posts, users, spaces, and more
+
+export const Button = ({href, children}) => {
+  return <div className="not-prose group">
+    <a href={href}>
+      <button className="flex items-center space-x-2.5 py-1 px-4 bg-primary-dark dark:bg-white text-white dark:text-gray-950 rounded-full group-hover:opacity-[0.9] font-medium">
+        <span>
+          {children}
+        </span>
+        <svg width="3" height="24" viewBox="0 -9 3 24" class="h-6 rotate-0 overflow-visible"><path d="M0 0L3 3L0 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+      </button>
+    </a>
+  </div>;
+};
+
+The X API gives you programmatic access to X's public conversation. Read posts, publish content, manage users, and analyze trends—all through modern REST endpoints with flexible pay-per-usage pricing.
+
+<CardGroup cols={3}>
+  <Card title="Get started" icon="rocket" href="/x-api/getting-started/make-your-first-request">
+    Create an app and make your first request in minutes.
+  </Card>
+
+  <Card title="API reference" icon="code" href="/x-api/posts/create-post">
+    Explore all available endpoints.
+  </Card>
+
+  <Card title="SDKs" icon="cube" href="/xdks/overview">
+    Official Python and TypeScript libraries.
+  </Card>
+</CardGroup>
+
+***
+
+## What you can build
+
+<CardGroup cols={3}>
+  <Card title="Posts" icon="message" href="/x-api/posts/lookup/introduction">
+    Search, retrieve, and publish posts. Access timelines, threads, and quote posts.
+  </Card>
+
+  <Card title="Users" icon="user" href="/x-api/users/lookup/introduction">
+    Look up users, manage follows, blocks, and mutes.
+  </Card>
+
+  <Card title="Spaces" icon="microphone" href="/x-api/spaces/lookup/introduction">
+    Find live audio conversations and their participants.
+  </Card>
+
+  <Card title="Direct Messages" icon="envelope" href="/x-api/direct-messages/lookup/introduction">
+    Send and receive private messages.
+  </Card>
+
+  <Card title="Lists" icon="list" href="/x-api/lists/list-lookup/introduction">
+    Create and manage curated lists of accounts.
+  </Card>
+
+  <Card title="Trends" icon="arrow-trend-up" href="/x-api/trends/trends-by-woeid/introduction">
+    Access trending topics by location.
+  </Card>
+</CardGroup>
+
+***
+
+## Pricing
+
+The X API uses **pay-per-usage** pricing. No subscriptions—pay only for what you use.
+
+<CardGroup cols={2}>
+  <Card title="Flexible scaling" icon="chart-line">
+    Start small and grow. Costs scale with your actual usage.
+  </Card>
+
+  <Card title="No commitments" icon="unlock">
+    No contracts or minimum spend. Stop anytime.
+  </Card>
+
+  <Card title="Real-time tracking" icon="gauge-high">
+    Monitor usage and costs live in the Developer Console.
+  </Card>
+
+  <Card title="Credit-based" icon="coins">
+    Purchase credits upfront. Deducted as you use the API.
+  </Card>
+</CardGroup>
+
+<Tip>
+  Earn free [xAI API](https://docs.x.ai) credits when you purchase X API credits—up to 20% back based on your spend. [Learn more](/x-api/getting-started/pricing#free-xai-api-credits)
+</Tip>
+
+<Note>
+  Pay-per-usage plans are subject to a monthly cap of 2 million Post reads. If you need higher volume, consider an [Enterprise plan](/forms/enterprise-api-interest).
+</Note>
+
+<div className="mt-6 flex gap-4">
+  <Button href="/x-api/getting-started/pricing">Pricing details</Button>
+  <Button href="https://console.x.com">Purchase credits</Button>
+</div>
+
+***
+
+## Key features
+
+<Tabs>
+  <Tab title="Data access">
+    ### Rich data objects
+
+    Access detailed, structured data for posts, users, media, and more:
+
+    * **Posts**: Full text, metrics, entities, annotations, conversation threads
+    * **Users**: Profiles, follower counts, verification status
+    * **Media**: Images, videos, GIFs with metadata
+    * **Polls**: Options and vote counts
+
+    Customize responses with [fields](/x-api/fundamentals/fields) and [expansions](/x-api/fundamentals/expansions) to get exactly the data you need.
+  </Tab>
+
+  <Tab title="Near real-time streaming">
+    ### Filtered stream
+
+    Get posts delivered in near real-time as they're published. Define up to 1,000 filtering rules to receive only matching posts.
+
+    ```bash  theme={null}
+    # Add a rule
+    curl -X POST "https://api.x.com/2/tweets/search/stream/rules" \
+      -H "Authorization: Bearer $TOKEN" \
+      -d '{"add": [{"value": "from:xdevelopers"}]}'
+
+    # Connect to stream
+    curl "https://api.x.com/2/tweets/search/stream" \
+      -H "Authorization: Bearer $TOKEN"
+    ```
+
+    [Learn more about filtered stream →](/x-api/posts/filtered-stream/introduction)
+  </Tab>
+
+  <Tab title="Search & analytics">
+    ### Full-archive search
+
+    Search the complete history of public posts—back to 2006. Build queries with operators for users, keywords, dates, and more.
+
+    ```bash  theme={null}
+    curl "https://api.x.com/2/tweets/search/all?query=AI%20lang:en" \
+      -H "Authorization: Bearer $TOKEN"
+    ```
+
+    ### Metrics
+
+    Access engagement metrics including impressions, likes, reposts, replies, and video views.
+
+    [Learn more about search →](/x-api/posts/search/introduction)
+  </Tab>
+</Tabs>
+
+***
+
+## API versions
+
+| Version        | Status    | Description                                          |
+| :------------- | :-------- | :--------------------------------------------------- |
+| **v2**         | Current   | Modern endpoints, flexible pricing, all new features |
+| **Enterprise** | Available | High-volume access with dedicated support            |
+
+<Tip>
+  Use **X API v2** for all new projects. It's where all new features and improvements are released.
+</Tip>
+
+***
+
+## Quick start
+
+<Steps>
+  <Step title="Create a developer account">
+    Sign up at [console.x.com](https://console.x.com) and create an app.
+  </Step>
+
+  <Step title="Get your credentials">
+    Generate your Bearer Token for app-only requests.
+  </Step>
+
+  <Step title="Make a request">
+    Try looking up a user:
+
+    ```bash  theme={null}
+    curl "https://api.x.com/2/users/by/username/xdevelopers" \
+      -H "Authorization: Bearer $BEARER_TOKEN"
+    ```
+  </Step>
+</Steps>
+
+<Button href="/x-api/getting-started/make-your-first-request">Full quickstart guide</Button>
+
+***
+
+## Tools & libraries
+
+<CardGroup cols={3}>
+  <Card title="Python SDK" icon="python" href="/xdks/python/overview">
+    Official Python library with async support.
+  </Card>
+
+  <Card title="TypeScript SDK" icon="js" href="/xdks/typescript/overview">
+    Official TypeScript/JavaScript library.
+  </Card>
+
+  <Card title="Postman" icon="server" href="https://www.postman.com/xapidevelopers/x-api-public-workspace/collection/34902927-2efc5689-99c6-4ab6-8091-996f35c2fd80">
+    Interactive API explorer.
+  </Card>
+</CardGroup>
+
+[Browse all libraries →](/x-api/tools-and-libraries/overview)
+
+***
+
+## Support
+
+<CardGroup cols={2}>
+  <Card title="Developer Forum" icon="comments" href="https://devcommunity.x.com">
+    Get help from the community and X team.
+  </Card>
+
+  <Card title="Support Hub" icon="circle-question" href="https://developer.x.com/en/support/twitter-api.html">
+    FAQs and troubleshooting guides.
+  </Card>
+</CardGroup>

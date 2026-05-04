@@ -1,0 +1,7 @@
+- Commit history shows exactly three pushes during the event window (first at 07:15 UTC and the last around 11:01 UTC on Nov 29), so there’s no evidence of pre- or post-hackathon work, but the team spent ~3 hours between the first two commits before finishing with a rapid polish push.
+- The middle commit is a 212k-line, 1,238-file bulk drop that introduces the entire React/Vite + Node/Socket.io app plus the full `server/node_modules`; the massive dependency dump (no `.gitignore` protection) was flagged in the metrics and makes it hard to audit what was handcrafted versus scaffolded in that window.
+- README describes “Saigon Math War,” a real-time, territory-conquest multiplayer game built with a Node/Express/Socket.io backend and a React/Tailwind front end (`README.md#L1`).
+- Server logic in `server/index.js:1` implements the 60×40 grid, infection tick loop, team leadership, bot difficulty configs, and winners history in-memory, which feels like a plausible one- to two-person hackathon scope when paired with the React client.
+- Commit messages explicitly cite Claude Code/Claude as co-author while the latest push adds bot-difficulty UI, rules modal, and navigation polish, suggesting the team leaned on modern AI coding tools for rapid iteration.
+
+Overall authenticity assessment: some suspicious patterns

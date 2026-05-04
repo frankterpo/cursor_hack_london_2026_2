@@ -1,0 +1,7 @@
+- Commit cadence (11 commits, all in 6-hour window with median interval ~4.8 minutes) shows intense burst matching hackathon timeframe; no pre- or post-event commits detected.  
+- Presence of large bulk commit (max 8,799 LOC, up to 165 files) is notable but not uncommon when scaffolding full-stack project in short sprint; judges might spot it but context (mobile+backend+AI service) explains volume.  
+- Repository targets “SOUND WATCHER,” an AI-powered real-time sound detection/alert system spanning Flutter mobile app + FastAPI/TypeScript backend, aligning with README description and multi-service folder layout (FE, BE, AI_Service).  
+- Codebase scope—mobile app, backend services, AI inference pipeline—seems ambitious but feasible for a focused hackathon team leveraging modern tooling (Flutter, FastAPI, TypeScript) and likely code generation assistance.  
+- No early commits or odd timing gaps flagged; distribution concentrated in first 6 hours of event, supporting authenticity as hackathon work.
+
+Overall authenticity assessment: looks consistent with a hackathon project

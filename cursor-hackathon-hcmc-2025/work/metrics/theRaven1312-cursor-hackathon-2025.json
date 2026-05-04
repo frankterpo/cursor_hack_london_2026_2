@@ -1,0 +1,34 @@
+{
+  "repo_id": "theRaven1312-cursor-hackathon-2025",
+  "repo": "https://github.com/theRaven1312/cursor-hackathon-2025",
+  "remote_url": "https://github.com/theRaven1312/cursor-hackathon-2025",
+  "default_branch": "main",
+  "t0": "2025-11-29T06:00:00+00:00",
+  "t1": "2025-11-29T12:00:00+00:00",
+  "generated_at": "2025-11-30T07:41:20.752983+00:00",
+  "summary": {
+    "total_commits": 9,
+    "total_commits_before_t0": 0,
+    "total_commits_during_event": 6,
+    "total_commits_after_t1": 3,
+    "total_loc_added": 11696,
+    "total_loc_deleted": 1318,
+    "max_loc_added_single_commit": 5096,
+    "max_files_changed_single_commit": 19,
+    "median_minutes_between_commits": 41.05833333333334,
+    "median_minutes_between_commits_during_event": 30.716666666666665
+  },
+  "time_distribution": {
+    "commits_0_3h": 4,
+    "commits_3_6h": 2,
+    "commits_6_12h": 0,
+    "commits_12_24h": 0,
+    "commits_after_24h": 0
+  },
+  "flags": {
+    "has_commits_before_t0": false,
+    "has_bulk_commits": true,
+    "has_large_initial_commit_after_t0": true,
+    "has_merge_commits": false
+  }
+}

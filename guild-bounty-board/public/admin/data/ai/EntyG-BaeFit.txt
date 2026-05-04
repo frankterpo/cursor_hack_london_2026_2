@@ -1,0 +1,7 @@
+- Metrics show 11 of 15 commits happened within the hack window (t0–t1), with none before and four after, so primary work was concentrated in those six hours with a handful of follow‑ups immediately afterwards (summary stats in the provided metrics).
+- The repo flags a `has_bulk_commits` and the peak commit added 253,753 LOC across 1,891 files, which is unusually large—likely due to assets/dependencies but worth flagging as a suspiciously big single submission.
+- README describes “BaeFit—Megumin Virtual Assistant,” combining Groq Whisper STT, Groq LLaMA responses, and Typecast TTS with animated Live2D Megumin expressions for voice/text chat (work/repos/EntyG-BaeFit/README.md:1).
+- Project shape matches two paired apps plus model assets (`honey-be` Node/Express backend, `honey-fe` React/Vite frontend, and Live2D `c001_f_costume_kouma`), a plausible scope for a small hackathon team leveraging modern AI tooling.
+- Timing distribution (5 commits in 0–3h, 6 in 3–6h, none later) together with a tight median 8.4-minute spacing during the event suggests intense iteration consistent with a hack session.
+
+Overall authenticity assessment: looks consistent with a hackathon project

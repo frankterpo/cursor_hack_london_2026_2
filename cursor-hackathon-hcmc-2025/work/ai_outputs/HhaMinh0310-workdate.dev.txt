@@ -1,0 +1,7 @@
+- Metrics show all 16 commits landed between T0 and T1 with a median gap of ~8 minutes and no activity before or after, so the timing really does match a single 6‑hour hacking window rather than surreptitious prep.
+- The “has_bulk_commits” flag stems from the 16:59 commit (1fc6080) that drops ~2,000 lines: a Supabase integration plus auth/context/services/schemas and documentation; it reads like a live “big push” to wire up the backend layer mid‑event.
+- Document/readme.md:10 lays out the product vision—Workdate.dev-front-end with Couple and Solo workdate modes, React/Router/Tailwind/Framer stack, and mock-data flow—so the feature set is clear and self-contained.
+- The codebase stays mostly front-end (React pages, AuthContext/ProtectedRoute, service modules, Supabase client wrappers) with supporting SQL/docs, which is consistent with a solo/small-team hackathon plus modern AI coding aids rather than a full production backend.
+- There are merge/debug/cleanup commits (e.g., e63b4a3 merge, followed by conflict resolution and console-log debugging) that reinforce an iterative real-time workflow instead of pre-baked work.
+
+Overall authenticity assessment: looks consistent with a hackathon project

@@ -1,0 +1,7 @@
+- Commits are tightly clustered in the 6‑hour window (13 commits during the event, median 4.7 minutes apart) and there were no commits before T0, which matches the expected hackathon cadence.
+- One bulk commit added ~34k LOC and touched 37 files in a single shot (per metrics), so judges may want to double‑check that this was dataset ingestion or tooling rather than pre‑existing work brought in wholesale.
+- There were five commits after T1, likely for polish or cleanup, which is a reasonable follow‑up but worth noting for “final touches” timing.
+- The repo delivers “MediScan AI,” with a Flask backend (OCR, drug lookup, Gemini integration) and a React/Vite frontend tied to a large local drug database (see `README.md` and directories under `Backend/`, `Web/`, `Crawldata/`).
+- The scope (camera scan UI, backend services, data crawling, AI simplification) is ambitious but still manageable for a hackathon using modern AI tools—multiple service modules and frontend hooks point to a coordinated effort rather than a single file drop.
+
+Overall authenticity assessment: some suspicious patterns

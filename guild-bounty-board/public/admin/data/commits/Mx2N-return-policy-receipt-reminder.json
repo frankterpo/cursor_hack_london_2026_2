@@ -1,0 +1,21 @@
+{
+  "rows": [
+    {
+      "repo_id": "Mx2N-return-policy-receipt-reminder",
+      "seq_index": "0",
+      "sha": "3a1127a0fc736f5a62a50f20684606245df94121",
+      "author_time_iso": "2025-11-29T11:01:34+00:00",
+      "minutes_since_prev_commit": "",
+      "minutes_since_t0": "301.57",
+      "insertions": "2609",
+      "deletions": "0",
+      "files_changed": "3",
+      "is_merge": "0",
+      "is_before_t0": "0",
+      "is_during_event": "1",
+      "is_after_t1": "0",
+      "flag_bulk_commit": "1",
+      "subject": "Add files via upload"
+    }
+  ]
+}

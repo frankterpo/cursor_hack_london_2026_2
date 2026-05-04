@@ -1,0 +1,7 @@
+- Commit cadence matches the event window: zero entries before `t0`, all three commits inside the six-hour span, and no post-event activity; median spacing (~34 min) is modest for a solo sprint.  
+- The single large commit (≈5.5k lines across 28 files) plus a merge is the only code history, which looks like a bulk add but not necessarily a red flag for a one-day hackathon submission.  
+- README (`README.md`) advertises an AI Studio app with instructions for local run/test involving Gemini/Groq keys, so the project appears to be a Jade-like AI chat/social experience wrapped in a React/Vite shell.  
+- `App.tsx` plus the `components/` directory show a tabbed messaging/social interface with mock data, AI chat hooks, and reusable UI pieces—scope and polish are reasonable for modern AI-assisted hackathon tooling.  
+- No backend or CI traces, but the UI + AI API stubs (e.g., Gemini, Groq services under `services/`) and styling (`index.css`) keep the scope contained to a believable prototype timeframe.
+
+Overall authenticity assessment: looks consistent with a hackathon project

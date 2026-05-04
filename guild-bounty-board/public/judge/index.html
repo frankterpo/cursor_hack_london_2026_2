@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cursor Guild Judge Portal</title>
+  <link rel="stylesheet" href="/admin/style.css">
+  <link rel="stylesheet" href="/judge/style.css">
+  <style>
+    body { background: #0b0b0b; }
+    .auth-gate {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      gap: 16px;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+    .auth-gate h2 { font-size: 1.4rem; color: #e0e0e0; }
+    .auth-gate input {
+      padding: 10px 14px; font-size: 1rem; border: 2px solid #444;
+      border-radius: 6px; background: #1a1a1a; color: #e0e0e0; width: 260px;
+    }
+    .auth-gate button {
+      padding: 10px 28px; font-size: 1rem; border: none; border-radius: 6px;
+      background: #3dffa3; color: #0b0b0b; font-weight: 600; cursor: pointer;
+    }
+    .auth-gate button:hover { opacity: 0.85; }
+    .auth-error { color: #ff4444; font-size: 0.9rem; display: none; }
+    .auth-loading {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 60vh; color: #888; font-size: 1rem;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="auth-loading" class="auth-loading">Loading...</div>
+  <div id="login-gate" class="auth-gate">
+    <h2>Judge Portal – sign in</h2>
+    <form id="auth-form" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+      <input type="text" id="judge-name-input" placeholder="Your full name" required autocomplete="name" maxlength="200">
+      <input type="password" id="password-input" placeholder="Password" required autocomplete="current-password">
+      <button type="submit">Enter judge portal</button>
+      <p id="auth-error" class="auth-error"></p>
+    </form>
+  </div>
+  <div id="app" style="display:none;"></div>
+  <script>
+    (async function() {
+      const loading = document.getElementById('auth-loading');
+      const gate = document.getElementById('login-gate');
+      const app = document.getElementById('app');
+      const form = document.getElementById('auth-form');
+      const errorEl = document.getElementById('auth-error');
+
+      async function checkAuth() {
+        try {
+          const res = await fetch('/api/auth', { credentials: 'same-origin' });
+          const data = await res.json();
+          return data.authenticated === true && String(data.judge_name || '').trim().length >= 2;
+        } catch (_) {
+          return false;
+        }
+      }
+
+      async function loadContent() {
+        const res = await fetch('/api/page-content?page=judge', { credentials: 'same-origin' });
+        if (!res.ok) return false;
+        const data = await res.json();
+        loading.style.display = 'none';
+        gate.style.display = 'none';
+        app.style.display = 'block';
+        app.innerHTML = data.html;
+        if (data.scripts) {
+          for (const src of data.scripts) {
+            const s = document.createElement('script');
+            s.src = src;
+            document.body.appendChild(s);
+          }
+        }
+        return true;
+      }
+
+      if (await checkAuth()) {
+        await loadContent();
+      } else {
+        loading.style.display = 'none';
+        gate.style.display = 'flex';
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorEl.style.display = 'none';
+        const pw = document.getElementById('password-input').value;
+        const fullName = document.getElementById('judge-name-input').value.trim();
+        try {
+          const res = await fetch('/api/auth', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify({ password: pw, judge_name: fullName })
+          });
+          const data = await res.json();
+          if (data.ok) {
+            gate.style.display = 'none';
+            loading.style.display = 'flex';
+            await loadContent();
+          } else {
+            errorEl.textContent = data.error || 'Wrong password';
+            errorEl.style.display = 'block';
+          }
+        } catch (err) {
+          errorEl.textContent = 'Connection error. Please try again.';
+          errorEl.style.display = 'block';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

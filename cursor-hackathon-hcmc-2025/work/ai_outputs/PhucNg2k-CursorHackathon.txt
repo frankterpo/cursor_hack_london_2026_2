@@ -1,0 +1,7 @@
+- All eight commits landed within the hackathon window (t0 to t1) with a median 13‑minute gap and no activity before or after, so timing aligns with a focused sprint rather than gradual prework.
+- Flags include “bulk commits” and one commit adding ~2.6k LOC, which is common when scaffolding both frontend and backend quickly; no large post-event adjustments to suggest covert work.
+- Repo contents show a Python/FastAPI backend (`app/` with routers and models) plus a React/Vite frontend (`frontend/src/...`), matching the README’s “Donation Points Map” relief platform idea.
+- README describes a map-centric relief coordination tool for Vietnam (map markers, GPS/route search, OAuth, dashboards), which matches the full-stack layout seen in the tree, so scope feels ambitious but plausible for a hackathon team using modern scaffolding tools.
+- Commit diversity (multiple routers, services, UI components) suggests iterative feature builds rather than copy-paste, supporting authenticity despite the large bulk commits.
+
+Overall authenticity assessment: looks consistent with a hackathon project

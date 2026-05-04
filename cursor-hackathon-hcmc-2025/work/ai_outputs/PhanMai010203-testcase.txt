@@ -1,0 +1,7 @@
+- Commits are entirely within the 6‑hour window (two commits spaced ~28.5 minutes apart) with no pre-event history, so timing aligns with a short hackathon sprint.  
+- Metrics flag “bulk commits” and “large initial commit (2,182 LOC)”—suggests a single rapid push, so judges might want to verify it wasn’t pre-baked elsewhere even though the timestamp fits.  
+- README/described product is an AI-powered PyQt6 desktop tool that ingests screenshots/docs to generate Android test cases via Gemini, which matches the repo structure (main.py plus dependencies).  
+- The scope (UI app + Gemini integration) is ambitious but plausible with AI assistance; quick bulk code generation could explain the large commit size.  
+- No post-event or pre-t0 commits, but bulk commits warrant a quick glance at file diffs to ensure the work isn’t mostly copied from elsewhere.
+
+Overall authenticity assessment: looks consistent with a hackathon project

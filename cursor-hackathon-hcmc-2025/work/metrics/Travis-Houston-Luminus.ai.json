@@ -1,0 +1,34 @@
+{
+  "repo_id": "Travis-Houston-Luminus.ai",
+  "repo": "https://github.com/Travis-Houston/Luminus.ai.git",
+  "remote_url": "https://github.com/Travis-Houston/Luminus.ai.git",
+  "default_branch": "main",
+  "t0": "2025-11-29T06:00:00+00:00",
+  "t1": "2025-11-29T12:00:00+00:00",
+  "generated_at": "2025-11-30T07:41:41.716983+00:00",
+  "summary": {
+    "total_commits": 12,
+    "total_commits_before_t0": 0,
+    "total_commits_during_event": 6,
+    "total_commits_after_t1": 6,
+    "total_loc_added": 42010,
+    "total_loc_deleted": 2215,
+    "max_loc_added_single_commit": 28443,
+    "max_files_changed_single_commit": 59,
+    "median_minutes_between_commits": 5.633333333333334,
+    "median_minutes_between_commits_during_event": 3.6666666666666665
+  },
+  "time_distribution": {
+    "commits_0_3h": 6,
+    "commits_3_6h": 0,
+    "commits_6_12h": 0,
+    "commits_12_24h": 0,
+    "commits_after_24h": 0
+  },
+  "flags": {
+    "has_commits_before_t0": false,
+    "has_bulk_commits": true,
+    "has_large_initial_commit_after_t0": true,
+    "has_merge_commits": true
+  }
+}

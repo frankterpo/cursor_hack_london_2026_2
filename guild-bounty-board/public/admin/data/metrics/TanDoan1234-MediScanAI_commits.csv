@@ -1,0 +1,19 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+TanDoan1234-MediScanAI,0,107b2c3ae8777711480970816c4212148ac4f2ba,2025-11-29T06:29:20+00:00,,29.33,0,0,1,0,0,1,0,0,first commit
+TanDoan1234-MediScanAI,1,5b075226af575a865b8f1602c4584746664842de,2025-11-29T06:35:54+00:00,6.57,35.90,55,0,3,0,0,1,0,0,update cấu trúc thư mục
+TanDoan1234-MediScanAI,2,c6c8b107cb73f21522fd78c24d0e05aace9bd6f6,2025-11-29T06:36:34+00:00,0.67,36.57,0,0,2,0,0,1,0,0,update thư mục
+TanDoan1234-MediScanAI,3,30541b637b649606080d6bedacad4138b9c4de4c,2025-11-29T08:01:09+00:00,84.58,121.15,3661,0,29,0,0,1,0,1,update web
+TanDoan1234-MediScanAI,4,ca5354df3306a64a0fd9621428656c8d5bc688f7,2025-11-29T08:02:53+00:00,1.73,122.88,34832,2,9,0,0,1,0,1,update crawl data dược thư
+TanDoan1234-MediScanAI,5,8d0b0d7a0d4f66ecc0fc28ba989773d747ca7a9a,2025-11-29T08:02:57+00:00,0.07,122.95,9,16,9,1,0,1,0,0,Merge branch 'main' of https://github.com/TanDoan1234/MediScanAI
+TanDoan1234-MediScanAI,6,18ced4641ef8ac6be19e871385e586b6ce85ee5a,2025-11-29T08:51:47+00:00,48.83,171.78,3354,61,37,0,0,1,0,1,feat: Add README and TECH_STACK documentation for MediScan AI project
+TanDoan1234-MediScanAI,7,cd5ba9211ffdb06f45dd0226fd64af1165fbd73e,2025-11-29T09:28:40+00:00,36.88,208.67,1876,134,15,0,0,1,0,1,update thêm nhận diện thuốc bằng OCR và TTS
+TanDoan1234-MediScanAI,8,546162a44571bd73f37150a51a5f310a419102da,2025-11-29T10:40:34+00:00,71.90,280.57,1152,2461,29,0,0,1,0,1,update upload ảnh
+TanDoan1234-MediScanAI,9,5547652b594c66d2f5487d9509f15154997e64f0,2025-11-29T10:41:29+00:00,0.92,281.48,9,1,1,0,0,1,0,0,update
+TanDoan1234-MediScanAI,10,bceacf022f900bb5bb3cf0dd76e8148c8edff434,2025-11-29T10:43:24+00:00,1.92,283.40,2,1,1,0,0,1,0,0,update
+TanDoan1234-MediScanAI,11,5bdaeabcd272fd29aa2c5d8e422826bc8de563d2,2025-11-29T10:46:17+00:00,2.88,286.28,29,2,1,0,0,1,0,0,update
+TanDoan1234-MediScanAI,12,45c84707fd9b71116528b0348ba02e730bbe3589,2025-11-29T11:34:55+00:00,48.63,334.92,552,209,17,0,0,1,0,0,Tối ưu responsive cho mobile
+TanDoan1234-MediScanAI,13,eb3a553b5ba7529bf4c3858a77932528495e94ca,2025-11-29T12:04:48+00:00,29.88,364.80,435,143,9,0,0,0,1,0,Tối ưu responsive cho pc
+TanDoan1234-MediScanAI,14,f6aea7ded40c5e21206d221736b5cabd46510c6e,2025-11-29T12:27:45+00:00,22.95,387.75,1,57,1,0,0,0,1,0,update lược giản bớt tính năng phụ
+TanDoan1234-MediScanAI,15,3b93048dabc03a378ae2fd5c28c7b622b8627e40,2025-11-29T13:11:24+00:00,43.65,431.40,295,140,12,0,0,0,1,0,fix các tính năng OCR
+TanDoan1234-MediScanAI,16,ee26d24dd41108d9ce2b8af2ef3b05c509ffd082,2025-11-29T13:36:25+00:00,25.02,456.42,832,135,20,0,0,0,1,0,Thêm tính năng translate
+TanDoan1234-MediScanAI,17,6d1810f1a909fb549bba29b84e3149da835dfa23,2025-11-29T13:53:40+00:00,17.25,473.67,335,64,6,0,0,0,1,0,Thêm tính năng translate 2.0

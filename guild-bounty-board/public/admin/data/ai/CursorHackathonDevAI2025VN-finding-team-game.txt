@@ -1,0 +1,7 @@
+- All 15 commits recorded in the metrics happened between the hackathon window (t0–t1) with a steady ~8-minute median cadence, so the timing looks consistent with a focused small-team effort rather than work before or after the event.  
+- The largest commit (~4.8k LOC) and the detected bulk changes both landed within the event window—likely the initial scaffold plus backend/front-end wiring—so while flagged as “bulk,” they still fit an intense hackathon burst.  
+- The README (`README.md:1`) is still the vanilla Vite template, so there isn’t much written context, but the code tells the story.  
+- Product-wise this repo is a team-building/dashboard app: `src/pages/Home.tsx:1` orchestrates slot-based role/skill inputs, automated AI-driven match suggestions, invitations, and polling for team state, and the `server/src/index.ts:1` Express server wires up auth, users, teams, and match routes.  
+- The tech stack (Vite/React front-end, TypeScript components for slots/invitations, paired with a simple Express API) is exactly what you’d expect from a quick AI-assisted hackathon build—scope is ambitious but contained.  
+
+Overall authenticity assessment: looks consistent with a hackathon project

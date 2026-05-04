@@ -1,0 +1,7 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+Welkie-Cursor-Hackathon-2025,0,450f5fd2e4749e49e357587f3e236b7bc2407219,2025-11-29T09:10:51+00:00,,190.85,9103,0,33,0,0,1,0,1,first-commit
+Welkie-Cursor-Hackathon-2025,1,1cfb8146fd6d994978d4de9eec5cf337358943c8,2025-11-29T09:44:46+00:00,33.92,224.77,731,105,9,0,0,1,0,0,Fix: OCR recipe
+Welkie-Cursor-Hackathon-2025,2,3f287574a93bcddb3d25153af097bb6ee7da233d,2025-11-29T09:54:10+00:00,9.40,234.17,555,22,3,0,0,1,0,0,Feat: Change the quick action to the end of the month balance
+Welkie-Cursor-Hackathon-2025,3,5f373768fe90989b87059d22a0efe72b333a0923,2025-11-29T10:03:25+00:00,9.25,243.42,870,1,4,0,0,1,0,0,Feat: add file csv
+Welkie-Cursor-Hackathon-2025,4,92a6ba2d4edcf18960294ad8df744396f138d250,2025-11-29T10:04:22+00:00,0.95,244.37,526,100,10,1,0,1,0,0,Merge pull request #1 from Welkie/phu
+Welkie-Cursor-Hackathon-2025,5,c2ae0e67a69b388c47215b8881b1954a94613dc6,2025-11-29T10:22:37+00:00,18.25,262.62,104,23,7,1,0,1,0,0,final commit

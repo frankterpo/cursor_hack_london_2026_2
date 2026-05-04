@@ -1,0 +1,7 @@
+- All five commits landed inside the hackathon window (t0–t1) with a median interval of ~30 minutes, so the cadence matches a focused short sprint rather than extensive pre-work.
+- Repo flags “bulk commits,” but the largest change still adds under 1.6k LOC and touches ≤11 files, which is sizable but reasonable for delivering both backend and frontend in a single push.
+- No activity before T0 or after T1, so there’s no evidence of prep or post-event polishing hiding around the timestamps we have.
+- Project is “AirDraw Vision,” a gesture-driven drawing/AI experience combining MediaPipe hands/face detection, FastAPI backend, Groq/Gemini integrations, and multiple AI-assisted drawing features, as described in the README.
+- Frontend/backend split plus straightforward stack (canvas/vanilla JS + FastAPI) indicates a manageable scope for a hackathon team even with modern AI tools—the shape is consistent with rapid prototyping rather than a full-scale product yet.
+
+Overall authenticity assessment: looks consistent with a hackathon project

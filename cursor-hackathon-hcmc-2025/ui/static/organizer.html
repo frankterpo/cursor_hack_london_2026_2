@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>Organizer cockpit · Cursor × Briefcase · London 2026</title>
+    <link rel="stylesheet" href="style.css?v=95" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Caveat:wght@500;600;700&family=JetBrains+Mono:wght@500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap"
+    />
+    <link rel="icon" type="image/png" href="cursor-cube-briefcase-32.png" sizes="32x32" />
+  </head>
+  <body class="organizer-page">
+    <div class="organizer-gate" data-organizer-gate>
+      <p>
+        This recap uses the same organizer unlock as the event site. Enter the
+        code on <a href="index.html">index.html</a> first (Judge / Manager),
+        then return here — on the event site use
+        <strong>Hack Manager</strong> for the full submissions grid and integrity
+        table (<a href="index.html">open event site</a>).
+      </p>
+    </div>
+
+    <header class="organizer-top">
+      <a class="btn btn-ghost" href="index.html">← Event site</a>
+      <span class="organizer-top-title">Organizer cockpit</span>
+    </header>
+
+    <main class="organizer-shell organizer-wrap" hidden data-manager-dashboard>
+      <span class="eyebrow">Hackathon manager</span>
+      <h1 class="organizer-hero-title">Full-page recap</h1>
+      <p class="organizer-hero-sub">
+        Same data as the Manager modal — Git metrics, leaderboards, integrity
+        watchlist, and export.
+      </p>
+
+      <div
+        class="manager-stats manager-stats--compact"
+        id="manager-stats"
+        aria-label="Submission and analysis totals"
+      ></div>
+
+      <section class="manager-section manager-section--compact">
+        <h2 class="manager-page-heading">Recap · engineering signals</h2>
+        <p class="manager-hint">
+          Aggregated from the Git analysis feed (commits + churn). Use alongside
+          integrity flags when reviewing submissions.
+        </p>
+        <div class="manager-aggregates" id="manager-aggregates"></div>
+      </section>
+
+      <section class="manager-section">
+        <h2 class="manager-page-heading">Leaderboard · overall (judge average)</h2>
+        <p class="manager-hint">
+          Highest combined rubric scores — across both tracks.
+        </p>
+        <div class="leaderboard leaderboard--full">
+          <ol id="leaderboard-overall"></ol>
+        </div>
+      </section>
+
+      <section class="manager-section">
+        <h2 class="manager-page-heading">Leaderboard · by track</h2>
+        <p class="manager-hint">
+          When a submission has no track label, it appears only in the overall
+          board — tag submissions in the form or data to split leaderboards.
+        </p>
+        <div class="leaderboards">
+          <div class="leaderboard">
+            <h3 class="leaderboard-track-title">Money Movement</h3>
+            <ol id="leaderboard-money-movement"></ol>
+          </div>
+          <div class="leaderboard">
+            <h3 class="leaderboard-track-title">Financial Intelligence</h3>
+            <ol id="leaderboard-financial-intelligence"></ol>
+          </div>
+        </div>
+      </section>
+
+      <section class="manager-section">
+        <h2 class="manager-page-heading">All submissions · snapshot</h2>
+        <p class="manager-hint">
+          Quick scan with commits, churn, and links. Double-click a row or use
+          Details for the same drawer as the main site.
+        </p>
+        <div class="manager-table-scroll">
+          <table class="manager-snapshot-table" id="manager-snapshot-table">
+            <thead>
+              <tr>
+                <th scope="col">Project</th>
+                <th scope="col">Track</th>
+                <th scope="col">Commits</th>
+                <th scope="col">+LOC</th>
+                <th scope="col">−LOC</th>
+                <th scope="col">Integrity</th>
+                <th scope="col">Judge Ø</th>
+                <th scope="col">Links</th>
+              </tr>
+            </thead>
+            <tbody id="manager-snapshot-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="manager-section">
+        <h2 class="manager-page-heading">Integrity watchlist</h2>
+        <p class="manager-hint">Projects with one or more integrity flags raised.</p>
+        <ul id="flagged-list" class="flagged-list flagged-list--tall"></ul>
+      </section>
+
+      <section class="manager-section">
+        <h2 class="manager-page-heading">Locally-submitted projects</h2>
+        <p class="manager-hint">Submissions entered through the Submit modal this session.</p>
+        <ul id="local-submissions" class="flagged-list"></ul>
+      </section>
+
+      <footer class="organizer-foot">
+        <p class="form-help">
+          Export includes merged Git summary rows plus local scores / local form
+          submissions from this browser.
+        </p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="export-submissions-btn">
+            Export submissions JSON
+          </button>
+        </div>
+      </footer>
+    </main>
+
+    <script src="script.js?v=101"></script>
+  </body>
+</html>

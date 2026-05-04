@@ -1,0 +1,16 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+EntyG-BaeFit,0,dfe1095333ba728f0e60a52e0ea635fab1a331b1,2025-11-29T06:41:51+00:00,,41.85,0,0,1,0,0,1,0,0,first commit
+EntyG-BaeFit,1,73919e2ee048a3d75928126652ca22c114f9a232,2025-11-29T06:42:07+00:00,0.27,42.12,0,0,1,0,0,1,0,0,Update README.md
+EntyG-BaeFit,2,9879b364c086dec1af507b743feb895be254f9fd,2025-11-29T07:05:05+00:00,22.97,65.08,0,0,1,0,0,1,0,0,init
+EntyG-BaeFit,3,c50e545d7c532d00d66763a752f79adb4c59a45b,2025-11-29T07:06:15+00:00,1.17,66.25,3541,0,13,0,0,1,0,1,init
+EntyG-BaeFit,4,5b62341843fe1ab8b93e404cadea8cea4df39df3,2025-11-29T07:06:27+00:00,0.20,66.45,253753,269,1891,1,0,1,0,1,Merge branch 'main' of https://github.com/EntyG/BaeFit
+EntyG-BaeFit,5,af7cda8e5206bba77e98b8298ea89ee53ac80a0e,2025-11-29T09:20:25+00:00,133.97,200.42,1163,66,8,0,0,1,0,1,Gay
+EntyG-BaeFit,6,c93d86abdb08af1a75bf460ec8e4e38678903c21,2025-11-29T09:24:52+00:00,4.45,204.87,18,3,4,0,0,1,0,0,asdd
+EntyG-BaeFit,7,d8a42b8f6d43c087b98fe90f63cdfea8a204b11b,2025-11-29T09:37:14+00:00,12.37,217.23,72,1,2,0,0,1,0,0,fix bug
+EntyG-BaeFit,8,d3f602ecdb60a110d38ce702b2ff89165e1a03be,2025-11-29T09:39:06+00:00,1.87,219.10,1067,369,5,1,0,1,0,1,Merge branch 'main' of https://github.com/EntyG/BaeFit
+EntyG-BaeFit,9,f81d9419827f520ffc9806af8e100852bb57a75c,2025-11-29T10:18:23+00:00,39.28,258.38,401,195,19,0,0,1,0,0,ft: update
+EntyG-BaeFit,10,e184c51fa1d700a8ad1c541043852b89b87e9c15,2025-11-29T10:44:41+00:00,26.30,284.68,405,53,4,0,0,1,0,0,Final Version
+EntyG-BaeFit,11,e67cf6a94787d82eaa1210e66de420eb9a463d7c,2025-11-29T12:21:52+00:00,97.18,381.87,525,43,5,1,0,0,1,0,Merge branch 'main' of https://github.com/EntyG/BaeFit
+EntyG-BaeFit,12,e9d505adb93f38959cfae07fbd48bc57172e4f01,2025-11-30T03:33:25+00:00,911.55,1293.42,0,0,1,1,0,0,1,0,Merge branch 'main' of https://github.com/EntyG/BaeFit
+EntyG-BaeFit,13,78c833478fe85d1288615ef160e8ab992b8b6eee,2025-11-30T03:36:52+00:00,3.45,1296.87,0,0,1,0,0,0,1,0,Remove .env from tracking
+EntyG-BaeFit,14,75691b5521235fdd19c8f4ad536baccee5fc101f,2025-11-30T06:23:41+00:00,166.82,1463.68,99,0,1,0,0,0,1,0,Add CodeQL analysis workflow configuration

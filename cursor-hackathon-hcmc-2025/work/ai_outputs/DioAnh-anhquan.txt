@@ -1,0 +1,7 @@
+- Git history shows all five commits shipped between 2025-11-29 10:00 and 11:00 UTC (no work before T0 or after T1), so the work was entirely produced inside the hackathon window.
+- Metrics flag a sizable LOC burst (≈6k added in one commit) and bulk updates, but those correspond to injecting the full Vite/React codebase and feature set in a short time frame, which is plausible for an initial hackathon push rather than an attempt to backdate work.
+- README.md explains a kids-focused life-skills web app with six AI-enhanced themes, lessons, gamification (points/levels/achievements), and Gemini-powered summaries/quizzes/challenges, matching the component tree (LessonPlayer, Quiz, ChallengeGame, etc.).
+- The codebase is a modern React+TypeScript/Vite project with multiple UI-focused components and a Gemini service wrapper, looking like a reasonable scope for a few-hour prototype aided by AI coding tools.
+- Commit cadence (median ~14.9 minutes apart) and five commits total align with a small team iterating through login, dashboard, games, and logout flows in one sustained session, without any outliers after the event ended.
+
+Overall authenticity assessment: looks consistent with a hackathon project

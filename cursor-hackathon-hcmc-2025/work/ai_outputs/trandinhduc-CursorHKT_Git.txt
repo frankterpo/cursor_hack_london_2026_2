@@ -1,0 +1,7 @@
+- All three commits fall squarely inside the 6-hour window (median gap ≈3.3 min), so the timing per the metrics is consistent with an event build sprint.
+- A single commit added ~28.5k LOC across 176 files (max LOC added) which triggered the “bulk commit” flag—typical when importing a scaffolding-heavy project but worth flagging because it obscures granular progress.
+- The repo looks like an Expo mobile app with file-based routing, setup instructions, and multi-platform assets per `README.md:1`, matching a standard hackathon prototype entry point.
+- The structure includes Android/iOS folders plus Supabase-backed services, stores, and utils (e.g., `services/`, `store/`, `config/`), which aligns with what modern AI-assisted tooling can produce quickly.
+- Documentation dated late 2024/early 2025 (e.g., various `docs/2024-11*` files) contrasts with the fact that git history claims zero commits before T0, hinting that a pre-existing codebase might have been imported en masse at kickoff.
+
+Overall authenticity assessment: some suspicious patterns

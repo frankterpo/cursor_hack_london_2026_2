@@ -1,0 +1,7 @@
+- Active commit cadence (18 commits, all between T0 and T1 with a 6.6‑minute median gap and 16 in the first 3h) matches a typical small-team hackathon sprint.  
+- Metrics show no pre/post commits, no merge or bulk flags, and a largest single-add of 861 lines—nothing that screams prep work outside the window.  
+- App combines face-api detection, mood-smoothing logic, and ElevenLabs Scribe transcription plus adaptive audio/SFX cues to deliver a “mood DJ” streamer view (`src/App.tsx:1`, `src/hooks/useMoodCalculation.ts:1`).  
+- Face-drawing helper, canvas sizing, and the local `/scribe-token` proxy (`src/hooks/useFaceDetection.ts:1`, `server.ts:1`) demonstrate modern AI tooling plus sensible backend glue for realtime transcription.  
+- README remains the vanilla Vite template, but the implemented scope (multi-model face/voice sensing, sentiment-aware music/SFX, and realtime token handling) feels ambitious yet achievable in a single hackathon day (`README.md:1`).
+
+Overall authenticity assessment: looks consistent with a hackathon project

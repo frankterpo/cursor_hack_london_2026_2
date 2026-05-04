@@ -1,0 +1,7 @@
+- All 12 commits occurred between 14:16 and 15:31 +07:00 on 2025-11-29 (07:16–08:31 UTC), which sits entirely within the 06:00–12:00 UTC hackathon window and matches the reported ~2.8‑minute median spacing, so the tempo is consistent with an intense single-day session.
+- The history shows a handful of fast merges from short-lived feature branches (button/footer/BE) plus subsequent PRs, which looks like an aggressive but believable workflow for a solo or small team iterating quickly.
+- The repo does include at least one very large bulk commit (nearly 7k LOC added at once) and a later 339-line addition for the Dockerized frontend; these are heavy but explainable as scaffolding and container tooling that typically gets staged in big bursts during a sprint.
+- Product-wise, it’s a “Relief Coordination System” with a modern React + TypeScript + Tailwind/Ant Design frontend paired with a Python/MySQL backend, mock data, i18n support, and API docs (`README.md`, `frontend-cursor/README.md`, `backend-cursor/README.md`), which fits a hackathon MVP scope.
+- The code scope—frontend pages/services plus backend API mapping, Docker setup, and quickstart docs—feels reasonable for a hackathon enhanced by AI coding tools, given how many boilerplate pieces (mock data, translations, docker) are present without excessive polish.
+
+Overall authenticity assessment: looks consistent with a hackathon project

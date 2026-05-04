@@ -1,0 +1,16 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+CursorHackathonDevAI2025VN-finding-team-game,0,2f25902ae818c1e80f965c514505430b3841eb2a,2025-11-29T07:46:19+00:00,,106.32,3414,0,16,0,0,1,0,1,first commit
+CursorHackathonDevAI2025VN-finding-team-game,1,1520e2afa83b261a8bd1d22b57ad7b16f636c32c,2025-11-29T07:51:49+00:00,5.50,111.82,145,0,1,0,0,1,0,0,Add initial plan
+CursorHackathonDevAI2025VN-finding-team-game,2,0fb31f97fd5f7e5447095bb3ec27c3e452b4047e,2025-11-29T08:20:58+00:00,29.15,140.97,266,0,1,0,0,1,0,0,Update project plan with detailed milestones and objectives
+CursorHackathonDevAI2025VN-finding-team-game,3,ca54906a85822635403cea5d1f53a04586da7d7c,2025-11-29T08:32:32+00:00,11.57,152.53,4814,122,28,0,0,1,0,1,feat: First creation
+CursorHackathonDevAI2025VN-finding-team-game,4,2c19fb3daa33cb9c06fc772f25017f7cc0b26f90,2025-11-29T08:57:15+00:00,24.72,177.25,343,3,5,0,0,1,0,0,feat: Add user profile page and itg update user functionality
+CursorHackathonDevAI2025VN-finding-team-game,5,d824ccde8d7a336adad5e60be0f4b2d2895d090b,2025-11-29T09:05:51+00:00,8.60,185.85,266,84,2,0,0,1,0,0,feat: Enhance SkillTagInput component with suggestions
+CursorHackathonDevAI2025VN-finding-team-game,6,1c67d03f0a9b4bf2d21d9c1b97a1eab51473398e,2025-11-29T09:20:36+00:00,14.75,200.60,78,56,1,1,0,1,0,0,Merge branch 'feat/profile-form'
+CursorHackathonDevAI2025VN-finding-team-game,7,41a22d18959573daa19ba0e332a8f4681466231f,2025-11-29T09:43:34+00:00,22.97,223.57,1,0,1,1,0,1,0,0,Merge branch 'master' into feat/profile-form
+CursorHackathonDevAI2025VN-finding-team-game,8,b54f6320b64a29a33a0a4a4ad3aab309ddde4b42,2025-11-29T09:49:58+00:00,6.40,229.97,1,0,1,0,0,1,0,0, Add env example
+CursorHackathonDevAI2025VN-finding-team-game,9,36af84cd1c5a1d874f52c226b7d901161550557d,2025-11-29T09:52:45+00:00,2.78,232.75,382,1,4,1,0,1,0,0,Merge branch 'feat/profile-form'
+CursorHackathonDevAI2025VN-finding-team-game,10,7cd0115821bebc5fc4d524e413606c493be24b21,2025-11-29T09:54:07+00:00,1.37,234.12,483,298,5,1,0,1,0,0,Merge branch 'master' of https://github.com/CursorHackathonDevAI2025VN/finding-team-game
+CursorHackathonDevAI2025VN-finding-team-game,11,4810c758896748dea1cdd62033d2f79f11209eb6,2025-11-29T10:35:02+00:00,40.92,275.03,585,41,7,0,0,1,0,0,feat: enhance team management with invitation handling and member details
+CursorHackathonDevAI2025VN-finding-team-game,12,078cf4ebdabcf7f6efc0bdd937feb07479a9be17,2025-11-29T10:42:55+00:00,7.88,282.92,131,25,2,0,0,1,0,0,feat: add drag-and-drop functionality for suggestions in CardSlot component
+CursorHackathonDevAI2025VN-finding-team-game,13,fa5e1bdbafed86bf17039e215b99b2cb75ca7d3b,2025-11-29T10:50:17+00:00,7.37,290.28,84,7,9,0,0,1,0,0,feat: add description field to user and team member profiles
+CursorHackathonDevAI2025VN-finding-team-game,14,4aafb87958326bdd63cbbfc0f857af61bf905e7f,2025-11-29T10:52:47+00:00,2.50,292.78,13,4,3,0,0,1,0,0,"feat: update loading indicators to ""Thinking..."" for improved UX"

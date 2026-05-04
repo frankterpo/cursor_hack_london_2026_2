@@ -1,0 +1,12 @@
+.vercel
+.claude/
+.DS_Store
+__pycache__/
+*.pyc
+node_modules/
+dist/
+.env
+.env.local
+vendor/
+.gstack/
+guild-bounty-board/.tmp_pillow/

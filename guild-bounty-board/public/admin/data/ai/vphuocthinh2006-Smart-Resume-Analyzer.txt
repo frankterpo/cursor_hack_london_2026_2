@@ -1,0 +1,7 @@
+- Timing within the event is impressive (7 commits between t0 and t1 with a 3.5‑minute median gap), yet the work corpus is dominated by a single massive add (1,175,677 LOC, 7,590 files) which is atypical for a fresh sprint.
+- Flags in the metrics (bulk commit + large initial commit, no pre‑event history) suggest most of the codebase was dropped in at once rather than incrementally developed during the hackathon, which merits closer scrutiny.
+- `README.md:1` describes “AI Resume Analyzer v3.0” powered by GPT-4o, offering a simple Streamlit UI plus a React+FastAPI stack for advanced CV polishing and job search support.
+- `backend/api.py:1` and `frontend/src/App.jsx:1` confirm the repo already contains a FastAPI backend paired with a React/Vite frontend—along with numerous helper notebooks—so the code scope is broad and aligns with what modern AI tooling can scaffold quickly.
+- Instructions still reference a legacy Windows path (`README.md:35`), hinting the documentation was copied from an older project, and that big initial commit buried in history may be a lifted code dump rather than handmade hackathon work.
+
+Overall authenticity assessment: some suspicious patterns

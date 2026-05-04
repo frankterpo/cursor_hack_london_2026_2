@@ -1,0 +1,55 @@
+{
+  "rows": [
+    {
+      "repo_id": "EndlessMelody-CursorHackathon",
+      "seq_index": "0",
+      "sha": "3153b6589dd6c406c87841c91350a39065f7c074",
+      "author_time_iso": "2025-11-29T06:15:35+00:00",
+      "minutes_since_prev_commit": "",
+      "minutes_since_t0": "15.58",
+      "insertions": "2",
+      "deletions": "0",
+      "files_changed": "1",
+      "is_merge": "0",
+      "is_before_t0": "0",
+      "is_during_event": "1",
+      "is_after_t1": "0",
+      "flag_bulk_commit": "0",
+      "subject": "Initial commit"
+    },
+    {
+      "repo_id": "EndlessMelody-CursorHackathon",
+      "seq_index": "1",
+      "sha": "a728d11947efef64e23221c03cd1b791bbc484ee",
+      "author_time_iso": "2025-11-29T10:11:15+00:00",
+      "minutes_since_prev_commit": "235.67",
+      "minutes_since_t0": "251.25",
+      "insertions": "4461",
+      "deletions": "2",
+      "files_changed": "17",
+      "is_merge": "0",
+      "is_before_t0": "0",
+      "is_during_event": "1",
+      "is_after_t1": "0",
+      "flag_bulk_commit": "1",
+      "subject": "Add comprehensive game features: notes system, random starts, item usage tracking, context tracking, pet companions, and dice animations"
+    },
+    {
+      "repo_id": "EndlessMelody-CursorHackathon",
+      "seq_index": "2",
+      "sha": "e681ab13e855ce1b964686c45aa8bc52a65f5b3c",
+      "author_time_iso": "2025-11-29T10:59:34+00:00",
+      "minutes_since_prev_commit": "48.32",
+      "minutes_since_t0": "299.57",
+      "insertions": "478",
+      "deletions": "57",
+      "files_changed": "3",
+      "is_merge": "0",
+      "is_before_t0": "0",
+      "is_during_event": "1",
+      "is_after_t1": "0",
+      "flag_bulk_commit": "0",
+      "subject": "Add manual dice roll system, training mechanics, and improved game features"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+finalFlash159-exam-hub-cursor-hackathon,0,ea75b8c26467036fd7dab6d6791639fc46ee5896,2025-11-29T06:50:53+00:00,,50.88,208,0,2,0,0,1,0,0,Initial commit
+finalFlash159-exam-hub-cursor-hackathon,1,1386072c6f0e7578204437c7e7c0029e6e571718,2025-11-29T07:02:06+00:00,11.22,62.10,0,0,2,0,0,1,0,0,init pj
+finalFlash159-exam-hub-cursor-hackathon,2,9067c8308d36cec0b79718eb16cb3c575bced746,2025-11-29T07:12:22+00:00,10.27,72.37,3145,0,14,0,0,1,0,1,init project react
+finalFlash159-exam-hub-cursor-hackathon,3,8a180251f907c093c8b72253882801720dab7b12,2025-11-29T07:18:36+00:00,6.23,78.60,157,0,50,1,0,1,0,1,Merge pull request #1 from finalFlash159/init/fe
+finalFlash159-exam-hub-cursor-hackathon,4,e8ca752c86abc5025e94584691d788a6cc5be9be,2025-11-29T07:30:47+00:00,12.18,90.78,3,14,7,0,0,1,0,0,remove: authenticate for ease of demo
+finalFlash159-exam-hub-cursor-hackathon,5,ab534ef921bea6535651963c9efae0bf82aa570b,2025-11-29T07:34:45+00:00,3.97,94.75,0,4,2,0,0,1,0,0,remove: email service in backend
+finalFlash159-exam-hub-cursor-hackathon,6,45cf5c71251903c27021e2dc3d9966242da2cc93,2025-11-29T08:21:16+00:00,46.52,141.27,3883,30,22,0,0,1,0,1,feat: create core components
+finalFlash159-exam-hub-cursor-hackathon,7,81b29705b6269c24e75b7069b599af5fd53c3bd3,2025-11-29T08:59:40+00:00,38.40,179.67,5621,9,15,0,0,1,0,1,feat: implement main screens
+finalFlash159-exam-hub-cursor-hackathon,8,55447efe6edaad36a7fb028a2cba8e5812df257a,2025-11-29T09:46:56+00:00,47.27,226.93,1177,88,9,0,0,1,0,1,feat: create supporting page
+finalFlash159-exam-hub-cursor-hackathon,9,d899fb781799f71ac7197f15240b9bf47971afc3,2025-11-29T09:47:09+00:00,0.22,227.15,257,1,50,0,0,1,0,1,upload images
+finalFlash159-exam-hub-cursor-hackathon,10,52656f6a8ef6ecd98951071987da1a624321736a,2025-11-29T09:54:06+00:00,6.95,234.10,2029,110,75,0,0,1,0,1,Refactor backend: remove old Node.js structure and add new Python backend
+finalFlash159-exam-hub-cursor-hackathon,11,3c7dfffa8116c2bc797ab55d81617fde22de3f84,2025-11-29T09:55:11+00:00,1.08,235.18,3570,180,3,1,0,1,0,1,Merge pull request #2 from finalFlash159/fe/implement
+finalFlash159-exam-hub-cursor-hackathon,12,f71c566d21d6213b729b53a4a2c85aa04bf779b0,2025-11-29T10:31:41+00:00,36.50,271.68,11,7,4,0,0,1,0,0,Update project files and add chatbot components
+finalFlash159-exam-hub-cursor-hackathon,13,e041bb110e73ad4e2d29f894c5d22416a858c506,2025-11-29T10:56:12+00:00,24.52,296.20,1681,4,11,0,0,1,0,1,Update backend and frontend components

@@ -1,0 +1,10 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+vhpx-dodo,0,fe46b2ab324fa2c21772ffccc376f0e8137cc86b,2025-11-29T07:41:17+00:00,,101.28,1188,0,17,0,0,1,0,1,Initial commit from Create Next App
+vhpx-dodo,1,b3f0992784b8355ff963cabd4a3ebf00952f0c28,2025-11-29T07:46:34+00:00,5.28,106.57,630,17,3,0,0,1,0,0,chore: update dependencies in package.json and bun.lock
+vhpx-dodo,2,dcb933e7778d99e59c5724b5bc3675a1ebe285b0,2025-11-29T07:47:46+00:00,1.20,107.77,6634,15,59,0,0,1,0,1,chore(ui): add shacnui
+vhpx-dodo,3,5ae85a8ab7e4d5131a095e7d3bd4f95b52d6a8a9,2025-11-29T07:50:28+00:00,2.70,110.47,34,0,2,0,0,1,0,0,chore: update dependencies in package.json and bun.lock
+vhpx-dodo,4,82231aa9cab664abe495e669da101ce2b7aaa4da,2025-11-29T08:34:08+00:00,43.67,154.13,5422,88,43,0,0,1,0,1,feat: add voice AI demo
+vhpx-dodo,5,a4f2263fd141ca2698188c30e9d4f6a9482206bb,2025-11-29T10:11:31+00:00,97.38,251.52,5506,1040,35,0,0,1,0,1,"feat: add shop items, scenario schema, and campaign management"
+vhpx-dodo,6,b9b03de8432ff18c85b95030bb17ac1a06cfcbd2,2025-11-29T10:41:47+00:00,30.27,281.78,627,249,6,0,0,1,0,0,feat: revamp game master persona to an arrogant AI overlord with new interaction rules and voice style
+vhpx-dodo,7,5b72c241d99e699ac4253a624e7c723f94e130e8,2025-11-29T10:57:16+00:00,15.48,297.27,359,105,5,0,0,1,0,0,"feat: overhaul AI personality and interaction rules for a more toxic, humorous gameplay experience; add performance tracking and time purchase mechanics"
+vhpx-dodo,8,e6a91c3573fc68315dc1fe77bdcfa68f6e5cd01f,2025-11-29T10:58:45+00:00,1.48,298.75,74,74,1,0,0,1,0,0,feat: update global styles for a modern dark theme with brighter colors and improved readability

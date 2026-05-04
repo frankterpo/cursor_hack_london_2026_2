@@ -1,0 +1,7 @@
+- All 12 recorded commits fall inside the 06:00–12:00 UTC hackathon window (latest at 17:16:30 +07, i.e. before 19:00 local), with the median gap ∼10 minutes; no work exists before T₀ or after T₁, so the timing matches a focused single-day effort.
+- There is a single “bulk” commit adding ~10 636 LOC early in the period (likely the initial scaffold of the Electron + React app), followed by multiple smaller follow-ups and merges—this front-loaded burst is consistent with bootstrapping a UI-heavy hackathon project despite the metrics flag.
+- The README/`docs/` describe “AI Usage Monitor,” a cross-platform menu-bar/tray Electron app that ingests Claude Code JSONL logs, offers mock Cursor data, and surfaces cost/usage stats plus alerts, aligning with the large file tree under `src/main`, `src/renderer`, and shared types.
+- The codebase shows a reasonable hackathon scope: structured Electron main/preload/renderer split, providers for Claude/Cursor, state/cost/cache/notification helpers, and theme-aware dashboard/settings windows—complex but within reach for a team using modern tooling.
+- Multiple merge commits (e.g., `5985da4`, `cd58844`, `76c7623`) indicate parallel branches being integrated rapidly, which is expected during intensive day-long collaboration rather than suspicious backdating.
+
+Overall authenticity assessment: looks consistent with a hackathon project

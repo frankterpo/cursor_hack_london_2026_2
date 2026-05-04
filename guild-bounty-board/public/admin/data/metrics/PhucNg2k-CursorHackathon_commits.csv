@@ -1,0 +1,9 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+PhucNg2k-CursorHackathon,0,a9ec3f4152295fc38cb98cfbff444f892180e91c,2025-11-29T06:43:24+00:00,,43.40,1,0,1,0,0,1,0,0,init
+PhucNg2k-CursorHackathon,1,4e42faef0d5bc644ec5c153b54e93652d2af5b43,2025-11-29T08:34:59+00:00,111.58,154.98,1157,1,22,0,0,1,0,1,add backend
+PhucNg2k-CursorHackathon,2,9240f5ede4983671e2cb1b6bde2a15aa786efcac,2025-11-29T09:46:57+00:00,71.97,226.95,2597,136,44,0,0,1,0,1,add frontend
+PhucNg2k-CursorHackathon,3,b3876e6c1aaf8960a4a4ec7672c2f6781d5163fa,2025-11-29T09:57:23+00:00,10.43,237.38,115,362,2,0,0,1,0,0,add README
+PhucNg2k-CursorHackathon,4,354d54b43a51af667a2aa1f44ce8bd91003bca2c,2025-11-29T10:26:36+00:00,29.22,266.60,525,203,9,0,0,1,0,0,map pinning
+PhucNg2k-CursorHackathon,5,a5ee02621155762859854504472993d485887a00,2025-11-29T10:40:05+00:00,13.48,280.08,31,0,1,0,0,1,0,0,init
+PhucNg2k-CursorHackathon,6,9548523aee6d2fc74d0faabff7f53dc79bd2098d,2025-11-29T10:45:04+00:00,4.98,285.07,36,9,4,0,0,1,0,0,add navigation
+PhucNg2k-CursorHackathon,7,3fd1098647658f2bbd4a9894e6033704d28757ac,2025-11-29T10:56:32+00:00,11.47,296.53,77,19,3,0,0,1,0,0,add searching

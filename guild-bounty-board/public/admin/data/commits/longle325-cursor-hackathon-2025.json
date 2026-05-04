@@ -1,0 +1,21 @@
+{
+  "rows": [
+    {
+      "repo_id": "longle325-cursor-hackathon-2025",
+      "seq_index": "0",
+      "sha": "2cfbfc17e1543afd0c15bcff0dc68bd207580486",
+      "author_time_iso": "2025-11-29T11:06:50+00:00",
+      "minutes_since_prev_commit": "",
+      "minutes_since_t0": "306.83",
+      "insertions": "208867",
+      "deletions": "0",
+      "files_changed": "755",
+      "is_merge": "0",
+      "is_before_t0": "0",
+      "is_during_event": "1",
+      "is_after_t1": "0",
+      "flag_bulk_commit": "1",
+      "subject": "push all existing code"
+    }
+  ]
+}

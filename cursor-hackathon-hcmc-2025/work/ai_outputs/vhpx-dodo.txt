@@ -1,0 +1,7 @@
+- Commits are tightly grouped within the hackathon window (all between 07:41–10:58 UTC, median gap ≈10 min, no pre/post commits), reflecting a focused, sprint-style workflow with steady progression rather than the drag of regular maintenance.
+- Metrics flag a large bulk addition (max 6.6k LOC) but that aligns with the early scaffold/reset burst across `Initial commit` → dependency/workflow updates → teased features; the 9 commits are still reasonably granular for a short event.
+- `README.md` describes *The Interrogation Room*, a voice-first 90-second escape game with a toxic AI host, Google Gemini Live API integration, coin purchases, campaigns, and Next.js + Zustand/Tailwind/Framer stack, matching the asset tree that includes audio/state/hooks, UI components, and campaign schema.
+- Code layout (app/api/auth+image+scenario, audio worklets, chat/voice UI, stores, providers) shows well-scoped modules for voice streaming, scenario handling, and stats tracking, which is achievable during a hackathon with modern AI-augmented tooling.
+- No suspicious timing or pre-hackathon prep is evident beyond the expected bulk scaffolding; the commit content and tech stack fit the narrative of building an immersive AI-driven gameplay demo in a condensed time frame.
+
+Overall authenticity assessment: looks consistent with a hackathon project

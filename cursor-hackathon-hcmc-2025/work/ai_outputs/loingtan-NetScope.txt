@@ -1,0 +1,7 @@
+- Commit timing/volume: only one commit recorded (late at 2025‑11‑29 17:56 +0700 / 10:56 UTC) and it lands squarely between t0 and t1 with no prior or later activity, so the timing aligns with the hackathon window.
+- Bulk commit flag: the single commit is large (47 files, ~15K LOC) and triggered the “large initial commit during event” flag, but it’s just the inaugural project snapshot rather than a suspicious multi-stage push.
+- Product summary: README/QUICKSTART describe “NetScope,” an interactive packet‑switching/routing/transport/app-layer visualization platform with WebSocket‑backed simulations, real-time controls, and detailed metrics.
+- Code scope: full-stack TypeScript (Node.js backend with simulation/core modules and Express/WebSocket entrypoint plus React+Vite frontend with PixiJS rendering and Zustand stores), matching the ambitious feature list and achievable in a single intense sprint, especially with AI tooling support.
+- Documentation/materials: comprehensive docs under `docs/*.md` and the included Kurose & Ross textbook PDF show the team prepared supporting artifacts, reinforcing that the work was done holistically within the hackathon context.
+
+Overall authenticity assessment: looks consistent with a hackathon project

@@ -1,0 +1,55 @@
+{
+  "rows": [
+    {
+      "repo_id": "luubiquitous-vngcursorhck",
+      "seq_index": "0",
+      "sha": "4df5c52ee7a479885ddbb153c907111885ab2001",
+      "author_time_iso": "2025-11-29T07:15:21+00:00",
+      "minutes_since_prev_commit": "",
+      "minutes_since_t0": "75.35",
+      "insertions": "2",
+      "deletions": "0",
+      "files_changed": "1",
+      "is_merge": "0",
+      "is_before_t0": "0",
+      "is_during_event": "1",
+      "is_after_t1": "0",
+      "flag_bulk_commit": "0",
+      "subject": "Initial commit"
+    },
+    {
+      "repo_id": "luubiquitous-vngcursorhck",
+      "seq_index": "1",
+      "sha": "3325bec5d944dbfe08e92a35e4a3c0b1a9484e93",
+      "author_time_iso": "2025-11-29T10:34:03+00:00",
+      "minutes_since_prev_commit": "198.70",
+      "minutes_since_t0": "274.05",
+      "insertions": "212980",
+      "deletions": "2",
+      "files_changed": "1238",
+      "is_merge": "0",
+      "is_before_t0": "0",
+      "is_during_event": "1",
+      "is_after_t1": "0",
+      "flag_bulk_commit": "1",
+      "subject": "Add Saigon Math War - Complete implementation"
+    },
+    {
+      "repo_id": "luubiquitous-vngcursorhck",
+      "seq_index": "2",
+      "sha": "e7cb3331afe46d5a013dcc4743426125819e902c",
+      "author_time_iso": "2025-11-29T11:01:21+00:00",
+      "minutes_since_prev_commit": "27.30",
+      "minutes_since_t0": "301.35",
+      "insertions": "486",
+      "deletions": "6",
+      "files_changed": "2",
+      "is_merge": "0",
+      "is_before_t0": "0",
+      "is_during_event": "1",
+      "is_after_t1": "0",
+      "flag_bulk_commit": "0",
+      "subject": "Add bot mode with difficulty levels and comprehensive rules page"
+    }
+  ]
+}

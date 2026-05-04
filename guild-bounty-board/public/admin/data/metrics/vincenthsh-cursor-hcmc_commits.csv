@@ -1,0 +1,68 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+vincenthsh-cursor-hcmc,0,398f2202ed5ad9d1c435510937130ce6301312ec,2025-11-29T06:59:04+00:00,,59.07,1,0,1,0,0,1,0,0,first commit
+vincenthsh-cursor-hcmc,1,40ffc5c6670d8a400d86954ee013641533a46367,2025-11-29T07:02:52+00:00,3.80,62.87,208,0,1,0,0,1,0,0,Add spec
+vincenthsh-cursor-hcmc,2,930e327f30382104de0112bfa311212bf923fc0f,2025-11-29T07:05:11+00:00,2.32,65.18,301,0,4,0,0,1,0,0,init cacophony package.json
+vincenthsh-cursor-hcmc,3,8d49ef7b039d6235009b90554da0157e69647ec0,2025-11-29T07:14:02+00:00,8.85,74.03,5674,193,24,0,0,1,0,1,init
+vincenthsh-cursor-hcmc,4,7703d821d10e7b6075af5933287cb4e874b1be39,2025-11-29T07:16:19+00:00,2.28,76.32,101,0,1,0,0,1,0,0,sample sunoapi script
+vincenthsh-cursor-hcmc,5,d6e18dc855e8a862255f73c72bafee68ed38b9b5,2025-11-29T07:19:17+00:00,2.97,79.28,50,0,2,0,0,1,0,0,move sunoapi sample script
+vincenthsh-cursor-hcmc,6,3b73a24a03b5a12ef34d729c06c6621b0791ea65,2025-11-29T08:19:30+00:00,60.22,139.50,3299,1,8,0,0,1,0,1,🗃️ feat(database): add initial database schema for game
+vincenthsh-cursor-hcmc,7,2485e353704ac0ddb89dba3f20c148178058eb33,2025-11-29T08:19:30+00:00,0.00,139.50,3299,1,8,0,0,1,0,1,🗃️ feat(database): add initial database schema for game
+vincenthsh-cursor-hcmc,8,361b8e9f8433a5b3bd66f2392f9a04abf3b2c2ac,2025-11-29T08:43:17+00:00,23.78,163.28,1371,701,12,0,0,1,0,1,Add Supabase and Suno-backed gameplay flow
+vincenthsh-cursor-hcmc,9,dc1eaecd86ec0807935dd7d09b181fd7976455ba,2025-11-29T08:43:17+00:00,0.00,163.28,1371,701,12,0,0,1,0,1,Add Supabase and Suno-backed gameplay flow
+vincenthsh-cursor-hcmc,10,a546e034fd22730e60126f3cd7e9abdeca13f51b,2025-11-29T08:43:36+00:00,0.32,163.60,37,0,1,0,0,1,0,0,Add TODO checklist for remaining features
+vincenthsh-cursor-hcmc,11,557b276bec0931175af3f83b585f7c695e283b8a,2025-11-29T08:43:36+00:00,0.00,163.60,37,0,1,0,0,1,0,0,Add TODO checklist for remaining features
+vincenthsh-cursor-hcmc,12,7e9b4eb908997233ac39fcc2b60264b3fd629fec,2025-11-29T08:44:59+00:00,1.38,164.98,739,15,2,0,0,1,0,0,Add card catalog tables and seed script
+vincenthsh-cursor-hcmc,13,e4a2b69b7d8281cb97608ee8c5fcb356c2ca0c15,2025-11-29T08:44:59+00:00,0.00,164.98,739,15,2,0,0,1,0,0,Add card catalog tables and seed script
+vincenthsh-cursor-hcmc,14,910fdb5cee048e059f3e4f745f7b166988f2df30,2025-11-29T08:58:07+00:00,13.13,178.12,312,4150,4,0,0,1,0,0,init claude md
+vincenthsh-cursor-hcmc,15,686ebf76f8b8d9e1f6eb9b84fa7a575f1c39e2dd,2025-11-29T08:58:07+00:00,0.00,178.12,312,4150,4,0,0,1,0,0,init claude md
+vincenthsh-cursor-hcmc,16,570cb81d62f7db15515524e43d7efaae78ba9830,2025-11-29T09:03:45+00:00,5.63,183.75,446,60,6,0,0,1,0,0,🗃️ feat(database): enhance game state management
+vincenthsh-cursor-hcmc,17,9264b94eb6962daaa5d729696b0fdc4d89a2756a,2025-11-29T09:03:45+00:00,0.00,183.75,446,60,6,0,0,1,0,0,🗃️ feat(database): enhance game state management
+vincenthsh-cursor-hcmc,18,a062fa9c746a805a5a5a7b623b908b46ac0be53b,2025-11-29T09:03:47+00:00,0.03,183.78,4,4,1,1,0,1,0,0,Merge branch 'main' of https://github.com/vincenthsh/cursor-hcmc
+vincenthsh-cursor-hcmc,19,64b8b1f121ae8c650f362c754d2f8e5126b49376,2025-11-29T09:05:14+00:00,1.45,185.23,4,4,1,0,0,1,0,0,✅ feat(TODO): update task statuses for game features
+vincenthsh-cursor-hcmc,20,edf1e0a9adf584ffa7a236acfa9f57acb7aee141,2025-11-29T09:21:51+00:00,16.62,201.85,750,18,14,0,0,1,0,0,feat: Implement routing and game lobby functionality
+vincenthsh-cursor-hcmc,21,4d99c9e259ed294db5db8d051befdb5fe4b3dbe3,2025-11-29T09:21:51+00:00,0.00,201.85,750,18,14,0,0,1,0,0,feat: Implement routing and game lobby functionality
+vincenthsh-cursor-hcmc,22,8c3decc26c9855f747a523e43a7602ed534025ee,2025-11-29T09:40:47+00:00,18.93,220.78,32,25,3,0,0,1,0,0,Fix timer reset on poll
+vincenthsh-cursor-hcmc,23,3e54e3f1ac3d7ba12b5c0d8db379b70a0810f4e7,2025-11-29T09:40:47+00:00,0.00,220.78,32,25,3,0,0,1,0,0,Fix timer reset on poll
+vincenthsh-cursor-hcmc,24,880c304701d5b98712ac483296e4b94c9e50dae3,2025-11-29T09:42:57+00:00,2.17,222.95,721,45,8,0,0,1,0,0,suno integrate
+vincenthsh-cursor-hcmc,25,1a152fb2d9263151dbcc2d2ea5ddabbe53589357,2025-11-29T09:42:57+00:00,0.00,222.95,721,45,8,0,0,1,0,0,suno integrate
+vincenthsh-cursor-hcmc,26,d15e8d7905a9297ade6136cb9464444c4320bffb,2025-11-29T09:43:58+00:00,1.02,223.97,171,10,2,0,0,1,0,0,Add lobby list
+vincenthsh-cursor-hcmc,27,d88c5991da8fd8e4b6ee6b253b06b4227a4c6882,2025-11-29T09:43:58+00:00,0.00,223.97,171,10,2,0,0,1,0,0,Add lobby list
+vincenthsh-cursor-hcmc,28,38f7f1e3f89e1f7440401bcd4b7a63713442f2c5,2025-11-29T10:02:38+00:00,18.67,242.63,11,4,1,0,0,1,0,0,Wait for all player submissions
+vincenthsh-cursor-hcmc,29,147f631efb7bd1315b771f6cbc86117de25ac393,2025-11-29T10:02:38+00:00,0.00,242.63,11,4,1,0,0,1,0,0,Wait for all player submissions
+vincenthsh-cursor-hcmc,30,39537edad6915bb210b8221ec870d2cf77feb65b,2025-11-29T10:03:03+00:00,0.42,243.05,128,9,2,0,0,1,0,0,feat: Add password-protected room deletion to Browse Games
+vincenthsh-cursor-hcmc,31,1d8ca775e9b001ba0800ed4e1a0a37ae07eb685b,2025-11-29T10:03:03+00:00,0.00,243.05,128,9,2,0,0,1,0,0,feat: Add password-protected room deletion to Browse Games
+vincenthsh-cursor-hcmc,32,1f66174c158fdcbabcd093064fa51106701a1638,2025-11-29T10:12:19+00:00,9.27,252.32,25,11,1,0,0,1,0,0,fix: Save actual Suno-generated audio URLs to database
+vincenthsh-cursor-hcmc,33,1c890462b1046dd0d9b962266acb53899d134488,2025-11-29T10:12:19+00:00,0.00,252.32,25,11,1,0,0,1,0,0,fix: Save actual Suno-generated audio URLs to database
+vincenthsh-cursor-hcmc,34,7ae3637369148c584bbe825bcd3f3c987864a9b2,2025-11-29T10:22:12+00:00,9.88,262.20,425,2,3,0,0,1,0,0,feat: Add interactive instructions modal with step-by-step game walkthrough
+vincenthsh-cursor-hcmc,35,7d7f521c812c3fc7e5fc85e7450b08a2bba22975,2025-11-29T10:22:12+00:00,0.00,262.20,425,2,3,0,0,1,0,0,feat: Add interactive instructions modal with step-by-step game walkthrough
+vincenthsh-cursor-hcmc,36,6a13d4f89e5cd45955adc640bb72cb3cd9026411,2025-11-29T10:43:22+00:00,21.17,283.37,5,1,1,0,0,1,0,0,Replace prompts and add production notes
+vincenthsh-cursor-hcmc,37,8c58f86a0e0f4dfe5a2ff503e2bcee3813dfafd9,2025-11-29T10:43:22+00:00,0.00,283.37,5,1,1,0,0,1,0,0,Replace prompts and add production notes
+vincenthsh-cursor-hcmc,38,14cc60fa79776a3542729258047de48e0caa57a8,2025-11-29T10:53:56+00:00,10.57,293.93,33,7,2,0,0,1,0,0,✨ feat: Add lyric card fetching and dealing logic
+vincenthsh-cursor-hcmc,39,64662011c707f39ccbe4b6edaab3726e8f3f2d5c,2025-11-29T10:53:56+00:00,0.00,293.93,33,7,2,0,0,1,0,0,✨ feat: Add lyric card fetching and dealing logic
+vincenthsh-cursor-hcmc,40,53f848e89f39cdcfac3d7149f995958fdb2ced0f,2025-11-29T10:57:43+00:00,3.78,297.72,18,17,1,0,0,1,0,0,fix progressbar
+vincenthsh-cursor-hcmc,41,74406776ece0674d873fb544513f45db1c9a69c6,2025-11-29T10:57:43+00:00,0.00,297.72,18,17,1,0,0,1,0,0,fix progressbar
+vincenthsh-cursor-hcmc,42,01d002f600b0ccfb6c4191d1a9d0404271488804,2025-11-29T11:24:47+00:00,27.07,324.78,0,6,3,0,0,1,0,0,Fix prompt
+vincenthsh-cursor-hcmc,43,a30d3cb53749ef129575a80d656b93815f8f5f58,2025-11-29T11:24:47+00:00,0.00,324.78,0,6,3,0,0,1,0,0,Fix prompt
+vincenthsh-cursor-hcmc,44,dbbd6e12bb3dedcbb26e74c168f803f924311bb2,2025-11-29T11:43:04+00:00,18.28,343.07,0,56,2,0,0,1,0,0,Remove unused code
+vincenthsh-cursor-hcmc,45,2849ccfa2e07f7e73fab6aef61d1b19105e47bf4,2025-11-29T11:46:09+00:00,3.08,346.15,400,0,2,0,0,1,0,0,feat: Add centralized configuration system
+vincenthsh-cursor-hcmc,46,018c4ccc88b66046d4080af333835d8c331f152f,2025-11-29T11:46:16+00:00,0.12,346.27,44,35,4,0,0,1,0,0,refactor: Use centralized config in existing files
+vincenthsh-cursor-hcmc,47,0f8caca1245c7cf4915c6d966cddd9ed864f1f55,2025-11-29T11:46:23+00:00,0.12,346.38,1414,0,5,0,0,1,0,1,docs: Reorganize documentation into focused guides
+vincenthsh-cursor-hcmc,48,56ab42b6cc06c93ff398bf3f172c4f350f11184a,2025-11-29T11:46:29+00:00,0.10,346.48,187,138,2,0,0,1,0,0,docs: Update README and remove old TODO
+vincenthsh-cursor-hcmc,49,d0f7eac0512009786f402b8f02b7219d48d0e072,2025-11-29T11:46:35+00:00,0.10,346.58,7,4,1,0,0,1,0,0,feat: Make instruction modal progress tabs clickable
+vincenthsh-cursor-hcmc,50,c641c8a3d12f2df089dff51db1fd63de5c35b7d9,2025-11-29T11:46:41+00:00,0.10,346.68,266,0,1,0,0,1,0,0,feat: Add GameHistoryDrawer component
+vincenthsh-cursor-hcmc,51,f33bac74fa507c8d7e3bfe8a3c2e76b696b71b05,2025-11-29T11:46:48+00:00,0.12,346.80,105,3,1,0,0,1,0,0,feat: Integrate game history drawer into CacophonyGame
+vincenthsh-cursor-hcmc,52,25038ccce4b528914b3fdd624d6fa9ec374c68f2,2025-11-29T11:54:35+00:00,7.78,354.58,458,1,3,0,0,1,0,0,feat: Add game history tab to landing page
+vincenthsh-cursor-hcmc,53,1fcce721902628db7826f108dc72233b89b78fe1,2025-11-29T11:55:10+00:00,0.58,355.17,2,1,1,0,0,1,0,0,🔧 chore: Update permissions in settings.local.json
+vincenthsh-cursor-hcmc,54,dc130a8bea1b2651952f5f0c86da4b2d367c4ed9,2025-11-29T11:56:59+00:00,1.82,356.98,2,1,1,0,0,1,0,0,temp: Save settings before filter-branch
+vincenthsh-cursor-hcmc,55,8f4414bf9b8a807c151babefaf51d1a22ffa55d9,2025-11-29T11:58:03+00:00,1.07,358.05,15,14,1,0,0,1,0,0,🔧 chore: Update permissions in settings.local.json
+vincenthsh-cursor-hcmc,56,b2d93445e3f44b81f9db47f844a02f3c39c4f2ac,2025-11-29T12:07:07+00:00,9.07,367.12,1,1,1,1,0,0,1,0,Merge branch 'main' into add-router
+vincenthsh-cursor-hcmc,57,acb52b6673b51e772876a415cb8d9c3846c399b0,2025-11-29T12:36:48+00:00,29.68,396.80,39,119,8,0,0,0,1,0,Code refactoring
+vincenthsh-cursor-hcmc,58,2b7b0cdcbf91e0052abca08ae1abf05df3cde5d1,2025-11-30T03:00:31+00:00,863.72,1260.52,52,22,5,0,0,0,1,0,Update Claude
+vincenthsh-cursor-hcmc,59,aac22bc91553b89c19c17d4a588340b6a876daa2,2025-11-30T04:49:51+00:00,109.33,1369.85,7,16,1,0,0,0,1,0,fix change phase
+vincenthsh-cursor-hcmc,60,5aa89953d513fbfe4df64742ca7a2290f4bf4aa7,2025-11-30T05:30:43+00:00,40.87,1410.72,45,0,1,0,0,0,1,0,fix change phase
+vincenthsh-cursor-hcmc,61,7cc12b719adc24b709ce45907f69e83cd3cc115a,2025-11-30T06:21:21+00:00,50.63,1461.35,90,0,1,0,0,0,1,0,Add Navigation component with smart routing and floating variant
+vincenthsh-cursor-hcmc,62,6a8a9e6138f2605a58652dd4c1366bed05ddef61,2025-11-30T06:21:26+00:00,0.08,1461.43,39,6,2,0,0,0,1,0,Integrate Navigation component into game and lobby
+vincenthsh-cursor-hcmc,63,511f8716daadfc30c917e460fe220ad555ea3cfb,2025-11-30T06:21:32+00:00,0.10,1461.53,79,5,1,0,0,0,1,0,Add song download feature to GameHistoryDrawer
+vincenthsh-cursor-hcmc,64,2e426a988967b433b915f4c183969cdf9415d6ff,2025-11-30T06:21:37+00:00,0.08,1461.62,67,21,1,0,0,0,1,0,Add song download feature to GameHistoryTab
+vincenthsh-cursor-hcmc,65,e23fb474981031968f1795d9f42506df2e4cdb40,2025-11-30T06:21:42+00:00,0.08,1461.70,0,26,1,0,0,0,1,0,Fix TypeScript error in DEFAULT_GAME_CONFIG
+vincenthsh-cursor-hcmc,66,ba2f122a1fa8d07cfd2d24cb864ff785ec56110a,2025-11-30T06:55:29+00:00,33.78,1495.48,675,4,8,0,0,0,1,0,Add karaoke lyrics support via Suno timestamped data

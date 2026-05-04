@@ -1,0 +1,21 @@
+{
+  "rows": [
+    {
+      "repo_id": "locle1221-tarot69",
+      "seq_index": "0",
+      "sha": "1778b2d0667d863c505be0cb7238d5f86b1cfb47",
+      "author_time_iso": "2025-11-29T10:58:40+00:00",
+      "minutes_since_prev_commit": "",
+      "minutes_since_t0": "298.67",
+      "insertions": "8031",
+      "deletions": "0",
+      "files_changed": "32",
+      "is_merge": "0",
+      "is_before_t0": "0",
+      "is_during_event": "1",
+      "is_after_t1": "0",
+      "flag_bulk_commit": "1",
+      "subject": "first commit"
+    }
+  ]
+}

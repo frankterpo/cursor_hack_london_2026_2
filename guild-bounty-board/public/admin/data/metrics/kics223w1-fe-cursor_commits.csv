@@ -1,0 +1,12 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+kics223w1-fe-cursor,0,1f99090308ea2c6e22c7b99a60a19944d41b6431,2025-11-29T07:04:21+00:00,,64.35,6856,0,17,0,0,1,0,1,Initial commit from Create Next App
+kics223w1-fe-cursor,1,2c20915de5b5c0f05667cb0014a827c7b849fd9a,2025-11-29T07:05:25+00:00,1.07,65.42,1,0,1,0,0,1,0,0,first commit
+kics223w1-fe-cursor,2,6172f6937846e0fbac51d885db5a2616e8d2ab41,2025-11-29T07:33:47+00:00,28.37,93.78,604,67,12,0,0,1,0,0,init UI
+kics223w1-fe-cursor,3,08a2ee54fb103458479fea6a9d855922c5823ef2,2025-11-29T08:00:06+00:00,26.32,120.10,716,35,11,0,0,1,0,0,update UI
+kics223w1-fe-cursor,4,e246dbc9a54e18147561519bae30891e9f73679a,2025-11-29T08:11:28+00:00,11.37,131.47,151,140,5,0,0,1,0,0,refactor: update uI
+kics223w1-fe-cursor,5,406d006c832d767159ce0d10d3279a8f31a653e2,2025-11-29T08:39:13+00:00,27.75,159.22,366,237,5,0,0,1,0,0,refactor: update UI
+kics223w1-fe-cursor,6,c6accc73382eb0f6963865a6cb9611d274dafe52,2025-11-29T09:20:58+00:00,41.75,200.97,688,722,17,0,0,1,0,0,update final UI
+kics223w1-fe-cursor,7,2ee2afba04ba3153f0413735fa28bfb8b7dbb17f,2025-11-29T09:52:04+00:00,31.10,232.07,232,96,3,0,0,1,0,0,fix: column width
+kics223w1-fe-cursor,8,345bc891472105efc706548c25c07518c1837195,2025-11-29T09:59:15+00:00,7.18,239.25,234,42,5,0,0,1,0,0,refactor: clean the code
+kics223w1-fe-cursor,9,989e7cc15a6acea3d6b783e309f8102a866ac943,2025-11-29T10:02:16+00:00,3.02,242.27,27,1,1,0,0,1,0,0,refactor: clean the UI
+kics223w1-fe-cursor,10,0bbcd9adfb97cdbb883af68d1475d63cbf5533bb,2025-11-29T11:01:04+00:00,58.80,301.07,234,104,4,0,0,1,0,0,update README

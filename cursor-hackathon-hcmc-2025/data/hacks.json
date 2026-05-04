@@ -1,0 +1,41 @@
+{
+  "active_hack_id": "cursor-thrads-london-2026",
+  "hacks": [
+    {
+      "id": "cursor-hcmc-2025",
+      "name": "Cursor Hackathon · HCMC 2025",
+      "short_name": "HCMC 2025",
+      "location": "Ho Chi Minh City",
+      "dates": "2025-11-29",
+      "status": "ended",
+      "description": "Original in-person Cursor hackathon in Ho Chi Minh City. 47 submissions, legacy-format judge responses — archived here for reference."
+    },
+    {
+      "id": "cursor-briefcase-london-2026",
+      "name": "Cursor x Briefcase London hackathon",
+      "short_name": "Briefcase · London · Apr 2026",
+      "location": "London",
+      "dates": "2026-04-30",
+      "status": "ended",
+      "description": "Two-track finance-agents hackathon co-hosted by Cursor and Briefcase (completed). Submissions archived under this cohort ID."
+    },
+    {
+      "id": "cursor-live-london-q3-2026",
+      "name": "Cursor Live · London · Q3 2026",
+      "short_name": "London · Q3 2026",
+      "location": "London",
+      "dates": "2026-09 (TBA)",
+      "status": "ended",
+      "description": "Q3 London cohort. Archived once Cursor x Thrads kicked off."
+    },
+    {
+      "id": "cursor-thrads-london-2026",
+      "name": "Cursor x Thrads London hackathon",
+      "short_name": "Thrads · London · 2026",
+      "location": "London",
+      "dates": "2026 (TBA)",
+      "status": "active",
+      "description": "Two-track ad-tech hackathon co-hosted by Cursor and Thrads. Track 01: Buy-Side Agents (advertiser side). Track 02: Sell-Side & Measurement (publisher / attribution side)."
+    }
+  ]
+}

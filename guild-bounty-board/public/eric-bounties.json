@@ -1,0 +1,510 @@
+{
+  "generated_at": "2026-03-09T19:30:00.000Z",
+  "source": {
+    "data_path": "guild-bounty-board/public/data.json",
+    "curation_path": "artifacts/eric_hit_list_2026.csv",
+    "source_scope": "Eric Zakariasson tweets only",
+    "notes": "Curated down to a smaller set of high-signal missions aligned to the new Automations and software-factory direction."
+  },
+  "hackathon_format": {
+    "hack_id": "cursor-live-london-q3-2026",
+    "theme": "Cursor Live · London · Q3 2026",
+    "tagline": "Human out of the loop in high-risk financial workflows",
+    "main_tracks": [
+      {
+        "id": "Money-Movement",
+        "name": "Money Movement",
+        "description": "Agents that actually move money. A wrong action means real money is gone."
+      },
+      {
+        "id": "Financial-Intelligence",
+        "name": "Financial Intelligence",
+        "description": "Agents that read, interpret, and explain. A wrong answer means a wrong decision downstream."
+      }
+    ],
+    "side_challenges": [
+      {
+        "id": "Best-Use-Cursor",
+        "name": "Best use of Cursor",
+        "bonus_points": 1,
+        "description": "How effectively the build used Cursor end to end."
+      },
+      {
+        "id": "Best-Use-Specter",
+        "name": "Best use of Specter",
+        "bonus_points": 1,
+        "description": "Standout use of Specter's API, MCP, or market intelligence data."
+      },
+      {
+        "id": "Best-Use-LLM-Models",
+        "name": "Best use of LLM models",
+        "bonus_points": 1,
+        "description": "Smart use of models — APIs, routing, evals, or multi-model design."
+      }
+    ],
+    "rubric": {
+      "core_max_points": 7,
+      "side_bonus_cap": 3,
+      "total_cap": 10,
+      "criteria": [
+        {
+          "id": "concrete_workflow_value",
+          "name": "Concrete Workflow Value",
+          "points": 2
+        },
+        {
+          "id": "track_fit",
+          "name": "Track Fit",
+          "points": 2
+        },
+        {
+          "id": "human_in_the_loop_decision",
+          "name": "Human-in-the-Loop Decision",
+          "points": 1
+        },
+        {
+          "id": "technical_execution",
+          "name": "Technical Execution",
+          "points": 1
+        },
+        {
+          "id": "demo_clarity",
+          "name": "Demo Clarity",
+          "points": 1
+        }
+      ]
+    },
+    "judge_bonus_bucket": {
+      "name": "Judge Bonus Bucket",
+      "max_points": 3,
+      "description": "Three sponsor-aligned buckets (1 + 1 + 1 points). Judges score each bucket independently — 3 bonus total."
+    },
+    "organizer_learnings": [
+      "London scoring is 10 points total: 7 core + 3 sponsor bonus.",
+      "Five core criteria total 7 points: 2 + 2 + 1 + 1 + 1.",
+      "Three bonus buckets total 3 points: Cursor + Specter + LLM models."
+    ],
+    "organizer_tools": [
+      {
+        "name": "Guild judge portal",
+        "use": "/judge — scores sync to Supabase for this hackathon UUID."
+      },
+      {
+        "name": "Organizer cockpit",
+        "use": "/admin — merges analyses, submissions, and judge aggregates."
+      },
+      {
+        "name": "DEFAULT_HACKATHON_ID",
+        "use": "Set to London UUID on the Vercel deploy (see docs/TENANCY.md)."
+      }
+    ],
+    "judging_format": {
+      "demo_length_minutes": 4,
+      "suggested_shortlisting": "Rank by total score out of 10; break ties on workflow value and human-in-the-loop clarity."
+    }
+  },
+  "bounties": [
+    {
+      "id": "2029604478564151577",
+      "tweet_url": "https://x.com/ericzakariasson/status/2029604478564151577",
+      "tweet_text": "today we're launching automations! it allows you to trigger agents based on real world events, like incidents, PR's, slack messages or anything that you can connect with a webhook!",
+      "tweet_created_at": "Thu Mar 05 17:06:00 +0000 2026",
+      "media": [],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "No",
+        "idea_theme": "Launch an always-on engineering agent",
+        "best_track": "Always-On-Agents",
+        "task_brief": "Build a production-style automation that triggers on a real event or schedule, completes useful work, and leaves behind an auditable artifact.",
+        "acceptance_criteria": [
+          "Live trigger from webhook, schedule, Slack, PR, incident, or issue",
+          "Agent completes work without manual prompting during the run",
+          "Output includes a verifiable artifact such as PR, comment, report, or fix"
+        ],
+        "side_challenges": [
+          "Best-Cursor-Native-Workflow",
+          "Best-Demo"
+        ],
+        "confidence": 0.99,
+        "notes": "Manual curation from Eric's launch tweet for Automations.",
+        "model_used": "manual-curation"
+      },
+      "points": {
+        "difficulty": "Hard",
+        "core_points": 7,
+        "bonus_points": 3,
+        "total_recommended_points": 10
+      },
+      "title": "Build an automation that wakes up on its own"
+    },
+    {
+      "id": "2019820253023465951",
+      "tweet_url": "https://x.com/ericzakariasson/status/2019820253023465951",
+      "tweet_text": "this morning i woke up to 5 PRs that i kicked off with cloud agents last night. bugbot had reviewed all of them, suggested fixes, and auto-pushed them while i was sleeping.",
+      "tweet_created_at": "Fri Feb 06 17:07:29 +0000 2026",
+      "media": [
+        {
+          "type": "photo",
+          "url": "https://pbs.twimg.com/media/HAfX0RzacAMRmA5.png"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "No",
+        "idea_theme": "Overnight PR swarm with review and self-correction",
+        "best_track": "Always-On-Agents",
+        "task_brief": "Create a workflow that can start work asynchronously, review itself, and return mergeable changes by morning.",
+        "acceptance_criteria": [
+          "Background agent opens or updates at least one code change automatically",
+          "A second verification step reviews or tests the change",
+          "Demo shows the full unattended loop from kickoff to proposed result"
+        ],
+        "side_challenges": [
+          "Most-Technically-Ambitious"
+        ],
+        "confidence": 0.97,
+        "notes": "Strong example of hands-off overnight execution.",
+        "model_used": "manual-curation"
+      },
+      "points": {
+        "difficulty": "Hard",
+        "core_points": 7,
+        "bonus_points": 3,
+        "total_recommended_points": 10
+      },
+      "title": "Wake up to merge-ready PRs"
+    },
+    {
+      "id": "2011551572409655709",
+      "tweet_url": "https://x.com/ericzakariasson/status/2011551572409655709",
+      "tweet_text": "Bugbot Autofix is now live in Beta! If you enable this, Bugbot will automatically kick off a Cloud Agent to address the bugs it finds and come back to you with code changes ready to be merged in.",
+      "tweet_created_at": "Wed Jan 14 21:30:42 +0000 2026",
+      "media": [
+        {
+          "type": "photo",
+          "url": "https://pbs.twimg.com/media/G-p3OvUbQAAS6h4.jpg"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "No",
+        "idea_theme": "Close the loop on bug finding and bug fixing",
+        "best_track": "Review-QA",
+        "task_brief": "Build a reviewer that does more than comment: it should diagnose issues, propose a fix, and validate the change before handing it back.",
+        "acceptance_criteria": [
+          "System identifies at least one concrete issue automatically",
+          "System proposes or applies a fix with evidence",
+          "Validation step confirms the fix with tests, checks, or repro data"
+        ],
+        "side_challenges": [
+          "Best-Reliability-System"
+        ],
+        "confidence": 0.98,
+        "notes": "Maps directly to Autofix and agentic review loops.",
+        "model_used": "manual-curation"
+      },
+      "points": {
+        "difficulty": "Hard",
+        "core_points": 7,
+        "bonus_points": 3,
+        "total_recommended_points": 10
+      },
+      "title": "Ship a reviewer that can repair what it finds"
+    },
+    {
+      "id": "2011117029022187604",
+      "tweet_url": "https://x.com/ericzakariasson/status/2011117029022187604",
+      "tweet_text": "8. debug mode for the tricky ones instead of guessing, it generates multiple hypotheses, instruments code with logging, asks you to reproduce while collecting data, analyzes actual behavior, and makes targeted fixes based on evidence.",
+      "tweet_created_at": "Tue Jan 13 16:43:59 +0000 2026",
+      "media": [
+        {
+          "type": "photo",
+          "url": "https://pbs.twimg.com/media/G-jsR8VbcAAy1fc.jpg"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "No",
+        "idea_theme": "Evidence-driven debugging instead of prompt guessing",
+        "best_track": "Review-QA",
+        "task_brief": "Prototype a debug workflow that forms hypotheses, gathers runtime evidence, and narrows toward a targeted fix.",
+        "acceptance_criteria": [
+          "Collects runtime signals such as logs, traces, screenshots, or metrics",
+          "Shows at least two candidate explanations before converging",
+          "Produces a fix or root-cause report grounded in observed behavior"
+        ],
+        "side_challenges": [
+          "Best-Reliability-System",
+          "Best-Developer-Tool"
+        ],
+        "confidence": 0.96,
+        "notes": "Useful anchor for trust and verification.",
+        "model_used": "manual-curation"
+      },
+      "points": {
+        "difficulty": "Medium",
+        "core_points": 7,
+        "bonus_points": 3,
+        "total_recommended_points": 10
+      },
+      "title": "Build a debugger that gathers evidence before acting"
+    },
+    {
+      "id": "2015863221589049483",
+      "tweet_url": "https://x.com/ericzakariasson/status/2015863221589049483",
+      "tweet_text": "Cursor can now use multiple browsers at once with subagents.",
+      "tweet_created_at": "Mon Jan 26 19:03:39 +0000 2026",
+      "media": [
+        {
+          "type": "video",
+          "url": "https://video.twimg.com/amplify_video/2015862838842032128/vid/avc1/2816x2160/XXaFmxnShzUUad-2.mp4?tag=21"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "No",
+        "idea_theme": "Parallel browser agents for research and QA",
+        "best_track": "Review-QA",
+        "task_brief": "Build a multi-browser verifier that checks different states, environments, or user journeys in parallel.",
+        "acceptance_criteria": [
+          "At least two browser workers run distinct checks in parallel",
+          "Findings are consolidated into one verdict or action plan",
+          "Demo shows a case where parallelism improves coverage or speed"
+        ],
+        "side_challenges": [
+          "Best-Demo"
+        ],
+        "confidence": 0.97,
+        "notes": "Strong QA example rooted in Eric's subagent posts.",
+        "model_used": "manual-curation"
+      },
+      "points": {
+        "difficulty": "Hard",
+        "core_points": 7,
+        "bonus_points": 3,
+        "total_recommended_points": 10
+      },
+      "title": "Run browser QA in parallel with subagents"
+    },
+    {
+      "id": "2016934752188576029",
+      "tweet_url": "https://x.com/ericzakariasson/status/2016934752188576029",
+      "tweet_text": "We're proposing an open standard for tracing agent conversations to the code they generate. It's interoperable with any coding agent or interface.",
+      "tweet_created_at": "Thu Jan 29 18:01:32 +0000 2026",
+      "media": [],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "No",
+        "idea_theme": "Traceability for generated code",
+        "best_track": "Review-QA",
+        "task_brief": "Design a trace or provenance system that helps humans audit what an agent changed, why it changed it, and how to replay or review that decision.",
+        "acceptance_criteria": [
+          "Maps generated output back to prompts, tools, or execution steps",
+          "Supports human review or debugging of agent behavior",
+          "Works across at least two actions, files, or runs"
+        ],
+        "side_challenges": [
+          "Best-Reliability-System"
+        ],
+        "confidence": 0.98,
+        "notes": "Trace is best positioned as a trust primitive, not a standalone category.",
+        "model_used": "manual-curation"
+      },
+      "points": {
+        "difficulty": "Medium",
+        "core_points": 7,
+        "bonus_points": 3,
+        "total_recommended_points": 10
+      },
+      "title": "Give agents an audit trail humans can trust"
+    },
+    {
+      "id": "2014753596223770841",
+      "tweet_url": "https://x.com/ericzakariasson/status/2014753596223770841",
+      "tweet_text": "Agent Skills are now available in Cursor. Skills let agents discover and run specialized prompts and code.",
+      "tweet_created_at": "Fri Jan 23 17:34:24 +0000 2026",
+      "media": [
+        {
+          "type": "video",
+          "url": "https://video.twimg.com/amplify_video/2014752525048807425/vid/avc1/2816x2160/4VaaYOOcmBaByCIt.mp4?tag=21"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "No",
+        "idea_theme": "Reusable capabilities agents can discover and invoke",
+        "best_track": "Agent-Runtime-Tools",
+        "task_brief": "Build a capability layer for agents, such as skills, plugins, or reusable workflows that make execution more reliable and composable.",
+        "acceptance_criteria": [
+          "Agent can select or invoke specialized capabilities on its own",
+          "Capabilities improve quality, speed, or consistency over a baseline",
+          "Demo includes at least one concrete before/after workflow"
+        ],
+        "side_challenges": [
+          "Best-Cursor-Native-Workflow",
+          "Best-Developer-Tool"
+        ],
+        "confidence": 0.98,
+        "notes": "Core runtime primitive for the new direction.",
+        "model_used": "manual-curation"
+      },
+      "points": {
+        "difficulty": "Medium",
+        "core_points": 7,
+        "bonus_points": 3,
+        "total_recommended_points": 10
+      },
+      "title": "Package high-value workflows into discoverable skills"
+    },
+    {
+      "id": "2018376433782198689",
+      "tweet_url": "https://x.com/ericzakariasson/status/2018376433782198689",
+      "tweet_text": "\"install the best store package\", checks health scores, security vulnerabilities, weekly downloads, and TypeScript support, then picks and installs the winner. One prompt.",
+      "tweet_created_at": "Mon Feb 02 17:30:16 +0000 2026",
+      "media": [
+        {
+          "type": "video",
+          "url": "https://video.twimg.com/amplify_video/2018376381114232832/vid/avc1/1020x720/UMXvZ-v1Wg9o9Rp3.mp4?tag=14"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "No",
+        "idea_theme": "Agents that make tool choices with evidence",
+        "best_track": "Agent-Runtime-Tools",
+        "task_brief": "Build a decision engine that researches options, applies selection criteria, and explains why the agent chose one path over another.",
+        "acceptance_criteria": [
+          "Decision pulls from at least two external quality signals",
+          "System explains its recommendation in a way a human can review",
+          "Chosen action is actually executed or prepared automatically"
+        ],
+        "side_challenges": [
+          "Best-Developer-Tool",
+          "Best-Reliability-System"
+        ],
+        "confidence": 0.95,
+        "notes": "Great example of agentic judgment instead of raw automation.",
+        "model_used": "manual-curation"
+      },
+      "points": {
+        "difficulty": "Medium",
+        "core_points": 7,
+        "bonus_points": 3,
+        "total_recommended_points": 10
+      },
+      "title": "Make agents justify their decisions before they act"
+    },
+    {
+      "id": "2012965313621688758",
+      "tweet_url": "https://x.com/ericzakariasson/status/2012965313621688758",
+      "tweet_text": "Run your business directly from Cursor, with Midday MCP server.",
+      "tweet_created_at": "Sun Jan 18 19:08:24 +0000 2026",
+      "media": [
+        {
+          "type": "video",
+          "url": "https://video.twimg.com/amplify_video/2012965256667295744/vid/avc1/1024x720/95ekQhgcUI9CNQh9.mp4?tag=14"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "No",
+        "idea_theme": "Bring real business systems into the agent runtime",
+        "best_track": "Agent-Runtime-Tools",
+        "task_brief": "Use MCP or similar tool interfaces to let agents work across product, ops, finance, support, or incident systems from one workflow.",
+        "acceptance_criteria": [
+          "Agent reads from or writes to at least one external system",
+          "Workflow combines code context with business context",
+          "Demo shows a useful cross-tool action, not just a thin API call"
+        ],
+        "side_challenges": [
+          "Best-Cursor-Native-Workflow"
+        ],
+        "confidence": 0.95,
+        "notes": "Strong bridge between coding agents and operational systems.",
+        "model_used": "manual-curation"
+      },
+      "points": {
+        "difficulty": "Medium",
+        "core_points": 7,
+        "bonus_points": 3,
+        "total_recommended_points": 10
+      },
+      "title": "Connect agents to the systems your company actually uses"
+    },
+    {
+      "id": "2019456112806732159",
+      "tweet_url": "https://x.com/ericzakariasson/status/2019456112806732159",
+      "tweet_text": "We've been working on very long-running coding agents. In a recent week-long run, our system peaked at over 1,000 commits per hour across hundreds of agents.",
+      "tweet_created_at": "Thu Feb 05 17:00:31 +0000 2026",
+      "media": [
+        {
+          "type": "video",
+          "url": "https://video.twimg.com/amplify_video/2019455981134958592/vid/avc1/2724x1640/o0INM8sH7uhpwJ4c.mp4?tag=21"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "No",
+        "idea_theme": "Coordinate many agents toward one outcome",
+        "best_track": "Software-Factory",
+        "task_brief": "Design a system where multiple agents coordinate on one codebase or workflow without collapsing into chaos.",
+        "acceptance_criteria": [
+          "At least two agents coordinate on one shared goal",
+          "System shows planning, delegation, or judging behavior",
+          "Demo explains how conflicts, duplication, or drift are controlled"
+        ],
+        "side_challenges": [
+          "Most-Technically-Ambitious"
+        ],
+        "confidence": 0.99,
+        "notes": "Best anchor for the software-factory track.",
+        "model_used": "manual-curation"
+      },
+      "points": {
+        "difficulty": "Hard",
+        "core_points": 7,
+        "bonus_points": 3,
+        "total_recommended_points": 10
+      },
+      "title": "Coordinate a team of agents, not just one"
+    },
+    {
+      "id": "2019468020066971770",
+      "tweet_url": "https://x.com/ericzakariasson/status/2019468020066971770",
+      "tweet_text": "self driving codebases are inevitable, and i was honestly a bit surprised that we ended up here this fast. still a lot of work to have this run in production, but we'll get there!",
+      "tweet_created_at": "Thu Feb 05 17:47:50 +0000 2026",
+      "media": [
+        {
+          "type": "photo",
+          "url": "https://pbs.twimg.com/media/HAaXFccacAU7vd9.jpg"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "No",
+        "idea_theme": "Build the factory that improves software continuously",
+        "best_track": "Software-Factory",
+        "task_brief": "Prototype a self-improving codebase loop that monitors, prioritizes, changes, and verifies software with minimal human intervention.",
+        "acceptance_criteria": [
+          "Loop includes detection, action, and verification",
+          "Human oversight point is clearly defined",
+          "Demo shows why the system can run repeatedly instead of once"
+        ],
+        "side_challenges": [
+          "Most-Technically-Ambitious",
+          "Best-Demo"
+        ],
+        "confidence": 0.97,
+        "notes": "This is the clearest thesis tweet for the overall hackathon direction.",
+        "model_used": "manual-curation"
+      },
+      "points": {
+        "difficulty": "Hard",
+        "core_points": 7,
+        "bonus_points": 3,
+        "total_recommended_points": 10
+      },
+      "title": "Build a self-improving codebase loop"
+    }
+  ]
+}

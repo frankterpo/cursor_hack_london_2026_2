@@ -1,0 +1,24 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+GenyoNguyen-YouTubeLM,0,a72001c9a0505bcb4e9f978d898b6794bfadac39,2025-11-29T07:28:08+00:00,,88.13,121,0,18,0,0,1,0,0,add frontend structure
+GenyoNguyen-YouTubeLM,1,aa7e38c2bc1b45fd861210ff32ad600b65936204,2025-11-29T07:31:43+00:00,3.58,91.72,368,0,38,0,0,1,0,0,add backend structure
+GenyoNguyen-YouTubeLM,2,875fe16095788818b2dac6b766b893db70dc8791,2025-11-29T07:35:20+00:00,3.62,95.33,444,10,6,0,0,1,0,0,update core example code for qa
+GenyoNguyen-YouTubeLM,3,cbc486732dae5216e75f6fb91060e1af3e03ae5c,2025-11-29T08:11:26+00:00,36.10,131.43,88,3,9,0,0,1,0,0,add quiz
+GenyoNguyen-YouTubeLM,4,d46e0f76ef0af0fbe683a8c4807d3a5d92790fa9,2025-11-29T08:21:53+00:00,10.45,141.88,124,0,2,0,0,1,0,0,chore: Add .gitignore and initial unit tests for the quiz service.
+GenyoNguyen-YouTubeLM,5,89320811ce2819287fed120ec6cdffb6bc13256b,2025-11-29T08:44:38+00:00,22.75,164.63,1682996,3,10833,0,0,1,0,1,"feat: add packges and init /login, /signup pages"
+GenyoNguyen-YouTubeLM,6,e5a508fb9a87797a669e5d8880a7a8a4ebc8d414,2025-11-29T08:45:26+00:00,0.80,165.43,5,120146,25,0,0,1,0,0,refactor: delete unecessary packages
+GenyoNguyen-YouTubeLM,7,663a6be69e76789d7e9dbf120969a326bc764f4e,2025-11-29T08:49:25+00:00,3.98,169.42,154,1114,22,0,0,1,0,0,refactor: packages
+GenyoNguyen-YouTubeLM,8,5570e721d521f4f1f89d9cd7a18cc59371e0d28d,2025-11-29T08:34:22+00:00,-15.05,154.37,571,9,6,0,0,1,0,0,refactor video_summary
+GenyoNguyen-YouTubeLM,9,302c37a870742d7540995aba1095efbe8b19ee55,2025-11-29T09:02:37+00:00,28.25,182.62,951,83,15,0,0,1,0,0,add video summary core
+GenyoNguyen-YouTubeLM,10,8149e9fd7adf32c5ba908d9dddd95b42cc251f1b,2025-11-29T09:04:54+00:00,2.28,184.90,17,0,1,0,0,1,0,0,resolve conflict
+GenyoNguyen-YouTubeLM,11,9e36dd97a5af04a65b8a348300f7272aa4d04809,2025-11-29T09:29:49+00:00,24.92,209.82,2473,94,57,0,0,1,0,1,add ingestion pipeline
+GenyoNguyen-YouTubeLM,12,8b42e51558b3b2648dcbf49feaef4ade31f812f6,2025-11-29T09:38:35+00:00,8.77,218.58,3173,19,25,0,0,1,0,1,feat: .gitignore
+GenyoNguyen-YouTubeLM,13,efa364aed8e53391135edb09949daa821fbdb238,2025-11-29T09:40:43+00:00,2.13,220.72,0,1557300,10782,1,0,1,0,1,add database code
+GenyoNguyen-YouTubeLM,14,bcab6e2167c9f39ac1d229f876ba313f3c3eacb7,2025-11-29T09:41:49+00:00,1.10,221.82,0,9,1,1,0,1,0,0,Merge remote-tracking branch 'refs/remotes/origin/master'
+GenyoNguyen-YouTubeLM,15,5175767b4dafcbeb34973070e549d76065fa3ca1,2025-11-29T10:12:45+00:00,30.93,252.75,45,2,2,0,0,1,0,0,feat: Implement Groq LLM client for streaming completions and add a corresponding test.
+GenyoNguyen-YouTubeLM,16,17222133507cb5fca7bb3d4f2eec2ae9b5fef2ec,2025-11-29T10:15:48+00:00,3.05,255.80,560,101,9,0,0,1,0,0,add rag and enhance prompts
+GenyoNguyen-YouTubeLM,17,00d2faf7cd43bf49faa5b576b462a64977599c29,2025-11-29T10:15:59+00:00,0.18,255.98,258,205,3,1,0,1,0,0,Merge remote-tracking branch 'refs/remotes/origin/master'
+GenyoNguyen-YouTubeLM,18,d1339c2fab062717b737a6da4f51e6af42e99e32,2025-11-29T10:44:25+00:00,28.43,284.42,5804,1329,33,0,0,1,0,1,feat: finalize ui
+GenyoNguyen-YouTubeLM,19,fdad3a417d72e9fa32bcafd4f02babb27178433b,2025-11-29T10:46:14+00:00,1.82,286.23,1230,47,12,0,0,1,0,1,refactor prompts
+GenyoNguyen-YouTubeLM,20,2500d01e59c1b065637a969a3844e7289d36d7e6,2025-11-29T10:48:07+00:00,1.88,288.12,2461,120,17,0,0,1,0,1,add api connections
+GenyoNguyen-YouTubeLM,21,7667262edfa562e11d5d82ff847b1b5c30c8c8f3,2025-11-29T10:50:48+00:00,2.68,290.80,2905,0,2,1,0,1,0,1,resolve conflict
+GenyoNguyen-YouTubeLM,22,51fd818a9e7245d539f36c50e41bdc68b0c8cfcf,2025-11-29T11:13:44+00:00,22.93,313.73,0,0,0,1,0,1,0,0,Merge branch 'master' into fix/frontend

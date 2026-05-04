@@ -1,0 +1,43 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+phuctanpham-garblo,0,c521e3d43b6bc993d64d7efb5ee3befe4546100d,2025-11-29T02:44:05+00:00,,-195.92,2278,0,18,0,1,0,0,1,feat: initial project setup with Turborepo monorepo
+phuctanpham-garblo,1,6d90ef17c367bc327dabfdb191a248fa96195d46,2025-11-29T03:25:29+00:00,41.40,-154.52,388,2,3,0,1,0,0,0,feat: allow SSH settings upload while protecting private keys
+phuctanpham-garblo,2,2dfebe302b808aa681858f96f098eafaace8bc75,2025-11-29T03:27:34+00:00,2.08,-152.43,0,99,1,0,1,0,0,0,refactor: remove ssh/README.md file
+phuctanpham-garblo,3,64819c9f6f3283a616498d07e1cf5f8c9ff9ceea,2025-11-29T03:51:13+00:00,23.65,-128.78,808,0,2,0,1,0,0,0,feat: configure MCP as frontend expert
+phuctanpham-garblo,4,1f0218fa9449e09cfb608a5ff0eab8101dae62b0,2025-11-29T09:45:05+00:00,353.87,225.08,49678,2580,62,0,0,1,0,1,feat: add GitHub Pages deployment
+phuctanpham-garblo,5,2eccf4e9217152ae9b26482ee31fcda2fbc80621,2025-11-29T09:50:10+00:00,5.08,230.17,0,79,1,0,0,1,0,0,fix: remove deprecated workflow file
+phuctanpham-garblo,6,212caa166cf4754c8e1cc14fa2aa9c34081e1782,2025-11-29T09:53:50+00:00,3.67,233.83,58,0,3,0,0,1,0,0,test: add simple HTML test deployment
+phuctanpham-garblo,7,4d5883eb9392f95a3bc62ed216b983ef9f877ad0,2025-11-29T09:55:01+00:00,1.18,235.02,2,57,4,0,0,1,0,0,fix: update Next.js 14 build process for GitHub Pages
+phuctanpham-garblo,8,67c4be849ce4e93fa784e11a4c4449fdc44a4180,2025-11-29T09:55:53+00:00,0.87,235.88,62,0,3,0,0,1,0,0,trigger: force deployment update
+phuctanpham-garblo,9,55fbfe980ff54674f5e0ff4f572f892fa24ce5cb,2025-11-29T10:11:27+00:00,15.57,251.45,1,1,1,0,0,1,0,0,fix: update Node.js version to 20 for better Next.js 14 compatibility
+phuctanpham-garblo,10,34edb75505160cdf808e512258a1e4a369f20f74,2025-11-29T10:13:20+00:00,1.88,253.33,6,3,1,0,0,1,0,0,fix: install root dependencies first before frontend build
+phuctanpham-garblo,11,ec4a1034e4cc8742f9b5b079fd3bffdf048c5144,2025-11-29T10:15:38+00:00,2.30,255.63,24,9,1,0,0,1,0,0,feat: modify test deploy to build and deploy actual consumer-app for testing
+phuctanpham-garblo,12,bcca89425a100b0b7ec64eb64036ff77b78266e3,2025-11-29T10:18:51+00:00,3.22,258.85,77,7,1,0,0,1,0,0,feat: auto-deploy consumer-app on directory changes with self-validation
+phuctanpham-garblo,13,e6e13e3af96e7c9f148f98f41fae31df408aa015,2025-11-29T10:19:06+00:00,0.25,259.10,3,1,1,0,0,1,0,0,test: trigger auto-deployment with self-checks
+phuctanpham-garblo,14,3309c68d30f0df1d2d2083d23e7ef75199cd3166,2025-11-29T10:20:56+00:00,1.83,260.93,1,0,1,0,0,1,0,0,feat: trigger consumer-app auto-deployment
+phuctanpham-garblo,15,0d024d258e739a440964dbe8e3a60fdd0560544e,2025-11-29T10:22:17+00:00,1.35,262.28,0,71,1,0,0,1,0,0,fix: simplify workflow to debug deployment failure
+phuctanpham-garblo,16,6d2e61b89e7669de69ca3f3c34ed46501280ce84,2025-11-29T10:22:48+00:00,0.52,262.80,5,0,2,0,0,1,0,0,feat: add manual deployment trigger
+phuctanpham-garblo,17,66be8f9f4df7ebd82696e2abc1876956a0cee338,2025-11-29T10:25:29+00:00,2.68,265.48,0,1,1,0,0,1,0,0,fix: sync package-lock.json files with package.json
+phuctanpham-garblo,18,65a0d6f76cf456dc700f7e00166e8cb905f0bcfb,2025-11-29T10:26:28+00:00,0.98,266.47,1,1,1,0,0,1,0,0,trigger: manual consumer-app deployment with lock file sync fix
+phuctanpham-garblo,19,31c2b196ab52d34141414f68b01469e6a30e620e,2025-11-29T10:27:56+00:00,1.47,267.93,0,2,1,0,0,1,0,0,fix: simplify test-deploy to manual trigger only
+phuctanpham-garblo,20,637d97600f3d77bcc37db47fe85e569daab5df51,2025-11-29T10:29:26+00:00,1.50,269.43,3,3,1,0,0,1,0,0,"Update build workflow to include npm install, audit --force, and ci commands"
+phuctanpham-garblo,21,8719274543ee54c22aa0473be845deb1dbe13cfd,2025-11-29T10:30:21+00:00,0.92,270.35,2,2,1,0,0,1,0,0,fix: revert to clean npm ci commands to avoid lock file sync issues
+phuctanpham-garblo,22,1f28a3987c71f7eef8ff50822325e05c3f2a2f73,2025-11-29T10:30:46+00:00,0.42,270.77,3,1,2,0,0,1,0,0,trigger: deploy consumer-app with fixed workflow
+phuctanpham-garblo,23,9b3cb8c3c6a9af9c193f6b182fd2abec1029d8a2,2025-11-29T10:32:11+00:00,1.42,272.18,0,2,1,0,0,1,0,0,fix: simplify to manual trigger only for reliable deployment
+phuctanpham-garblo,24,e5c39b107ed89a87ab71d0b46ebfddb472b488a4,2025-11-29T10:34:17+00:00,2.10,274.28,100,0,1,0,0,1,0,0,feat: add comprehensive self-testing to consumer-app deployment
+phuctanpham-garblo,25,34dec723d61e3a592ac3c7da27c1b2372dd78dfa,2025-11-29T10:36:59+00:00,2.70,276.98,196,20,1,0,0,1,0,0,feat: comprehensive self-testing for consumer-app deployment
+phuctanpham-garblo,26,e9d8f423513aabaf2a67b77447ea4ab116f03199,2025-11-29T10:38:32+00:00,1.55,278.53,4,1,2,0,0,1,0,0,test: trigger comprehensive self-verification deployment
+phuctanpham-garblo,27,8b52248826856195bb15477e773a3e8b62b6c11f,2025-11-29T10:40:05+00:00,1.55,280.08,7,29,1,0,0,1,0,0,"fix: remove problematic GitHub API call, focus on live site verification"
+phuctanpham-garblo,28,6ad1b93cca2d0e55d78d797915b9596e97b218eb,2025-11-29T10:40:31+00:00,0.43,280.52,31,9,2,0,0,1,0,0,trigger: comprehensive self-testing consumer-app deployment
+phuctanpham-garblo,29,d78a7c1e83a5b03fd2f4f45e753a00241c519e7e,2025-11-29T10:43:38+00:00,3.12,283.63,237,333,2,0,0,1,0,0,feat: comprehensive consumer-app deployment with self-testing
+phuctanpham-garblo,30,5fbab32dc19bda793f52a84bdcbb31d40dc0e2f4,2025-11-29T10:43:52+00:00,0.23,283.87,1,1,1,0,0,1,0,0,feat: trigger real consumer-app deployment with comprehensive self-testing
+phuctanpham-garblo,31,8af4a3d11503f64ac073137707936f4a205d1a47,2025-11-29T10:45:43+00:00,1.85,285.72,39,150,1,0,0,1,0,0,fix: simplify deployment verification to avoid CI issues
+phuctanpham-garblo,32,86a813c0d0dc37aa8b220980a058d16ca3cc388f,2025-11-29T10:45:57+00:00,0.23,285.95,1,1,1,0,0,1,0,0,fix: trigger consumer-app deployment with simplified self-testing
+phuctanpham-garblo,33,1b1a6078c5c23c466d24b155d1a5231afd1dbcbb,2025-11-29T10:50:36+00:00,4.65,290.60,14,113,1,0,0,1,0,0,fix: simplify deployment workflow to basic functionality
+phuctanpham-garblo,34,d2de97cb1a22a167224c78bb1780a6f562e7c9d9,2025-11-29T10:50:51+00:00,0.25,290.85,1,1,1,0,0,1,0,0,fix: trigger simplified consumer-app deployment
+phuctanpham-garblo,35,6d875bcdb12a21d4ab49bad8f7bd8e2219656e74,2025-11-29T10:53:08+00:00,2.28,293.13,9,8,1,0,0,1,0,0,fix: change to manual workflow dispatch only
+phuctanpham-garblo,36,bdc2d96397009b3d1ced24656620ece6f92cac37,2025-11-29T10:58:45+00:00,5.62,298.75,24,25,1,0,0,1,0,0,fix: simplify deployment to basic version for testing
+phuctanpham-garblo,37,a754b558acb318615d61b33b29da5d21c956a236,2025-11-29T10:59:10+00:00,0.42,299.17,1,1,1,0,0,1,0,0,test: trigger simplified consumer-app deployment workflow
+phuctanpham-garblo,38,9485a83fa6cf6d8e401414d9c7899a0a488cd8ce,2025-11-29T11:02:34+00:00,3.40,302.57,0,26,1,0,0,1,0,0,fix: minimal deployment workflow for testing
+phuctanpham-garblo,39,a3bae5a6d2f180ebc82bdc2a8c61562471a6a5e9,2025-11-29T11:02:52+00:00,0.30,302.87,1,1,1,0,0,1,0,0,test: trigger minimal consumer-app deployment
+phuctanpham-garblo,40,6119f80e22e118a2bd503b3d095289a808a380ae,2025-11-29T11:18:59+00:00,16.12,318.98,994,6210,4,0,0,1,0,0,security: fix all npm vulnerabilities
+phuctanpham-garblo,41,b600f4b5dcabab1fc918e8f5189a4b92a8291e22,2025-11-29T11:39:10+00:00,20.18,339.17,154,20,8,0,0,1,0,0,Fix base path for GitHub Pages assets

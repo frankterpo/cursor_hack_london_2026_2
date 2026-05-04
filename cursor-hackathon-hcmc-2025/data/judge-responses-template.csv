@@ -1,0 +1,2 @@
+Timestamp,Judge,Project,Repo URL,Chosen Track,Concrete Workflow Value (0-30),Track Fit (0-25),Reliability And Verification (0-20),Technical Execution (0-15),Demo Clarity (0-10),Best Cursor-Native Workflow Bonus (0-30),Best Developer Tool Bonus (0-30),Best Reliability System Bonus (0-30),Most Technically Ambitious Bonus (0-30),Best Demo Bonus (0-30),Notes
+2026-03-15 16:00:00,Judge Example,Example Project,https://github.com/example/example-project,Always-On Agents,27,23,18,14,9,10,0,0,0,5,"Strong product sense and clear demo"

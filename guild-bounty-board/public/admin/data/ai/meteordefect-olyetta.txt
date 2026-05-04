@@ -1,0 +1,6 @@
+- All 19 commits fall within the 6-hour hack window (T0‒T1) with a median spacing of ~13.5 minutes, so the timeline is tightly clustered but matches an intense single-session effort.
+- Bulk commits flag noted, but max additions (~6.8k LOC) probably reflect rapid prototyping (assets/styles/components); no pre-event work detected and no merges, so no obvious rule violations.
+- README/tree describe “Olyetta,” a Next.js + Supabase audio AI interviewer with voice interaction, multiple modes, transcription, and usage tracking; media assets and API clients match that scope.
+- Codebase uses modern stack (Next 14, Tailwind, OpenAI + Supabase hooks) and a custom silence detection hook, which aligns with typical hackathon ambitions rather than overly polished production.
+- The commit volume/shape (feature-focused folders, small utility hooks, multiple images) supports an authentic small-team hackathon build rather than a cloned project or pre-work.
+Overall authenticity assessment: looks consistent with a hackathon project

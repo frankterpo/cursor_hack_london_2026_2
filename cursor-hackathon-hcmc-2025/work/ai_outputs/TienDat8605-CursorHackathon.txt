@@ -1,0 +1,7 @@
+- All 8 commits landed during the defined event window (t0–t1) with a median spacing of ~6 minutes, so the timeline fits an intense hackathon sprint and there were no pre-event or post-event commits to raise concerns.  
+- Metrics flag “bulk commits,” and the added 3.7K LOC (max ~3.4K in a single commit) suggest big pushes rather than many small edits, but that can still happen in a small team working quickly—nothing inherently suspicious beyond the usual rush.  
+- The repo hosts a Streamlit-based “FloodSim Sandbox” that loads DEM tiles, runs two numerical solvers (diffusion + shallow water) in `simulation_core.py`, and visualizes results over the included tif terrains, matching the README’s outlined product.  
+- Having dedicated terrain/data assets plus specialized simulation logic feels like a reasonable scope for a hackathon; the codebase looks like a focused prototype rather than a repackaged pre-existing product.  
+- No obvious anomalies in timing or repo shape that would contradict the use of modern AI coding tools; the work looks like a cohesive, time-boxed build with real artifacts to show.
+
+Overall authenticity assessment: looks consistent with a hackathon project

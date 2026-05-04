@@ -1,0 +1,7 @@
+- All five commits fall cleanly within the 3–6h segment of the event window with a very short median span (~1.7 min), so the timing/volume matches an intense hackathon push rather than pre-work or post-hoc polishing.  
+- There are no commits before T0 or after T1, so no obvious timeline violations, but the data flag “bulk commits” and a 4,348-line initial post‑T0 commit suggest a large single drop; judges may want to verify that most work wasn’t pre-buffered and then squashed into one commit.  
+- The repo implements a dispatch system linking customers to service providers via WhatsApp, with a Prisma/SQLite backend, Twilio email/WhatsApp setup guides, a dashboard, and webhook handlers—scope feels reasonable for a hackathon MVP.  
+- Given the rapid commit cadence plus extensive documentation/infra files (Twilio/ngrok setup guides), the project shape looks like a small team pumping out a functional prototype, especially since no significant after-event activity is present.  
+- No other red flags (like merge commits from external branches); the large single commit is the only notable pattern to double-check for authenticity (e.g., ensuring the massive drop wasn’t imported wholesale).
+
+Overall authenticity assessment: looks consistent with a hackathon project

@@ -1,0 +1,7 @@
+- Commits during the hack window (13) are frequent (median ~3.1 min apart) with no pre-T0 work, so the burst matches a focused session, though 16 additional commits after T1 indicate ongoing polishing beyond the judges’ window.
+- Bulk activity flags (13.5K LOC in one commit touching ~60 files) mean a large chunk of the app landed after T0 in a single push, which could be a bulk import rather than incremental hacking; something for judges to watch but not necessarily disqualifying.
+- The repo clearly aims for a full-stack health/nutrition assistant: server-side Node/TypeScript/Express + Firebase plus a Next.js frontend with numerous UI components, docs, and guides (`README.md`, `docs/`, `server/`).
+- Component layout (detailed frontend app structure, contexts, hooks, Firebase utils) and backend layers (controllers, repositories, schemas, scripts) suggest a non-trivial but plausible hackathon scope using modern tools and likely aided by auto-generated boilerplate.
+- Notable pattern: significant technical debt addressed after T1 (16 commits post-window) plus comprehensive documentation/multiple guides might suggest extra time to stabilize, so confirm judges want to reward post-event polish.
+
+Overall authenticity assessment: looks consistent with a hackathon project

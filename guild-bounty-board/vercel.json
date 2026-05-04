@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "routes": [
+    {
+      "src": "/credits/(.*)",
+      "dest": "${CREDITS_APP_URL}/credits/$1",
+      "env": ["CREDITS_APP_URL"]
+    },
+    {
+      "src": "/credits",
+      "dest": "${CREDITS_APP_URL}/credits",
+      "env": ["CREDITS_APP_URL"]
+    }
+  ]
+}

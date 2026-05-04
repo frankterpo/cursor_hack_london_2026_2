@@ -1,0 +1,15 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+neiltron-apple-health-mcp,0,301770a7cde7e3f48fda11fce1ebf408095b3df3,2025-07-21T05:47:12+00:00,,-188652.80,786,0,3,0,1,0,0,0,initial commit. making an apple health export mcp with claude
+neiltron-apple-health-mcp,1,128b0d13f6b6a26616007e6b8f791aaebbd2d834,2025-07-21T18:32:40+00:00,765.47,-187887.33,536,0,4,0,1,0,0,0,init bun project with mcp dependencies
+neiltron-apple-health-mcp,2,88fa5b91e06753059ce5f0a0d9070d873ea63046,2025-07-21T18:34:22+00:00,1.70,-187885.63,380,0,4,0,1,0,0,0,add core database layer with duckdb
+neiltron-apple-health-mcp,3,86b8a607a73c064152ab4ae2c8346dcca2e53342,2025-07-21T18:36:07+00:00,1.75,-187883.88,360,0,3,0,1,0,0,0,add caching and optimization layer
+neiltron-apple-health-mcp,4,08e66b6049b2dd737a2c1c08fbc1e185f5c132e7,2025-07-21T18:39:25+00:00,3.30,-187880.58,792,0,3,0,1,0,0,0,implement mcp tools for health data
+neiltron-apple-health-mcp,5,9e424e445c27b0567cebd1aafa7fd4b53fa5ab59,2025-07-21T18:42:07+00:00,2.70,-187877.88,220,0,1,0,1,0,0,0,add mcp server with stdio transport
+neiltron-apple-health-mcp,6,61b9b6c1e3eb7baf34634bfcf86b1bb51c0f6dd6,2025-07-21T18:44:21+00:00,2.23,-187875.65,506,0,2,0,1,0,0,0,add documentation and examples
+neiltron-apple-health-mcp,7,b429c0415e0ba3b064bf38cff8a12c480bae09be,2025-07-21T21:04:41+00:00,140.33,-187735.32,78,31,7,0,1,0,0,0,clean up console logs for mcp compatibility
+neiltron-apple-health-mcp,8,002be4546a93f8b61090401fffb8435e6404ed34,2025-07-22T03:52:02+00:00,407.35,-187327.97,73,14,2,0,1,0,0,0,fix csv parsing for apple health data format
+neiltron-apple-health-mcp,9,1ffbc75163711dccfcc35e7b0d4930f8711e9b14,2025-07-22T04:00:37+00:00,8.58,-187319.38,11,3,2,0,1,0,0,0,fix json.stringify bigint issues
+neiltron-apple-health-mcp,10,9a7e8b65f713d3dc912b48e784043e5ffbe326c9,2025-07-22T04:43:25+00:00,42.80,-187276.58,19,608,7,0,1,0,0,0,simplify mcp server - remove health insights pattern matching
+neiltron-apple-health-mcp,11,fdb1d3c32d434743b5f7a59a6777327fcd281563,2025-07-22T05:31:16+00:00,47.85,-187228.73,126,128,5,0,1,0,0,0,cleanup readme and add npm package info
+neiltron-apple-health-mcp,12,cc1b19ade3fb9a79dd068822f36c34a5411e81b8,2025-07-22T05:48:31+00:00,17.25,-187211.48,211,4,4,0,1,0,0,0,add health schema tool for table discovery and structure info
+neiltron-apple-health-mcp,13,3cf1edfd2f51b3b2717cfaaf72c8abe03862074d,2025-07-22T05:50:44+00:00,2.22,-187209.27,1,1,1,0,1,0,0,0,bump package version

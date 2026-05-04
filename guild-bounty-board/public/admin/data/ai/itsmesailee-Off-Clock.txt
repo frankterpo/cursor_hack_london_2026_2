@@ -1,0 +1,7 @@
+- Commit volume/timing matches a compact build: single commit logged during the 3–6 h slot inside the 6 h hack window with no outside work, so the edit history is consistent with a one-session sprint.
+- Big bulk change (1 commit, ~1307 LOC across 4 files) is flagged by the metrics, so judges should note there’s no incremental history or staging to understand development flow.
+- Product appears to be a polished “Off Clock” 90-second ritual landing experience with layered animations, stage-driven text, and audio—see `fullscreen.html:1` for the layout and scripted sequence plus `Ritual.mp3` for the ambient track.
+- README is just three repeated headers (`README.md:1`), so documentation is minimal, which fits a rapid front-end focus but leaves little narrative about functionality.
+- The codebase is a single static page with CSS/JS animation, modest scope, and no external build system—this is manageable for a solo hackathon build even if AI tools generated much of the HTML/CSS.
+
+Overall authenticity assessment: looks consistent with a hackathon project

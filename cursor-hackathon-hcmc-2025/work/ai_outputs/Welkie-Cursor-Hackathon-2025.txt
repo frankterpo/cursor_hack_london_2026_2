@@ -1,0 +1,7 @@
+- Entire development happened between 06:00 and 12:00 UTC on day-of, with six commits spaced ~9.4 minutes apart and none outside the event window—timing fits a short hackathon sprint.
+- Metrics flag a “large initial commit” (9,103 LOC) and “bulk commits,” which likely reflect scaffolding/boilerplate dropping or rapid merge of generated files; not inherently fraudulent but worth a quick spot check.
+- README/tree describe a browser-only Next.js/TypeScript/Tailwind personal finance app with dashboards, transactions CRUD, CSV/receipt import, goal tracking, and subscription insights.
+- Code organizes clear feature folders (app pages, components, utils, store) and relies on modern tooling (Zustand, Chart.js, Tailwind, AI-style insights) that align with what AI-assisted coding could help produce within hours.
+- No commits before T0, consistent commit cadence, and feature scope matches an ambitious yet plausible hackathon effort; no obvious external dependency contradictions.
+
+Overall authenticity assessment: looks consistent with a hackathon project

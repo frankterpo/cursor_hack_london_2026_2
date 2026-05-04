@@ -1,0 +1,7 @@
+- Two commits only, both timestamped inside the 06:00–12:00 UTC window (e.g., `Sat Nov 29 17:51 +0700`), with no prior history and a 0.316 min median gap—supports the activity happening during the hackathon burst rather than before or after.
+- Bulk commit flagged by metrics is the “initial website” push that added 17 files/1,163 LOC in one go (`App.tsx`, `services/geminiService.ts`, all components, config) which is typical when scaffolding a feature-rich UI quickly for a short event.
+- App-level `App.tsx` plus the component tree orchestrates a multi-step organizer flow (setup → questionnaire → collection → grouping/results), so the product reads as an AI-assisted event team-builder rather than a barebones example.
+- `services/geminiService.ts` ties to Gemini prompts for questionnaires, mock participants, and group recommendations, so scope matches a modern-hack stack of Vite + React + generative AI rather than something huge or backend-heavy.
+- No commits after the hackathon window and no iterative polish beyond the initial push; that flat history is a common signature of finishing a working demo quickly and leaving it as delivered.
+
+Overall authenticity assessment: looks consistent with a hackathon project

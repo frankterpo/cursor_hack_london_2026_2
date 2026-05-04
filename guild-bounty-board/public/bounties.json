@@ -1,0 +1,1555 @@
+{
+  "generated_at": "2026-02-26T16:38:36.662Z",
+  "source": {
+    "data_path": "guild-bounty-board/public/data.json",
+    "thread_path": null,
+    "opencode_endpoint": "https://api.opencode.ai/v1/chat/completions",
+    "opencode_models_priority": [
+      "opencode/minimax-m2.5-free",
+      "opencode/glm-4.7-free",
+      "opencode/deepseek-v3.1-free"
+    ]
+  },
+  "hackathon_format": {
+    "main_tracks": [
+      {
+        "id": "Agent-Orchestration",
+        "name": "Agent Orchestration",
+        "description": "Subagents, parallel execution, model routing, and tool composition."
+      },
+      {
+        "id": "Autonomous-Cloud",
+        "name": "Autonomous Cloud",
+        "description": "Long-running agents, background workflows, PR loops, and reliability at scale."
+      },
+      {
+        "id": "DevEx-JIT",
+        "name": "DevEx + JIT Tools",
+        "description": "Context-aware developer UX, proactive assistants, and high-leverage workflow tools."
+      },
+      {
+        "id": "Verification-Trace",
+        "name": "Verification + Trace",
+        "description": "Observability, evals, provenance, safety checks, and anti-hallucination systems."
+      }
+    ],
+    "side_challenges": [
+      {
+        "id": "Golden-Buzzer",
+        "name": "Golden Buzzer",
+        "bonus_points": 1,
+        "description": "Standout wow-factor project selected by judges."
+      },
+      {
+        "id": "Zero-Manual-Run",
+        "name": "Zero Manual Run",
+        "bonus_points": 1,
+        "description": "End-to-end build/test loop with near-zero manual edits."
+      },
+      {
+        "id": "Community-Choice",
+        "name": "Community Choice",
+        "bonus_points": 1,
+        "description": "Participant vote winner."
+      },
+      {
+        "id": "Best-Newcomer",
+        "name": "Best Newcomer Team",
+        "bonus_points": 1,
+        "description": "Best submission from first-time hackathon participants."
+      }
+    ],
+    "rubric": {
+      "core_max_points": 7,
+      "side_bonus_cap": 3,
+      "criteria": [
+        {
+          "name": "Implementation Quality",
+          "points": 2
+        },
+        {
+          "name": "Challenge Fit",
+          "points": 2
+        },
+        {
+          "name": "Innovation",
+          "points": 1
+        },
+        {
+          "name": "Demo Clarity",
+          "points": 1
+        },
+        {
+          "name": "Open Source Readiness",
+          "points": 1
+        }
+      ],
+      "total_cap": 10
+    },
+    "organizer_learnings": [
+      "Team size: 1-4 builders. Require individual registration for fair credit assignment.",
+      "Best event length for this format: around 3 hours of build time plus demos.",
+      "Demo format: strict 3-5 minute cap per team with AV check before presentations.",
+      "For larger cohorts, shortlist using pairwise comparisons to reduce judge bias.",
+      "Use a Golden Buzzer mechanic for exceptional outlier projects.",
+      "Setup support is critical; pair beginners with experienced builders early."
+    ],
+    "organizer_tools": [
+      {
+        "name": "Slido",
+        "use": "Participant voting and community choice."
+      },
+      {
+        "name": "Cursor Credits CSV Mailer",
+        "use": "Credit distribution for <=100 attendees."
+      },
+      {
+        "name": "Cursor Credits Portal",
+        "use": "Scalable credit redemption workflow."
+      },
+      {
+        "name": "Cursor QR Distributor",
+        "use": "Offline check-in + per-user credit handoff."
+      },
+      {
+        "name": "Hackathon Integrity Toolkit",
+        "use": "Detect likely pre-built submissions."
+      }
+    ],
+    "judging_format": {
+      "demo_length_minutes": 3,
+      "suggested_shortlisting": "Pairwise comparison for large volumes; golden buzzer for standout projects."
+    }
+  },
+  "bounties": [
+    {
+      "id": "1946323104692945188",
+      "tweet_url": "https://x.com/ericzakariasson/status/1946323104692945188",
+      "tweet_text": "I'm joining Cursor to teach the future of coding! There are millions of developers learning how to use AI and they need pragmatic advice: 1. We need to teach new developers strong foundations, so they know what to learn, and how to solve issues when debugging. 2. We need to",
+      "tweet_created_at": "Fri Jul 18 21:36:03 +0000 2025",
+      "media": [],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "I'm joining Cursor to teach the future of coding! There are millions of developers learning how to use AI and they need ",
+        "best_track": "Verification-Trace",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [
+          "Golden-Buzzer"
+        ],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Medium",
+        "core_points": 7,
+        "bonus_points": 3,
+        "total_recommended_points": 10
+      },
+      "title": "Build: I'm joining Cursor to teach the future of coding! There are millions of developers le"
+    },
+    {
+      "id": "1983233494575952138",
+      "tweet_url": "https://x.com/ericzakariasson/status/1983233494575952138",
+      "tweet_text": "NEO The Home Robot Order Today",
+      "tweet_created_at": "Tue Oct 28 18:04:46 +0000 2025",
+      "media": [
+        {
+          "type": "video",
+          "url": "https://video.twimg.com/amplify_video/1983232943272407042/vid/avc1/3840x2160/ZQa50SiF0Hs7Je6z.mp4?tag=21"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "NEO The Home Robot Order Today",
+        "best_track": "DevEx-JIT",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: NEO The Home Robot Order Today"
+    },
+    {
+      "id": "1919846420234031146",
+      "tweet_url": "https://x.com/ericzakariasson/status/1919846420234031146",
+      "tweet_text": "Cursor is now free for students. Enjoy!",
+      "tweet_created_at": "Tue May 06 20:07:10 +0000 2025",
+      "media": [],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "Cursor is now free for students",
+        "best_track": "DevEx-JIT",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: Cursor is now free for students. Enjoy!"
+    },
+    {
+      "id": "1999147953609736464",
+      "tweet_url": "https://x.com/ericzakariasson/status/1999147953609736464",
+      "tweet_text": "You can now design directly in your codebase. Select elements, modify them visually, and Cursor writes the code.",
+      "tweet_created_at": "Thu Dec 11 16:03:09 +0000 2025",
+      "media": [
+        {
+          "type": "video",
+          "url": "https://video.twimg.com/amplify_video/1999147281610948608/vid/avc1/1920x1080/2FoXm6S49XutQxE0.mp4?tag=21"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "You can now design directly in your codebase",
+        "best_track": "DevEx-JIT",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: You can now design directly in your codebase. Select elements, modify them visually, "
+    },
+    {
+      "id": "1937902205765607626",
+      "tweet_url": "https://x.com/ericzakariasson/status/1937902205765607626",
+      "tweet_text": "+1 for \"context engineering\" over \"prompt engineering\". People associate prompts with short task descriptions you'd give an LLM in your day-to-day use. When in every industrial-strength LLM app, context engineering is the delicate art and science of filling the context window",
+      "tweet_created_at": "Wed Jun 25 15:54:24 +0000 2025",
+      "media": [],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "+1 for \"context engineering\" over \"prompt engineering\"",
+        "best_track": "Autonomous-Cloud",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Hard",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: +1 for \"context engineering\" over \"prompt engineering\". People associate prompts with"
+    },
+    {
+      "id": "2017132008934428963",
+      "tweet_url": "https://x.com/ericzakariasson/status/2017132008934428963",
+      "tweet_text": "Now launched: Free, open-source coaster park builder with shops, water/metal/wooden coasters, guests, food, shops, and more No signup required, co-op included",
+      "tweet_created_at": "Fri Jan 30 07:05:22 +0000 2026",
+      "media": [
+        {
+          "type": "video",
+          "url": "https://video.twimg.com/amplify_video/2017131472868823041/vid/avc1/2824x2024/vARZEUN0tkAUcAK5.mp4?tag=21"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "Now launched: Free, open-source coaster park builder with shops, water/metal/wooden coasters, guests, food, shops, and m",
+        "best_track": "DevEx-JIT",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: Now launched: Free, open-source coaster park builder with shops, water/metal/wooden c"
+    },
+    {
+      "id": "2018838297221726482",
+      "tweet_url": "https://x.com/ericzakariasson/status/2018838297221726482",
+      "tweet_text": "GPT-5.2 and GPT-5.2-Codex are now 40% faster. We have optimized our inference stack for all API customers. Same model. Same weights. Lower latency.",
+      "tweet_created_at": "Wed Feb 04 00:05:32 +0000 2026",
+      "media": [],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "GPT-5",
+        "best_track": "Agent-Orchestration",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: GPT-5.2 and GPT-5.2-Codex are now 40% faster. We have optimized our inference stack f"
+    },
+    {
+      "id": "1930358111677886677",
+      "tweet_url": "https://x.com/ericzakariasson/status/1930358111677886677",
+      "tweet_text": "Cursor 1.0 is out now! Cursor can now review your code, remember its mistakes, and work on dozens of tasks in the background.",
+      "tweet_created_at": "Wed Jun 04 20:16:52 +0000 2025",
+      "media": [
+        {
+          "type": "video",
+          "url": "https://video.twimg.com/amplify_video/1930331453658935301/vid/avc1/3840x2160/js6qa-xA85QTpYBw.mp4?tag=21"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "Cursor 1",
+        "best_track": "Autonomous-Cloud",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: Cursor 1.0 is out now! Cursor can now review your code, remember its mistakes, and wo"
+    },
+    {
+      "id": "1964460998821367812",
+      "tweet_url": "https://x.com/ericzakariasson/status/1964460998821367812",
+      "tweet_text": "we should start a collection of the best LLM phrases. i’ll go first: Ah, I see the issue now",
+      "tweet_created_at": "Sat Sep 06 22:49:34 +0000 2025",
+      "media": [],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "we should start a collection of the best LLM phrases",
+        "best_track": "DevEx-JIT",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: we should start a collection of the best LLM phrases. i’ll go first: Ah, I see the is"
+    },
+    {
+      "id": "2000552065312194701",
+      "tweet_url": "https://x.com/ericzakariasson/status/2000552065312194701",
+      "tweet_text": "&gt;in london &gt;jump in a cab &gt;driver asks what i do for work &gt;me: \"ai stuff\" &gt;\"which ai company?\" &gt;me: \"cursor\" &gt;\"aaah, the expensive saucepans?\"",
+      "tweet_created_at": "Mon Dec 15 13:02:35 +0000 2025",
+      "media": [
+        {
+          "type": "photo",
+          "url": "https://pbs.twimg.com/media/G8Njf9JaEAEkX4A.jpg"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "&gt;in london &gt;jump in a cab &gt;driver asks what i do for work &gt;me: \"ai stuff\" &gt;\"which ai company?\" &gt;me: \"c",
+        "best_track": "DevEx-JIT",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: &gt;in london &gt;jump in a cab &gt;driver asks what i do for work &gt;me: \"ai stuff\""
+    },
+    {
+      "id": "1961129789944627207",
+      "tweet_url": "https://x.com/ericzakariasson/status/1961129789944627207",
+      "tweet_text": "Introducing Grok Code Fast 1, a speedy and economical reasoning model that excels at agentic coding. Now available for free on GitHub Copilot, Cursor, Cline, Kilo Code, Roo Code, opencode, and Windsurf.",
+      "tweet_created_at": "Thu Aug 28 18:12:32 +0000 2025",
+      "media": [],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "Introducing Grok Code Fast 1, a speedy and economical reasoning model that excels at agentic coding",
+        "best_track": "Agent-Orchestration",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: Introducing Grok Code Fast 1, a speedy and economical reasoning model that excels at "
+    },
+    {
+      "id": "1925594428095561941",
+      "tweet_url": "https://x.com/ericzakariasson/status/1925594428095561941",
+      "tweet_text": "Sonnet 4 is available in Cursor! We've been very impressed by its coding ability. It is much easier to control than 3.7 and is excellent at understanding codebases. It appears to be a new state of the art.",
+      "tweet_created_at": "Thu May 22 16:47:42 +0000 2025",
+      "media": [
+        {
+          "type": "photo",
+          "url": "https://pbs.twimg.com/media/GrkVxbAboAIiscu.jpg"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "Sonnet 4 is available in Cursor! We've been very impressed by its coding ability",
+        "best_track": "Autonomous-Cloud",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: Sonnet 4 is available in Cursor! We've been very impressed by its coding ability. It "
+    },
+    {
+      "id": "1988971258449682608",
+      "tweet_url": "https://x.com/ericzakariasson/status/1988971258449682608",
+      "tweet_text": "We've raised $2.3B in Series D funding from Accel, Andreessen Horowitz, Coatue, Thrive, Nvidia, and Google. We're also happy to share that Cursor has grown to over $1B in annualized revenue and now produces more code than any other agent in the world. This funding will allow",
+      "tweet_created_at": "Thu Nov 13 14:04:35 +0000 2025",
+      "media": [],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "We've raised $2",
+        "best_track": "Autonomous-Cloud",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: We've raised $2.3B in Series D funding from Accel, Andreessen Horowitz, Coatue, Thriv"
+    },
+    {
+      "id": "2011562190286045552",
+      "tweet_url": "https://x.com/ericzakariasson/status/2011562190286045552",
+      "tweet_text": "We built a browser with GPT-5.2 in Cursor. It ran uninterrupted for one week. It's 3M+ lines of code across thousands of files. The rendering engine is from-scratch in Rust with HTML parsing, CSS cascade, layout, text shaping, paint, and a custom JS VM. It *kind of* works! It",
+      "tweet_created_at": "Wed Jan 14 22:12:53 +0000 2026",
+      "media": [
+        {
+          "type": "photo",
+          "url": "https://pbs.twimg.com/media/G-p6xnDacAAsiTy.jpg"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "We built a browser with GPT-5",
+        "best_track": "Agent-Orchestration",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Hard",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: We built a browser with GPT-5.2 in Cursor. It ran uninterrupted for one week. It's 3M"
+    },
+    {
+      "id": "1939702194863026504",
+      "tweet_url": "https://x.com/ericzakariasson/status/1939702194863026504",
+      "tweet_text": "Cursor is now on your phone and on the web. Spin off dozens of agents and review them later in your editor.",
+      "tweet_created_at": "Mon Jun 30 15:06:55 +0000 2025",
+      "media": [
+        {
+          "type": "video",
+          "url": "https://video.twimg.com/amplify_video/1939700264807919616/vid/avc1/3840x2160/CoK4iUGN63RDL2ez.mp4?tag=21"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "Cursor is now on your phone and on the web",
+        "best_track": "DevEx-JIT",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: Cursor is now on your phone and on the web. Spin off dozens of agents and review them"
+    },
+    {
+      "id": "1983567619946147967",
+      "tweet_url": "https://x.com/ericzakariasson/status/1983567619946147967",
+      "tweet_text": "Introducing Cursor 2.0. Our first coding model and the best way to code with agents.",
+      "tweet_created_at": "Wed Oct 29 16:12:28 +0000 2025",
+      "media": [
+        {
+          "type": "video",
+          "url": "https://video.twimg.com/amplify_video/1983565754487504896/vid/avc1/3840x2160/JKytfzsMDz_pLe4m.mp4?tag=21"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "Introducing Cursor 2",
+        "best_track": "Agent-Orchestration",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: Introducing Cursor 2.0. Our first coding model and the best way to code with agents."
+    },
+    {
+      "id": "2002423821459173493",
+      "tweet_url": "https://x.com/ericzakariasson/status/2002423821459173493",
+      "tweet_text": "IsoCIty is an open source fully featured city builder woth pedestrians, cars, boats, trains, planes, helicopters, emergencies, and much more Pull requests welcome",
+      "tweet_created_at": "Sat Dec 20 17:00:16 +0000 2025",
+      "media": [
+        {
+          "type": "video",
+          "url": "https://video.twimg.com/amplify_video/2002423682422222855/vid/avc1/3836x2160/KEEVYi842WJLAajD.mp4?tag=21"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "IsoCIty is an open source fully featured city builder woth pedestrians, cars, boats, trains, planes, helicopters, emerge",
+        "best_track": "DevEx-JIT",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: IsoCIty is an open source fully featured city builder woth pedestrians, cars, boats, "
+    },
+    {
+      "id": "2017324477131177984",
+      "tweet_url": "https://x.com/ericzakariasson/status/2017324477131177984",
+      "tweet_text": "this is single handedly the most impressive project i've seen in a long time. and it's coming from the person who runs product at cursor",
+      "tweet_created_at": "Fri Jan 30 19:50:10 +0000 2026",
+      "media": [],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "this is single handedly the most impressive project i've seen in a long time",
+        "best_track": "Autonomous-Cloud",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: this is single handedly the most impressive project i've seen in a long time. and it'"
+    },
+    {
+      "id": "1953559384531050724",
+      "tweet_url": "https://x.com/ericzakariasson/status/1953559384531050724",
+      "tweet_text": "Cursor is now in your terminal! It’s an early beta. Access all models. Move easily between your CLI and editor.",
+      "tweet_created_at": "Thu Aug 07 20:50:27 +0000 2025",
+      "media": [
+        {
+          "type": "photo",
+          "url": "https://pbs.twimg.com/media/GxxsqlHaAAAjogt.jpg"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "Cursor is now in your terminal! It’s an early beta",
+        "best_track": "Agent-Orchestration",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: Cursor is now in your terminal! It’s an early beta. Access all models. Move easily be"
+    },
+    {
+      "id": "1950659072703033553",
+      "tweet_url": "https://x.com/ericzakariasson/status/1950659072703033553",
+      "tweet_text": "Cursor changed everything for designers. I went from sketching UI to shipping a full agent OS. The gap between ideas and reality is closer than ever to zero. Here’s the story:",
+      "tweet_created_at": "Wed Jul 30 20:45:39 +0000 2025",
+      "media": [
+        {
+          "type": "video",
+          "url": "https://video.twimg.com/amplify_video/1950655782556753920/vid/avc1/3840x2160/ksRrl3i57onOjZm5.mp4?tag=21"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "Cursor changed everything for designers",
+        "best_track": "DevEx-JIT",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: Cursor changed everything for designers. I went from sketching UI to shipping a full "
+    },
+    {
+      "id": "1972778817854067188",
+      "tweet_url": "https://x.com/ericzakariasson/status/1972778817854067188",
+      "tweet_text": "Cursor can now control your browser. Agent can take screenshots, improve UI, and debug client issues. Try our early preview with Sonnet 4.5.",
+      "tweet_created_at": "Mon Sep 29 21:41:37 +0000 2025",
+      "media": [
+        {
+          "type": "video",
+          "url": "https://video.twimg.com/amplify_video/1972777398773936128/vid/avc1/2732x1738/ePqj0xKMMfCXNaXo.mp4?tag=21"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "Cursor can now control your browser",
+        "best_track": "Verification-Trace",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Medium",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: Cursor can now control your browser. Agent can take screenshots, improve UI, and debu"
+    },
+    {
+      "id": "1932484008816050492",
+      "tweet_url": "https://x.com/ericzakariasson/status/1932484008816050492",
+      "tweet_text": "The o3 price drop is now reflected in Cursor! o3 is a fantastic model, and we're excited that it can now be used as a daily driver.",
+      "tweet_created_at": "Tue Jun 10 17:04:26 +0000 2025",
+      "media": [],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "The o3 price drop is now reflected in Cursor! o3 is a fantastic model, and we're excited that it can now be used as a da",
+        "best_track": "Autonomous-Cloud",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: The o3 price drop is now reflected in Cursor! o3 is a fantastic model, and we're exci"
+    },
+    {
+      "id": "1952782293925298655",
+      "tweet_url": "https://x.com/ericzakariasson/status/1952782293925298655",
+      "tweet_text": "Claude Opus 4.1 is available in Cursor! Let us know what you think.",
+      "tweet_created_at": "Tue Aug 05 17:22:34 +0000 2025",
+      "media": [],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "Claude Opus 4",
+        "best_track": "DevEx-JIT",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: Claude Opus 4.1 is available in Cursor! Let us know what you think."
+    },
+    {
+      "id": "1953233094603096532",
+      "tweet_url": "https://x.com/ericzakariasson/status/1953233094603096532",
+      "tweet_text": "Cursor 1.4 is out with a significantly more capable agent. It’s now much better at challenging and long-running tasks, especially in large codebases. We’ve also given the agent better tools, made token usage more efficient, and improved code editing accuracy.",
+      "tweet_created_at": "Wed Aug 06 23:13:53 +0000 2025",
+      "media": [],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "Cursor 1",
+        "best_track": "Autonomous-Cloud",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: Cursor 1.4 is out with a significantly more capable agent. It’s now much better at ch"
+    },
+    {
+      "id": "1916968123535880684",
+      "tweet_url": "https://x.com/ericzakariasson/status/1916968123535880684",
+      "tweet_text": "Cursor writes almost 1 billion lines of accepted code a day. To put it in perspective, the entire world produces just a few billion lines a day.",
+      "tweet_created_at": "Mon Apr 28 21:29:50 +0000 2025",
+      "media": [],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "Cursor writes almost 1 billion lines of accepted code a day",
+        "best_track": "Autonomous-Cloud",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: Cursor writes almost 1 billion lines of accepted code a day. To put it in perspective"
+    },
+    {
+      "id": "1976323244874711285",
+      "tweet_url": "https://x.com/ericzakariasson/status/1976323244874711285",
+      "tweet_text": "ok now some must have rules for sonnet",
+      "tweet_created_at": "Thu Oct 09 16:25:54 +0000 2025",
+      "media": [
+        {
+          "type": "photo",
+          "url": "https://pbs.twimg.com/media/G21PhH5bUAA-oZF.jpg"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "ok now some must have rules for sonnet",
+        "best_track": "DevEx-JIT",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: ok now some must have rules for sonnet"
+    },
+    {
+      "id": "1999513884382597485",
+      "tweet_url": "https://x.com/ericzakariasson/status/1999513884382597485",
+      "tweet_text": "I migrated cursor​.com from a CMS to raw code and Markdown. I had estimated it would take a few weeks, but was able to finish the migration in three days with $260 in tokens and hundreds of agents. Here's how I did it + all my my usage stats.",
+      "tweet_created_at": "Fri Dec 12 16:17:13 +0000 2025",
+      "media": [],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "I migrated cursor​",
+        "best_track": "DevEx-JIT",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: I migrated cursor​.com from a CMS to raw code and Markdown. I had estimated it would "
+    },
+    {
+      "id": "1993876834375880874",
+      "tweet_url": "https://x.com/ericzakariasson/status/1993876834375880874",
+      "tweet_text": "turns out, senior engineers accept more agent output than juniors. this is because: - they write higher-signal prompts with tighter spec and minimal ambiguity - they decompose work into agent-compatible units - they have stronger priors for correctness, making review faster and",
+      "tweet_created_at": "Thu Nov 27 02:57:36 +0000 2025",
+      "media": [
+        {
+          "type": "photo",
+          "url": "https://pbs.twimg.com/media/G6usaisa0AAH528.jpg"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "turns out, senior engineers accept more agent output than juniors",
+        "best_track": "Autonomous-Cloud",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Hard",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: turns out, senior engineers accept more agent output than juniors. this is because: -"
+    },
+    {
+      "id": "1925323247253692744",
+      "tweet_url": "https://x.com/ericzakariasson/status/1925323247253692744",
+      "tweet_text": "New Tab model, 1M+ context windows, and a preview of our background agent",
+      "tweet_created_at": "Wed May 21 22:50:07 +0000 2025",
+      "media": [
+        {
+          "type": "video",
+          "url": "https://video.twimg.com/amplify_video/1925319596229496832/vid/avc1/3840x2160/q26dwgLJrskRen-f.mp4?tag=21"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "New Tab model, 1M+ context windows, and a preview of our background agent",
+        "best_track": "Autonomous-Cloud",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: New Tab model, 1M+ context windows, and a preview of our background agent"
+    },
+    {
+      "id": "1919770687167684808",
+      "tweet_url": "https://x.com/ericzakariasson/status/1919770687167684808",
+      "tweet_text": "Gemini 2.5 Pro just got an upgrade &amp; is now even better at coding, with significant gains in front-end web dev, editing, and transformation. We also fixed a bunch of function calling issues that folks have been reporting, it should now be much more reliable. More details in 🧵",
+      "tweet_created_at": "Tue May 06 15:06:14 +0000 2025",
+      "media": [
+        {
+          "type": "photo",
+          "url": "https://pbs.twimg.com/media/GqRgjC0WgAAJJsC.jpg"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "Gemini 2",
+        "best_track": "Autonomous-Cloud",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: Gemini 2.5 Pro just got an upgrade &amp; is now even better at coding, with significa"
+    },
+    {
+      "id": "1940817965211177471",
+      "tweet_url": "https://x.com/ericzakariasson/status/1940817965211177471",
+      "tweet_text": "Cursor can now make to-do lists, search PRs, and queue messages. We’ve also made Tab much faster.",
+      "tweet_created_at": "Thu Jul 03 17:00:36 +0000 2025",
+      "media": [
+        {
+          "type": "video",
+          "url": "https://video.twimg.com/amplify_video/1940809587692638222/vid/avc1/3840x2160/fIkvo4xdqX3vTl7-.mp4?tag=21"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "Cursor can now make to-do lists, search PRs, and queue messages",
+        "best_track": "Autonomous-Cloud",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: Cursor can now make to-do lists, search PRs, and queue messages. We’ve also made Tab "
+    },
+    {
+      "id": "1995671800643297542",
+      "tweet_url": "https://x.com/ericzakariasson/status/1995671800643297542",
+      "tweet_text": "this is the most used slash command internally at cursor to remove ai slop install it to your project with this link:",
+      "tweet_created_at": "Tue Dec 02 01:50:09 +0000 2025",
+      "media": [
+        {
+          "type": "photo",
+          "url": "https://pbs.twimg.com/media/G7IM05tbYAAjE8U.jpg"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "this is the most used slash command internally at cursor to remove ai slop install it to your project with this link:",
+        "best_track": "Autonomous-Cloud",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: this is the most used slash command internally at cursor to remove ai slop install it"
+    },
+    {
+      "id": "2011810357942084085",
+      "tweet_url": "https://x.com/ericzakariasson/status/2011810357942084085",
+      "tweet_text": "Rules, commands, MCP servers, subagents, modes, hooks, skills... There's a lot of stuff! And tbh it's a little confusing. Here's what you need to know (and how we got here).",
+      "tweet_created_at": "Thu Jan 15 14:39:01 +0000 2026",
+      "media": [
+        {
+          "type": "video",
+          "url": "https://video.twimg.com/amplify_video/2011805575735062528/vid/avc1/1920x1080/2fOi8-4E6RMKp9W_.mp4?tag=21"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "Rules, commands, MCP servers, subagents, modes, hooks, skills",
+        "best_track": "Agent-Orchestration",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Medium",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: Rules, commands, MCP servers, subagents, modes, hooks, skills... There's a lot of stu"
+    },
+    {
+      "id": "1943465785726505206",
+      "tweet_url": "https://x.com/ericzakariasson/status/1943465785726505206",
+      "tweet_text": "@ns123abc A Cursor engineering team is at xAI today, so integration issues are being solved in real-time",
+      "tweet_created_at": "Fri Jul 11 00:22:05 +0000 2025",
+      "media": [],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "@ns123abc A Cursor engineering team is at xAI today, so integration issues are being solved in real-time",
+        "best_track": "DevEx-JIT",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Hard",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: @ns123abc A Cursor engineering team is at xAI today, so integration issues are being "
+    },
+    {
+      "id": "1716725617599844823",
+      "tweet_url": "https://x.com/ericzakariasson/status/1716725617599844823",
+      "tweet_text": "Red flags in a React codebase 🚩 functions named handleClick,handleSubmit 🚩 preventDefault 🚩 useMemo 🚩 fetch inside useEffect 🚩 &lt;div onClick/&gt; 🚩 a \"hooks\" directory 🚩 css files 🚩 icon library in package.json",
+      "tweet_created_at": "Tue Oct 24 07:57:37 +0000 2023",
+      "media": [],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "Red flags in a React codebase 🚩 functions named handleClick,handleSubmit 🚩 preventDefault 🚩 useMemo 🚩 fetch inside u",
+        "best_track": "Autonomous-Cloud",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: Red flags in a React codebase 🚩 functions named handleClick,handleSubmit 🚩 preventD"
+    },
+    {
+      "id": "1950276273840017873",
+      "tweet_url": "https://x.com/ericzakariasson/status/1950276273840017873",
+      "tweet_text": "Cursor 1.3 is out! You can now collaborate with Agent in your terminal, clearly see context window usage, and make faster edits.",
+      "tweet_created_at": "Tue Jul 29 19:24:32 +0000 2025",
+      "media": [
+        {
+          "type": "photo",
+          "url": "https://pbs.twimg.com/media/GxDB_q4bMAADyNA.png"
+        }
+      ],
+      "thread_replies_from_eric": [],
+      "analysis": {
+        "is_new_idea": "Yes",
+        "idea_theme": "Cursor 1",
+        "best_track": "DevEx-JIT",
+        "task_brief": "Build a working prototype inspired by this tweet and Eric's replies. Focus on a concrete developer workflow and ship a demoable end-to-end flow.",
+        "acceptance_criteria": [
+          "Repository with runnable code and README",
+          "3-5 minute demo covering problem, approach, and results",
+          "At least one measurable quality signal (tests, evals, latency, or bug reduction)"
+        ],
+        "side_challenges": [],
+        "confidence": 0.45,
+        "notes": "No thread replies found; classified from root tweet only.",
+        "model_used": "heuristic-fallback"
+      },
+      "points": {
+        "difficulty": "Easy",
+        "core_points": 7,
+        "bonus_points": 0,
+        "total_recommended_points": 7
+      },
+      "title": "Build: Cursor 1.3 is out! You can now collaborate with Agent in your terminal, clearly see c"
+    }
+  ],
+  "logs": [
+    "[warn] tweet 1983233494575952138 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1983233494575952138 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1983233494575952138 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1919846420234031146 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1919846420234031146 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1919846420234031146 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1999147953609736464 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1999147953609736464 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1999147953609736464 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1937902205765607626 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1937902205765607626 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1937902205765607626 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2017132008934428963 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2017132008934428963 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2017132008934428963 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2018838297221726482 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2018838297221726482 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2018838297221726482 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1930358111677886677 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1930358111677886677 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1930358111677886677 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1964460998821367812 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1964460998821367812 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1964460998821367812 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2000552065312194701 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2000552065312194701 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2000552065312194701 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1961129789944627207 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1961129789944627207 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1961129789944627207 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1925594428095561941 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1925594428095561941 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1925594428095561941 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1988971258449682608 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1988971258449682608 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1988971258449682608 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2011562190286045552 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2011562190286045552 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2011562190286045552 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1939702194863026504 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1939702194863026504 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1939702194863026504 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1990814174264381910 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1990814174264381910 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1990814174264381910 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1946323104692945188 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1946323104692945188 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1946323104692945188 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1983567619946147967 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1983567619946147967 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1983567619946147967 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2002423821459173493 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2002423821459173493 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2002423821459173493 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2017324477131177984 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2017324477131177984 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2017324477131177984 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1953559384531050724 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1953559384531050724 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1953559384531050724 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1950659072703033553 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1950659072703033553 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1950659072703033553 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1972778817854067188 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1972778817854067188 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1972778817854067188 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1932484008816050492 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1932484008816050492 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1932484008816050492 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1953519580627742750 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1953519580627742750 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1953519580627742750 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1952782293925298655 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1952782293925298655 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1952782293925298655 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1953233094603096532 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1953233094603096532 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1953233094603096532 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1916968123535880684 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1916968123535880684 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1916968123535880684 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2019468487610008040 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2019468487610008040 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2019468487610008040 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1970540811168473250 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1970540811168473250 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1970540811168473250 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1976323244874711285 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1976323244874711285 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1976323244874711285 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1999513884382597485 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1999513884382597485 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1999513884382597485 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1993876834375880874 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1993876834375880874 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1993876834375880874 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1993031841901928829 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1993031841901928829 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1993031841901928829 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1923058486889550310 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1923058486889550310 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1923058486889550310 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1925323247253692744 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1925323247253692744 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1925323247253692744 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1919770687167684808 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1919770687167684808 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1919770687167684808 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2011500027945033904 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2011500027945033904 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2011500027945033904 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1940817965211177471 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1940817965211177471 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1940817965211177471 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1995671800643297542 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1995671800643297542 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1995671800643297542 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2011810357942084085 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2011810357942084085 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2011810357942084085 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1943465785726505206 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1943465785726505206 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1943465785726505206 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1716725617599844823 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1716725617599844823 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1716725617599844823 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1999183968776626230 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1999183968776626230 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1999183968776626230 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1950276273840017873 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1950276273840017873 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1950276273840017873 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1916309944649011655 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1916309944649011655 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1916309944649011655 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2020921643145519249 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2020921643145519249 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2020921643145519249 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1996347523880165857 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1996347523880165857 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1996347523880165857 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1995349640527622333 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1995349640527622333 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1995349640527622333 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1977002481507791191 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1977002481507791191 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1977002481507791191 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1922434149568430304 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1922434149568430304 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1922434149568430304 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1996645841063604711 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1996645841063604711 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1996645841063604711 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1913291780667417085 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1913291780667417085 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1913291780667417085 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1948442183868318040 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1948442183868318040 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1948442183868318040 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1955383837091041604 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1955383837091041604 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1955383837091041604 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1975954073183740068 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1975954073183740068 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1975954073183740068 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1912786904812294312 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1912786904812294312 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1912786904812294312 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1924934998999892212 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1924934998999892212 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1924934998999892212 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2014433672401977382 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2014433672401977382 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2014433672401977382 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1914384195138511142 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1914384195138511142 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1914384195138511142 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2005700621463330888 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2005700621463330888 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2005700621463330888 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2009651698500051399 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2009651698500051399 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2009651698500051399 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1917356199743480163 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1917356199743480163 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1917356199743480163 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1975605632096215328 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1975605632096215328 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1975605632096215328 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1948869468496527639 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1948869468496527639 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1948869468496527639 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1910354619651518662 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1910354619651518662 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1910354619651518662 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1980412193624785337 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1980412193624785337 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1980412193624785337 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1986510506199556395 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1986510506199556395 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1986510506199556395 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1977039531254907377 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1977039531254907377 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1977039531254907377 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2015863221589049483 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2015863221589049483 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2015863221589049483 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2019456112806732159 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2019456112806732159 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2019456112806732159 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1991967045542646059 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1991967045542646059 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1991967045542646059 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2016934752188576029 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2016934752188576029 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2016934752188576029 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1962573776501252145 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1962573776501252145 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1962573776501252145 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1998821350333440133 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1998821350333440133 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1998821350333440133 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1948122345497047188 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1948122345497047188 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1948122345497047188 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1953559928750440808 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1953559928750440808 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 1953559928750440808 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2018414125618282773 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2018414125618282773 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2018414125618282773 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2001326908030804293 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2001326908030804293 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2001326908030804293 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2014753596223770841 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2014753596223770841 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2014753596223770841 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2000617613190463740 model opencode/minimax-m2.5-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2000617613190463740 model opencode/glm-4.7-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n",
+    "[warn] tweet 2000617613190463740 model opencode/deepseek-v3.1-free: curl failed: curl: (6) Could not resolve host: api.opencode.ai\n"
+  ]
+}

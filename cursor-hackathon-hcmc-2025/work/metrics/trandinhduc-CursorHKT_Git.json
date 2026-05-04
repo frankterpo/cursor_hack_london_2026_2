@@ -1,0 +1,34 @@
+{
+  "repo_id": "trandinhduc-CursorHKT_Git",
+  "repo": "https://github.com/trandinhduc/CursorHKT_Git",
+  "remote_url": "https://github.com/trandinhduc/CursorHKT_Git",
+  "default_branch": "main",
+  "t0": "2025-11-29T06:00:00+00:00",
+  "t1": "2025-11-29T12:00:00+00:00",
+  "generated_at": "2025-11-30T07:41:56.518122+00:00",
+  "summary": {
+    "total_commits": 3,
+    "total_commits_before_t0": 0,
+    "total_commits_during_event": 3,
+    "total_commits_after_t1": 0,
+    "total_loc_added": 28468,
+    "total_loc_deleted": 0,
+    "max_loc_added_single_commit": 28467,
+    "max_files_changed_single_commit": 176,
+    "median_minutes_between_commits": 3.3249999999999997,
+    "median_minutes_between_commits_during_event": 3.3249999999999997
+  },
+  "time_distribution": {
+    "commits_0_3h": 0,
+    "commits_3_6h": 3,
+    "commits_6_12h": 0,
+    "commits_12_24h": 0,
+    "commits_after_24h": 0
+  },
+  "flags": {
+    "has_commits_before_t0": false,
+    "has_bulk_commits": true,
+    "has_large_initial_commit_after_t0": false,
+    "has_merge_commits": false
+  }
+}

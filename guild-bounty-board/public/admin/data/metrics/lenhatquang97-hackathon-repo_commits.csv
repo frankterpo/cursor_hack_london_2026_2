@@ -1,0 +1,7 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+lenhatquang97-hackathon-repo,0,83885ec4bd8c2e0d79c6c42ecb57a7feac2b4fa6,2025-11-29T08:39:15+00:00,,159.25,1,0,1,0,0,1,0,0,Initial commit
+lenhatquang97-hackathon-repo,1,4026c716fd1f673eee1c3c20bdf969bf1484c853,2025-11-29T08:55:09+00:00,15.90,175.15,11890,1,31,0,0,1,0,1,"feat: Initialize project with README, ESLint, Gitignore, and icon"
+lenhatquang97-hackathon-repo,2,9483ffc07d4a97064c6aad6069fdfa0651794e6d,2025-11-29T09:56:42+00:00,61.55,236.70,4188,771,21,0,0,1,0,1,Push feature chat and replay
+lenhatquang97-hackathon-repo,3,6460033c6edf168d32d23e33d30a58507a277292,2025-11-29T10:40:36+00:00,43.90,280.60,180,49,8,0,0,1,0,0,Push code
+lenhatquang97-hackathon-repo,4,ed3b95773df5119f56a40bffac29dd239d860522,2025-11-29T10:51:00+00:00,10.40,291.00,31,6,4,0,0,1,0,0,Push
+lenhatquang97-hackathon-repo,5,541aa39c4df42f98c2192d0d2e7374bd7f6e7548,2025-11-29T10:54:01+00:00,3.02,294.02,0,0,0,1,0,1,0,0,Merge pull request #1 from lenhatquang97/cursor/automated-screen-context-journaling-agent-claude-4.5-opus-high-thinking-f215

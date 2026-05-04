@@ -1,0 +1,10 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+MonkeyNerdCoding-VietFoodScanner,0,a9f62c234734fbd91ba367c189a7a7156091369b,2025-11-29T08:00:43+00:00,,120.72,340,0,1,0,0,1,0,0,Create README.md
+MonkeyNerdCoding-VietFoodScanner,1,520dfa457d0d626fa62e19408be95338ae5b5f66,2025-11-29T08:18:40+00:00,17.95,138.67,368,0,7,0,0,1,0,0,calling api
+MonkeyNerdCoding-VietFoodScanner,2,27a9165cc6ab720681556715c2877654007dcb43,2025-11-29T08:40:47+00:00,22.12,160.78,5465,16,21,0,0,1,0,1,First Looking of UI
+MonkeyNerdCoding-VietFoodScanner,3,a112cfa2bbc783c4d5b9eac062386ffa859d5aa3,2025-11-29T08:58:56+00:00,18.15,178.93,111,3,1,0,0,1,0,0,Update ResultCard.jsx
+MonkeyNerdCoding-VietFoodScanner,4,04515bd440d317cf2b8cc7032c53783926e4e541,2025-11-29T10:49:42+00:00,110.77,289.70,1070,358,14,0,0,1,0,1,final
+MonkeyNerdCoding-VietFoodScanner,5,98c3ff5864e999f06fa67feb94c5010fa054e0a6,2025-11-29T15:51:33+00:00,301.85,591.55,2058,0,1,0,0,0,1,1,Update index.js
+MonkeyNerdCoding-VietFoodScanner,6,94d0c34ce1777577a4503e9bfddac3a4f0332666,2025-11-29T15:51:52+00:00,0.32,591.87,0,2058,1,0,0,0,1,0,Update index.js
+MonkeyNerdCoding-VietFoodScanner,7,33ebb366236498d67827a4ec560c2edc0d423c50,2025-11-29T15:52:45+00:00,0.88,592.75,450,0,1,0,0,0,1,0,Update LanguageContext.jsx
+MonkeyNerdCoding-VietFoodScanner,8,fcc0d79a9803e8665936f49be8e9693262d05d25,2025-11-29T15:53:02+00:00,0.28,593.03,0,450,1,0,0,0,1,0,Update LanguageContext.jsx

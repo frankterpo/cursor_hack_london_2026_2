@@ -1,0 +1,30 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+quanngynx-VNG.cursor-hackathon,0,75233b366e9ada696b97789c07536cebd098ecea,2025-11-29T06:36:01+00:00,,36.02,161,0,3,0,0,1,0,0,Initial commit
+quanngynx-VNG.cursor-hackathon,1,7cb4ef96223fec9cf75146204796e79b1b98948c,2025-11-29T07:54:30+00:00,78.48,114.50,56,0,3,0,0,1,0,0,Update .gitignore to include additional byterover rules files
+quanngynx-VNG.cursor-hackathon,2,4451c5cb843c49559525134e7170fb871783b526,2025-11-29T07:56:04+00:00,1.57,116.07,77,0,3,0,0,1,0,0,Enhance .gitignore to cover more byterover rules files
+quanngynx-VNG.cursor-hackathon,3,54db0c5fe89be4a96275b79636a8b229e31e26a4,2025-11-29T08:50:27+00:00,54.38,170.45,0,0,1,0,0,1,0,0,chore: add init doc
+quanngynx-VNG.cursor-hackathon,4,8b138b2171bb5c524baa1f1c138e6cba1c21df04,2025-11-29T09:01:53+00:00,11.43,181.88,439,0,5,0,0,1,0,0,feat: ai ba documentation
+quanngynx-VNG.cursor-hackathon,5,f07b3caf95b4926fec05a7686321d98ab97ca517,2025-11-29T09:04:19+00:00,2.43,184.32,7898,1,18,0,0,1,0,1,Update .gitignore to include Firebase configuration file and ensure proper formatting
+quanngynx-VNG.cursor-hackathon,6,86aee44990a69944bc0ecfb4ba94a10b8adf9556,2025-11-29T09:05:06+00:00,0.78,185.10,150,0,1,1,0,1,0,0,Merge branch 'dev/ba-docs' of https://github.com/quanngynx/VNG.cursor-hackathon into dev/api-quan update src from dev/ba-docs
+quanngynx-VNG.cursor-hackathon,7,6bb10676f6878c04e42f12d4bd723595979c05cf,2025-11-29T09:50:19+00:00,45.22,230.32,3950,22,27,0,0,1,0,1,Enhance project structure by adding Firebase initialization and food log routes to the server. Update documentation formatting for clarity.
+quanngynx-VNG.cursor-hackathon,8,8fe50e90530e8792f9b6aba999abcafd13b9b494,2025-11-29T09:51:00+00:00,0.68,231.00,15534,23,60,1,0,1,0,1,Merge pull request #1 from quanngynx/dev/api-quan
+quanngynx-VNG.cursor-hackathon,9,bd1d7ef7f4e5e81d5e2d0ec1425928aa0396b67d,2025-11-29T10:57:09+00:00,66.15,297.15,216,11,8,0,0,1,0,0,finally
+quanngynx-VNG.cursor-hackathon,10,58713572879203e4feb24a6b1b525228cca7870e,2025-11-29T11:01:00+00:00,3.85,301.00,70,27,5,0,0,1,0,0,hi
+quanngynx-VNG.cursor-hackathon,11,4c48b18c9648607e9fda0c9d29cff7240606de23,2025-11-29T11:01:45+00:00,0.75,301.75,2,1,1,0,0,1,0,0,Update .gitignore to add Firebase admin SDK JSON file and ensure newline at end of file
+quanngynx-VNG.cursor-hackathon,12,b1ac485b2375ed8cc7ec14f5befd26a23f0120fe,2025-11-29T11:02:02+00:00,0.28,302.03,1779,74,14,1,0,1,0,1,Merge branch 'main' of https://github.com/quanngynx/VNG.cursor-hackathon
+quanngynx-VNG.cursor-hackathon,13,9fa243921e7118179da2bb49368a3ae189e83286,2025-11-29T12:06:16+00:00,64.23,366.27,33,7169,4,0,0,0,1,0,"Remove package-lock.json, update dev script in package.json, and add shimmer animation to globals.css. Enhance FoodCard component with loading state and shimmer effect for image loading."
+quanngynx-VNG.cursor-hackathon,14,8ba520fdd9cb3c29ded3d0e496281fa5c77f53ca,2025-11-29T12:06:42+00:00,0.43,366.70,22,13,2,1,0,0,1,0,Merge pull request #2 from quanngynx/dev/newnol
+quanngynx-VNG.cursor-hackathon,15,34d8a1b664b9ca5b8ef52607aab63142b2703ce1,2025-11-29T15:22:42+00:00,196.00,562.70,3147,261,40,0,0,0,1,1,final here
+quanngynx-VNG.cursor-hackathon,16,2d7ee6c68d4b2b2fc90f11aa2ce283ab8d287ab2,2025-11-29T17:31:43+00:00,129.02,691.72,829,4,6,1,0,0,1,0,Merge branch 'main' into newno/final
+quanngynx-VNG.cursor-hackathon,17,7a1c2723300cf7d5bc87b1bdb6443a69eabe59a9,2025-11-29T19:06:43+00:00,95.00,786.72,367,65,2,0,0,0,1,0,feat(ui): add modern design system with Plus Jakarta Sans font and warm color palette
+quanngynx-VNG.cursor-hackathon,18,3b4b274323b0490e7b62c3a3f2eb42d53fba983a,2025-11-29T19:06:51+00:00,0.13,786.85,55,11,1,0,0,0,1,0,feat(chat): redesign ChatBubble with slide-in animations and avatars
+quanngynx-VNG.cursor-hackathon,19,7bfaeebf8056334d16fbf406463045a05d6d817f,2025-11-29T19:06:59+00:00,0.13,786.98,65,26,1,0,0,0,1,0,feat(food): redesign FoodCard with calorie badge and macro indicators
+quanngynx-VNG.cursor-hackathon,20,435cbefe6ff3a13f77f4dc645108a2a50d40dd71,2025-11-29T19:07:07+00:00,0.13,787.12,68,20,1,0,0,0,1,0,feat(chat): modernize ChatInput with focus states and auto-resize
+quanngynx-VNG.cursor-hackathon,21,ad0ea30c58c246d3f95fcdac440be0c553792bce,2025-11-29T19:07:15+00:00,0.13,787.25,38,9,1,0,0,0,1,0,feat(nav): enhance BottomNav with active indicators and glow effects
+quanngynx-VNG.cursor-hackathon,22,24b4745437c6b74a176542be065aaf1abf32896a,2025-11-29T19:07:23+00:00,0.13,787.38,44,56,1,0,0,0,1,0,feat(sidebar): improve ChatHistorySidebar with modern card design
+quanngynx-VNG.cursor-hackathon,23,921a44eb6d7a8c047e67991022b19612abe081d8,2025-11-29T19:07:30+00:00,0.12,787.50,107,61,1,0,0,0,1,0,feat(modal): redesign FoodDetailModal with hero image and macro cards
+quanngynx-VNG.cursor-hackathon,24,07ca9fef35dee2087023567a1ea551eef69397c7,2025-11-29T19:07:38+00:00,0.13,787.63,3,0,1,0,0,0,1,0,feat(i18n): add pressEnter translation for chat input helper text
+quanngynx-VNG.cursor-hackathon,25,a2370469d62b545687793b3117c4f9a039556b78,2025-11-29T19:07:47+00:00,0.15,787.78,72,50,1,0,0,0,1,0,feat(page): update main chat page with new UI components and welcome screen
+quanngynx-VNG.cursor-hackathon,26,84ee778b85cb72a79ddd09c6cb96bf7cb7cb26e2,2025-11-30T03:13:44+00:00,485.95,1273.73,663,238,10,0,0,0,1,0,History Fix
+quanngynx-VNG.cursor-hackathon,27,e75e4b2bf9caad954283e2d8fbbe570e497b6951,2025-11-30T03:19:20+00:00,5.60,1279.33,4,3,1,0,0,0,1,0,Enhanced Performance
+quanngynx-VNG.cursor-hackathon,28,0e63e8957c98b03b1f84f84b1ab750822c6a3e78,2025-11-30T03:22:10+00:00,2.83,1282.17,47,2,3,0,0,0,1,0,Vercel Deploy

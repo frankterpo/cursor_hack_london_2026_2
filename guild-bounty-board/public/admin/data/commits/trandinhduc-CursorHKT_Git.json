@@ -1,0 +1,55 @@
+{
+  "rows": [
+    {
+      "repo_id": "trandinhduc-CursorHKT_Git",
+      "seq_index": "0",
+      "sha": "247b658dcbb8779803ffc1b4554b5a2392ffb75b",
+      "author_time_iso": "2025-11-29T10:53:19+00:00",
+      "minutes_since_prev_commit": "",
+      "minutes_since_t0": "293.32",
+      "insertions": "1",
+      "deletions": "0",
+      "files_changed": "1",
+      "is_merge": "0",
+      "is_before_t0": "0",
+      "is_during_event": "1",
+      "is_after_t1": "0",
+      "flag_bulk_commit": "0",
+      "subject": "Initial commit"
+    },
+    {
+      "repo_id": "trandinhduc-CursorHKT_Git",
+      "seq_index": "1",
+      "sha": "123cbda34a70ba359aa1b322187d076c57c082f7",
+      "author_time_iso": "2025-11-29T10:58:09+00:00",
+      "minutes_since_prev_commit": "4.83",
+      "minutes_since_t0": "298.15",
+      "insertions": "0",
+      "deletions": "0",
+      "files_changed": "1",
+      "is_merge": "0",
+      "is_before_t0": "0",
+      "is_during_event": "1",
+      "is_after_t1": "0",
+      "flag_bulk_commit": "0",
+      "subject": "change"
+    },
+    {
+      "repo_id": "trandinhduc-CursorHKT_Git",
+      "seq_index": "2",
+      "sha": "f33ea78997b2201f2ac14880efdf54b0b69b1fd4",
+      "author_time_iso": "2025-11-29T10:59:58+00:00",
+      "minutes_since_prev_commit": "1.82",
+      "minutes_since_t0": "299.97",
+      "insertions": "28467",
+      "deletions": "0",
+      "files_changed": "176",
+      "is_merge": "0",
+      "is_before_t0": "0",
+      "is_during_event": "1",
+      "is_after_t1": "0",
+      "flag_bulk_commit": "1",
+      "subject": "init"
+    }
+  ]
+}

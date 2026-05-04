@@ -1,0 +1,7 @@
+- All three commits fall within the 6‑hour window (t0–t1) with no pre/post entries, so the timing works for a focused hackathon effort (even though the median gap is ~142 minutes, that’s just the rhythm of development).
+- The repo features one very large commit (~4.4k LOC across 17 files) flagged as a bulk change, which is typical for an initial MVP push rather than a suspicious back‑dated dump.
+- README/tree describe “AI Dungeon Master,” a full‑stack FastAPI + React experience with AI narrative, rule engine, dice mechanics, and responsive UI—matching what the source folders actually contain.
+- Backend + frontend structure, API integration info, and tooling (FastAPI, Vite, modern JS) suggest a plausible hackathon scope, especially given the PRIME focus on AI narrators and dice logic.
+- No obvious red flags beyond the expected “bulk commit” pattern and the huge single LOC drop—everything else aligns with a team hammering out a playable prototype inside the window.
+
+Overall authenticity assessment: looks consistent with a hackathon project

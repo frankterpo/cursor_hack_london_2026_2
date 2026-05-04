@@ -1,0 +1,7 @@
+- Commit cadence fits the hack window: 15 of 26 commits landed between T0 and T1 with a median ~9.6‑minute gap, spread across the first 6 hours and then quiet afterwards, showing focused sprint work during judging time.
+- Four preprocess commits before T0 appear to be foundational setup (README/style guides, lint configs, light styling) rather than a large pre-hack bulk, and no merge or huge single commit spikes were flagged.
+- Product-wise it’s a Next.js motorcycle-parking dashboard with entry/exit/workflow pages, PWA support, stats cards, and “Check In/Check Out/History/Vehicles” quick links in `app/page.tsx`, plus a Supabase-backed stats hook and OpenAI-powered OCR under `app/api/ocr/route.ts`.
+- Code scope matches a modern AI-enhanced hackathon build: swipeable cards, dynamic theme, service-worker registration, and typed env utils/components all live in the repo, which is plausible for a small team using contemporary tooling.
+- Notable pattern: README focuses on development process checklists rather than describing the submission, so judges might want a brief product description added to explain UX/goals more clearly.
+
+Overall authenticity assessment: looks consistent with a hackathon project

@@ -1,0 +1,7 @@
+- All 10 recorded commits fall inside the 6‑hour event window (t0–t1) with a median spacing of ~8.8 minutes, so the cadence looks like a single-session effort rather than prep work before kickoff.
+- The very large “core full-stack implementation” commit (68 files, 3K+ LOC) happened well after t0 and before t1, matching a common initial push when scaffolding a Vue + FastAPI application in one go rather than pre-built.
+- The tree shows a full product stack: FastAPI backend with auth, menus/orders/restaurants routers, Alembic migrations, Docker + Caddy orchestration, plus a Vue/Vite frontend with customer/admin views, stores, QR/image helpers and verification scripts—consistent with a bite‑sized digital-menu/order-management prototype.
+- Recent commits polish the landing page, add reverse-proxy headers, and tune environment values, suggesting iterative refinements over the hackathon rather than sudden unrelated insertions.
+- No commits exist before t0, and the small follow-ups (e.g., updating Vite API URL, landing hero text) align with typical last-hour tweaks rather than suspicious activity.
+
+Overall authenticity assessment: looks consistent with a hackathon project

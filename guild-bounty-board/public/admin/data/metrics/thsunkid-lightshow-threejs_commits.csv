@@ -1,0 +1,17 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+thsunkid-lightshow-threejs,0,a0e780e117ee096423256c63cf304439516b4075,2025-11-29T08:28:10+00:00,,148.17,1416,0,13,0,0,1,0,1,"Initial project setup: TypeScript, Vite, shared types, directory structure"
+thsunkid-lightshow-threejs,1,162c945ba4e584978be192ebd1bf164cdb76e4ec,2025-11-29T08:29:01+00:00,0.85,149.02,3354,0,1,0,0,1,0,1,Add package-lock.json after npm install
+thsunkid-lightshow-threejs,2,a82b39fbf19f284933f69462a622a9a7b75a61ab,2025-11-29T08:41:40+00:00,12.65,161.67,6128,4,21,0,0,1,0,1,Implement all 4 workstreams in parallel
+thsunkid-lightshow-threejs,3,de2c2e3c85b3a6248e9d3f976786708c4dd6e2ff,2025-11-29T08:42:30+00:00,0.83,162.50,27,3,1,0,0,1,0,0,Fix LightingCommand type to allow all fixture properties
+thsunkid-lightshow-threejs,4,95483959393e990c2216ad87382d5392a836adf2,2025-11-29T08:55:58+00:00,13.47,175.97,770,184,5,0,0,1,0,0,Wire up audio playback and improve stage visuals
+thsunkid-lightshow-threejs,5,87af1e1128c7c783d5d22a3876414d7bd41974f4,2025-11-29T09:19:22+00:00,23.40,199.37,2312,113,11,0,0,1,0,1,Fix issues and add advanced features
+thsunkid-lightshow-threejs,6,c2d996d87e958895e33bd22e5f221f1327846518,2025-11-29T09:24:13+00:00,4.85,204.22,277,288,1,0,0,1,0,0,Update README with current project state and completed tasks
+thsunkid-lightshow-threejs,7,3c69ab96180aec3b7983f6ab6260eb382a755844,2025-11-29T09:48:16+00:00,24.05,228.27,366,46,4,0,0,1,0,0,feat: Fix progress bar sync and add flake lights
+thsunkid-lightshow-threejs,8,9027316c95d6719918cbb7f9dd304e9f68bd36a4,2025-11-29T09:52:22+00:00,4.10,232.37,225,2,4,0,0,1,0,0,Add websockets
+thsunkid-lightshow-threejs,9,f05cc7df52f22ce74ee6bd936a7988e98a9f638f,2025-11-29T10:08:02+00:00,15.67,248.03,113,8,1,0,0,1,0,0,feat: Add mouse-based 3D camera navigation with OrbitControls
+thsunkid-lightshow-threejs,10,3a89c2c72e388acad01036dc5b59be7687ba914d,2025-11-29T10:25:13+00:00,17.18,265.22,3693,655,22,0,0,1,0,1,"feat: Implement pre-analysis system, intelligent lighting, and LED particle panel"
+thsunkid-lightshow-threejs,11,fc5d7bc875d5e67d70918f0226b0a5078b100b50,2025-11-29T10:48:14+00:00,23.02,288.23,258,31,9,0,0,1,0,0,"feat: LED panel audio reactivity, control blending, and light toggles"
+thsunkid-lightshow-threejs,12,7c306daea8e793457fc0b47ac3fd5f0155f4c7cb,2025-11-29T11:02:52+00:00,14.63,302.87,14,44,3,0,0,1,0,0,Update readme
+thsunkid-lightshow-threejs,13,c5f59a2ae406e42fa9547a0fa5a2d41bcddf3618,2025-11-29T11:04:06+00:00,1.23,304.10,191,111,7,0,0,1,0,0,"fix: wash light cone, control toggles, LED panel bounds and stripes"
+thsunkid-lightshow-threejs,14,13320f493a039dbc2116849529bdfcd5bc001684,2025-11-29T11:08:22+00:00,4.27,308.37,2,2,1,0,0,1,0,0, Update RM
+thsunkid-lightshow-threejs,15,1d476980f92ec250697b1199b8a3e5e499ee825c,2025-11-29T11:10:01+00:00,1.65,310.02,7,7,1,0,0,1,0,0,Update README.md

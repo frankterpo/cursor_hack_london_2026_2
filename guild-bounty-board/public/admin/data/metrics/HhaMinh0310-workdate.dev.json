@@ -1,0 +1,34 @@
+{
+  "repo_id": "HhaMinh0310-workdate.dev",
+  "repo": "https://github.com/HhaMinh0310/workdate.dev",
+  "remote_url": "https://github.com/HhaMinh0310/workdate.dev",
+  "default_branch": "main",
+  "t0": "2025-11-29T06:00:00+00:00",
+  "t1": "2025-11-29T12:00:00+00:00",
+  "generated_at": "2025-11-30T07:41:36.710025+00:00",
+  "summary": {
+    "total_commits": 18,
+    "total_commits_before_t0": 0,
+    "total_commits_during_event": 17,
+    "total_commits_after_t1": 1,
+    "total_loc_added": 5488,
+    "total_loc_deleted": 576,
+    "max_loc_added_single_commit": 2036,
+    "max_files_changed_single_commit": 21,
+    "median_minutes_between_commits": 9.3,
+    "median_minutes_between_commits_during_event": 8.641666666666667
+  },
+  "time_distribution": {
+    "commits_0_3h": 3,
+    "commits_3_6h": 14,
+    "commits_6_12h": 0,
+    "commits_12_24h": 0,
+    "commits_after_24h": 0
+  },
+  "flags": {
+    "has_commits_before_t0": false,
+    "has_bulk_commits": true,
+    "has_large_initial_commit_after_t0": false,
+    "has_merge_commits": true
+  }
+}

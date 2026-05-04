@@ -1,0 +1,12 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+cmwuaan-tku-hackathon,0,480624596931167e74122988ab4ff914b1ad6188,2025-11-29T07:25:44+00:00,,85.73,3503,0,41,0,0,1,0,1,feature: initial BE source
+cmwuaan-tku-hackathon,1,d20d6aace7238f8efc1ee9c88bae965ec30649f9,2025-11-29T07:58:50+00:00,33.10,118.83,317,0,7,0,0,1,0,0,feat(fe): initialize project
+cmwuaan-tku-hackathon,2,1ee656069b930f2d44da80236e41030ee9fa5def,2025-11-29T08:00:45+00:00,1.92,120.75,1643,0,25,1,0,1,0,1,Merge branch 'main' of https://github.com/cmwuaan/tku-hackathon
+cmwuaan-tku-hackathon,3,ca709acc2106fa3044e10cc0c070dd68d3dc1166,2025-11-29T09:18:45+00:00,78.00,198.75,5043,0,135,0,0,1,0,1,feat(fe): setup flutter resource
+cmwuaan-tku-hackathon,4,9ea0cf2c2b8d9b80ee2814d754b1e659cf97a65f,2025-11-29T09:37:16+00:00,18.52,217.27,1053,48,10,0,0,1,0,1,feat(fe): implement welcome  screen ui
+cmwuaan-tku-hackathon,5,ef8f1e4744b918c05e03525cb57d030b356f3c5a,2025-11-29T10:42:05+00:00,64.82,282.08,225,1,12,0,0,1,0,0,feat: implement audio detection feature with API integration and file upload handling
+cmwuaan-tku-hackathon,6,6a5832b7a527455861c4d8c908c15ed650be8e58,2025-11-29T10:49:47+00:00,7.70,289.78,2753,2,36,0,0,1,0,1,feat(fe): intrgrate with api
+cmwuaan-tku-hackathon,7,0fffa58603cbf474b5306ea2458c45d270c49195,2025-11-29T10:50:55+00:00,1.13,290.92,8799,0,165,0,0,1,0,1,Feat/fe (#1)
+cmwuaan-tku-hackathon,8,3418ae4676762c08641543e9c0a1ed2584491f8d,2025-11-29T10:52:15+00:00,1.33,292.25,513,0,1,0,0,1,0,0,docs: Add comprehensive README for SOUND WATCHER project
+cmwuaan-tku-hackathon,9,985108834cc1721beb71b9513b3a650826a71b66,2025-11-29T10:54:03+00:00,1.80,294.05,163,153,9,1,0,1,0,0,Merge branch 'main' of https://github.com/cmwuaan/tku-hackathon into feat/fe
+cmwuaan-tku-hackathon,10,cf757ae4b1ba8f6a702c2fd509e8192cb5011518,2025-11-29T10:55:05+00:00,1.03,295.08,0,0,0,1,0,1,0,0,Merge pull request #2 from cmwuaan/feat/fe

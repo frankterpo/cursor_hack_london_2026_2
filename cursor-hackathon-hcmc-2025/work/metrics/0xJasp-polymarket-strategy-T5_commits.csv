@@ -1,0 +1,10 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+0xJasp-polymarket-strategy-T5,0,5094c444d13553901dd0796f0da4f62242b2a9d0,2025-11-29T08:54:50+00:00,,174.83,1,0,1,0,0,1,0,0,Initial commit
+0xJasp-polymarket-strategy-T5,1,d6ba5e2a3c775e3f8ac3bdb881fc0f0e5c51ff9b,2025-11-29T09:29:08+00:00,34.30,209.13,33,0,2,0,0,1,0,0,Add project overview and status to replit configuration file
+0xJasp-polymarket-strategy-T5,2,d2bad0d563c7b6a4a7932703d09353c61547eb18,2025-11-29T09:34:38+00:00,5.50,214.63,1049,0,4,0,0,1,0,1,Create Node.js application to analyze top trader strategies and explain them
+0xJasp-polymarket-strategy-T5,3,cd9f2ece5f8896e43df163020ecd372129c0b5d7,2025-11-29T09:53:22+00:00,18.73,233.37,134,54,3,0,0,1,0,0,Update application to use Polymarket public APIs for trading data
+0xJasp-polymarket-strategy-T5,4,725f49ab55f851c0512534626d2e4e606388b5bb,2025-11-29T10:09:27+00:00,16.08,249.45,178,133,2,0,0,1,0,0,Calculate weekly profits to identify top performing traders
+0xJasp-polymarket-strategy-T5,5,a92209de646f7baa422acea508d9dcbc2e583d0a,2025-11-29T10:20:17+00:00,10.83,260.28,1265,3,4,0,0,1,0,1,Add a web interface to run the analysis and view results
+0xJasp-polymarket-strategy-T5,6,8f66642d049c28b1374d9f9ea715cf37569dec68,2025-11-29T10:26:28+00:00,6.18,266.47,0,4,1,0,0,1,0,0,added basic Web UI
+0xJasp-polymarket-strategy-T5,7,947efe24687b3ffaf876a486be7e1ff721056803,2025-11-29T10:39:45+00:00,13.28,279.75,186,29,2,0,0,1,0,0,Add Polymarket statistics and top trades for each trader
+0xJasp-polymarket-strategy-T5,8,1e844c50d726545d04dd8d6ea30d437ef61935d5,2025-11-29T11:02:48+00:00,23.05,302.80,5,1,2,0,0,1,0,0,Update project name on the homepage to reflect new branding

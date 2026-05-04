@@ -1,0 +1,20 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+meteordefect-olyetta,0,53bdabac6c9f06acd7d98e325e4c3763c9f94989,2025-11-29T06:39:39+00:00,,39.65,1,0,2,0,0,1,0,0,first commit
+meteordefect-olyetta,1,0347130086a3f03efde15fd1163cb8231ffcc079,2025-11-29T06:50:31+00:00,10.87,50.52,1042,1,5,0,0,1,0,1,stuff
+meteordefect-olyetta,2,193bfcf5b390fb87a58f7bdf995fc6712ca803dd,2025-11-29T06:58:53+00:00,8.37,58.88,110,0,3,0,0,1,0,0,stuff-cirsorrules
+meteordefect-olyetta,3,859fd619ee8d676012fbd5ab443fb310611a8d28,2025-11-29T07:01:53+00:00,3.00,61.88,93,920,6,0,0,1,0,0,stuff-cirsorrules2
+meteordefect-olyetta,4,e3f8fdf41b1dc62ab92a81d45bfe0c387ac4918b,2025-11-29T07:09:54+00:00,8.02,69.90,6835,40,17,0,0,1,0,1,installnextjs
+meteordefect-olyetta,5,d25d9eabdc2c23cc4872166070e62c9d11b94af9,2025-11-29T07:32:08+00:00,22.23,92.13,599,12,14,0,0,1,0,0,add-db-supabase
+meteordefect-olyetta,6,d3e616da33de1ebbd8705742200f4c27eb815fa9,2025-11-29T07:38:35+00:00,6.45,98.58,158,6,2,0,0,1,0,0,pahse-1-complete-new-user-insert-trigger
+meteordefect-olyetta,7,75be1e79cb31f60fdc697852ae244c752283b9af,2025-11-29T07:52:50+00:00,14.25,112.83,183,4,7,0,0,1,0,0,phase2-starts
+meteordefect-olyetta,8,ae53ad31b455942ff0fa4f864752de714f047f67,2025-11-29T08:10:44+00:00,17.90,130.73,196,8,5,0,0,1,0,0,phase3-starts
+meteordefect-olyetta,9,d3247997ba3f517037b6220222d68b0ef38073f0,2025-11-29T08:36:21+00:00,25.62,156.35,194,109,13,0,0,1,0,0,first-working-test-auth-and-simple-conversation
+meteordefect-olyetta,10,132ec5bc1aabc003781f7b6446563a0c34659535,2025-11-29T08:53:29+00:00,17.13,173.48,205,53,11,0,0,1,0,0,fixedauthissues
+meteordefect-olyetta,11,d2e06b01714f53d1314bda532c041a4872583bc1,2025-11-29T09:05:08+00:00,11.65,185.13,27,1,2,0,0,1,0,0,working-test-of-modes
+meteordefect-olyetta,12,63b8ea2e9524843e743d97f9f831dba1dd6403c0,2025-11-29T09:26:41+00:00,21.55,206.68,219,68,4,0,0,1,0,0,key-issues
+meteordefect-olyetta,13,6cf3b647e4ab98af7cdda391336a94e30d0d9556,2025-11-29T09:39:30+00:00,12.82,219.50,4,4,1,0,0,1,0,0,Checkpoint: Working Manual Turn Mode
+meteordefect-olyetta,14,310514b050e026683f3bd795d37c469177b4e80d,2025-11-29T10:45:30+00:00,66.00,285.50,507,157,7,0,0,1,0,0,feat: Complete Phase 5.5 - Hands-Free Continuous Conversation Mode
+meteordefect-olyetta,15,54fbc3d3a7498aa1c15da8de2ad9cc720f5fa7ba,2025-11-29T10:51:50+00:00,6.33,291.83,12,2,2,0,0,1,0,0,readme-updates
+meteordefect-olyetta,16,1fad0a2e39675cd80081ec7226b12cd7d1e5b6dc,2025-11-29T11:09:00+00:00,17.17,309.00,18,0,1,0,0,1,0,0,readme-updates2
+meteordefect-olyetta,17,6423653b3175dbdf4dfce7d02090516f66d923d7,2025-11-29T11:17:35+00:00,8.58,317.58,3,3,1,0,0,1,0,0,accent
+meteordefect-olyetta,18,b545e38b5c082631c25e34b0705f639e23a83339,2025-11-29T11:58:24+00:00,40.82,358.40,4,0,5,0,0,1,0,0,readme

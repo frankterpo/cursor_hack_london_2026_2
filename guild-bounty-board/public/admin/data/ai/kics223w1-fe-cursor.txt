@@ -1,0 +1,7 @@
+- 11 commits all timestamped during the six-hour window (t0–t1) with median spacing ≈27min, so timing and cadence fit a focused hackathon effort with steady increments rather than overnight bursts.
+- Metrics flag a large “bulk” commit (6,856 LOC added in one go) and a large initial commit after t0, which is common in UI-heavy prototypes but worth flagging as it may hide pre-built content; no commits before t0.
+- Repo is a Next.js/React dashboard (“Cursor Sharing”) highlighting community-favorite models, modes, and plans, so it’s primarily a frontend showcase of curated AI workflows.
+- File tree shows typical hackathon structure (Landing page, leaderboard, share page, reusable components, globals, cache utility) consistent with a small team building a polished SPA.
+- Given the modest number of files/lines and common modern stack (Next.js, TypeScript, Vercel target), the code scope feels reasonable for a hackathon project using AI-assisted tooling to scaffold UI components quickly.
+
+Overall authenticity assessment: looks consistent with a hackathon project

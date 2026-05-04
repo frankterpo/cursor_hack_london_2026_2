@@ -1,0 +1,21 @@
+{
+  "rows": [
+    {
+      "repo_id": "loingtan-NetScope",
+      "seq_index": "0",
+      "sha": "682f971c6fdd818b67c2b680d842d6c63c2af4fc",
+      "author_time_iso": "2025-11-29T10:56:01+00:00",
+      "minutes_since_prev_commit": "",
+      "minutes_since_t0": "296.02",
+      "insertions": "15155",
+      "deletions": "0",
+      "files_changed": "47",
+      "is_merge": "0",
+      "is_before_t0": "0",
+      "is_during_event": "1",
+      "is_after_t1": "0",
+      "flag_bulk_commit": "1",
+      "subject": "first commit"
+    }
+  ]
+}

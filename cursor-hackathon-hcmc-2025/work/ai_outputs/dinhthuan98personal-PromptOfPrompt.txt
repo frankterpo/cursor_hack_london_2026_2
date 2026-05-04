@@ -1,0 +1,7 @@
+- Two commits, both timestamped within the Nov 29 06:00–12:00 UTC judging window (08:04 and 09:06 UTC from the repo’s git history), so all work appears to happen during the event with no pre‑ or post‑hackathon edits.
+- The metrics flag a very large initial commit (>3.5K LOC across 16 files) and “bulk commits,” but that diff just scaffolds a React/Vite frontend plus Express backend in one go—typical for a sprint build when wiring up UI, API, and tooling.
+- `README.md` explains “AI Prompt Optimizer,” with Gemini-backed prompt analysis/optimization, responsive glassmorphism UI, and particles animation, matching the component tree (e.g., `src/components/PromptInput.jsx`, `PromptDisplay.jsx`, `ParticlesBackground.jsx`) and server files.
+- Backend glue (`server/index.js` plus `server/services/geminiService.js`) wires an Express API to Google’s Gemini client, while `src/config/api.js` and React components keep the frontend/analysis flow organised—consistent scope for a small AI‑centric hackathon build.
+- No other red flags in timing or commit cadence; the median 62.1 minutes between commits dovetails with a solo/short team pace during a one‑day hack session.
+
+Overall authenticity assessment: looks consistent with a hackathon project

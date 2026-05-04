@@ -1,0 +1,7 @@
+- All 14 commits reported for this repo occurred before the hackathon window starts at 2025-11-29T06:00Z, with none during the 6‑hour event, so nothing in the metrics shows active development inside the judged period.
+- No bulk or merge commits flagged, but the absence of any during-event commits combined with a full history beforehand makes the timing inconsistent with a spontaneous hackathon project.
+- README.md describes a fully featured “Apple Health MCP Server” that uses DuckDB, NLP-driven querying, caching, and report generation from exported Apple Health CSV data, suggesting a polished, production‑grade utility rather than a quick prototype.
+- The repository structure (server entry point, core cache/optimizer, db/catalog/loader, CLI tools) reinforces that a substantial, well-architected codebase already existed prior to the hackathon timeframe, which is not typical for a rapid solo build even with AI assistance.
+- Given the large existing scope and zero commits during the event window, nothing validates real-time hackathon work; this project appears pre-built and only referenced for judging.
+
+Overall authenticity assessment: some suspicious patterns

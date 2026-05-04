@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#111827" />
+    <title>Cursor × Thrads · London 2026</title>
+    <meta
+      name="description"
+      content="Cursor × Thrads London hackathon — two tracks, 10 points, five judges. AI-native agents for the conversational ad stack."
+    />
+    <link rel="stylesheet" href="style.css?v=102" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Caveat:wght@500;600;700&family=JetBrains+Mono:wght@500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap"
+    />
+    <link rel="icon" type="image/png" href="cursor-cube-briefcase-32.png" sizes="32x32" />
+  </head>
+  <body>
+    <a class="skip-link" href="#site-content">Skip to content</a>
+
+    <header>
+      <div class="brand">
+        <span
+          class="brand-mark brand-mark--video"
+          tabindex="0"
+          role="button"
+          aria-label="Play Cursor logo animation"
+        >
+          <div class="brand-cursor-video-tint">
+            <video
+              class="brand-cursor-video video-smooth"
+              playsinline
+              muted
+              preload="auto"
+              aria-hidden="true"
+            >
+              <source type="video/webm" src="https://cursor.com/marketing-static/logo/logo-dark-theme.webm" />
+              <source type="video/mp4" src="https://cursor.com/marketing-static/logo/logo-dark-theme.mp4" />
+              <source type="video/quicktime" src="https://cursor.com/marketing-static/logo/logo-dark-theme.mov" />
+            </video>
+          </div>
+        </span>
+        <div class="brand-text">
+          <div class="brand-title">
+            Cursor × <a
+              class="brand-thrads-link"
+              href="https://www.thrad.ai/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Thrads — visit thrad.ai"
+              >Thrads</a
+            >
+          </div>
+          <div class="brand-subtitle">
+            <span class="brand-location">London · 2026 · Date TBA</span>
+          </div>
+        </div>
+      </div>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="#context">Context</a>
+        <a href="#tracks">Tracks</a>
+        <a href="#submissions">Submissions</a>
+      </nav>
+      <div class="header-right">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-open-modal="submit-modal"
+        >
+          Submit project
+        </button>
+        <button
+          type="button"
+          class="btn btn-ghost"
+          data-open-modal="judge-modal"
+        >
+          Judge panel
+        </button>
+        <button
+          type="button"
+          class="btn btn-ghost manager-btn"
+          data-open-modal="manager-modal"
+          aria-label="Hackathon manager"
+        >
+          Manager
+        </button>
+      </div>
+    </header>
+
+    <main id="site-content" tabindex="-1">
+    <section id="tracks" class="tracks">
+      <div class="tracks-hero-row">
+        <div class="tracks-header">
+          <span class="eyebrow">London · 2026 · Date TBA</span>
+          <h1 class="tracks-title">
+            Two tracks.
+            <span class="tracks-title-accent">One ad stack.</span>
+          </h1>
+          <p class="tracks-sub">
+            Agents that buy, sell, and measure attention in LLM-native channels
+          </p>
+          <div class="tracks-stats" aria-label="Event stats at a glance">
+            <div class="tstat">
+              <span class="tstat-num">2</span
+              ><span class="tstat-lbl">tracks</span>
+            </div>
+            <div class="tstat">
+              <span class="tstat-num">10</span
+              ><span class="tstat-lbl">max score</span>
+            </div>
+            <div class="tstat">
+              <span class="tstat-num">3</span
+              ><span class="tstat-lbl">podium places</span>
+            </div>
+            <div class="tstat">
+              <span class="tstat-num">5</span
+              ><span class="tstat-lbl">judges</span>
+            </div>
+          </div>
+        </div>
+
+        <aside
+          class="site-qr-card"
+          aria-label="QR code and link to the live event site"
+        >
+          <span class="site-qr-eyebrow">Live site</span>
+          <a
+            class="site-qr-link"
+            href="https://cursor-thrads-london-2026.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+                class="site-qr-img"
+                src="site-qr.svg?v=2"
+                alt="QR code that opens the live hackathon site"
+                width="380"
+                height="380"
+                decoding="async"
+              />
+          </a>
+          <span class="site-qr-url">cursor-thrads-london-2026.vercel.app</span>
+        </aside>
+      </div>
+
+      <div id="context" class="context context--in-tracks" aria-labelledby="context-title">
+        <div class="context-inner">
+          <span class="eyebrow">Why this moment</span>
+          <h2 id="context-title" class="context-title">Ads moved into the chat box. Now agents move the ads.</h2>
+          <p class="context-lead">
+            In February 2026 OpenAI flipped the switch on
+            <a
+              class="context-inline-link"
+              href="https://openai.com/blog/testing-ads-in-chatgpt/"
+              target="_blank"
+              rel="noopener noreferrer"
+              >ads inside ChatGPT</a
+            >
+            — CPC bids of $3–$5, $200K minimum advertiser commitments, Expedia
+            and Best Buy live on day one. Anthropic answered with Super Bowl
+            spots saying
+            <a
+              class="context-inline-link"
+              href="https://www.theverge.com/ai-artificial-intelligence/873685/anthropics-first-super-bowl-ad-dunks-on-chatgpt"
+              target="_blank"
+              rel="noopener noreferrer"
+              >“ads are coming to AI, but not to Claude.”</a
+            >
+            The
+            <a
+              class="context-inline-link"
+              href="https://www.thrad.ai/"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Thrad team</a
+            >
+            is here beside you — they run the real-time bidding layer powering
+            paid ads in LLMs, used by Fortune 500 brands and case-studied by
+            AWS and BCG. You are building in Cursor — the strongest agentic IDE
+            available — and the ask is concrete: ship agents that
+            <strong>buy</strong>, <strong>sell</strong>, or
+            <strong>measure</strong> attention inside conversations, and make
+            it obvious what they will and will not do.
+          </p>
+
+          <div
+            class="context-strip-wrap"
+            role="region"
+            aria-label="Signal screenshots, left to right, each with a post on X (illustrative, not an endorsement). Click a card to focus; open links in a new tab."
+          >
+            <div class="context-strip" id="context-strip">
+              <div class="context-thumb" role="button" tabindex="0" data-idx="0" aria-label="Thrad — paid ads in AI (open)">
+                <img
+                  src="context-signals/01.png?v=5"
+                  alt=""
+                  width="280"
+                  height="160"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span class="context-thumb-hover">
+                  <span class="context-thumb-hover-title">Thrad — paid ads in AI</span>
+                  <span class="context-thumb-hover-desc"
+                    >Real-time bidding inside LLM conversations. Brands buy, AI publishers monetize. The ad layer this hackathon ships against.</span
+                  >
+                  <div class="context-thumb-signal">
+                    <span class="context-thumb-signal-label"
+                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
+                    >
+                    <a
+                      class="context-thumb-signal-link"
+                      href="https://x.com/Thrad_ai"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >@Thrad_ai —
+                      <span class="context-thumb-signal-em">Paid Ads in AI</span></a
+                    >
+                  </div>
+                </span>
+              </div>
+              <div class="context-thumb" role="button" tabindex="0" data-idx="1" aria-label="ChatGPT ads roll out (open)">
+                <img src="context-signals/02.png?v=5" alt="" width="280" height="160" loading="lazy" decoding="async" />
+                <span class="context-thumb-hover">
+                  <span class="context-thumb-hover-title">ChatGPT ads go live</span>
+                  <span class="context-thumb-hover-desc"
+                    >Feb 2026: OpenAI flips on ads inside ChatGPT for Free + Go users. The biggest new ad surface since the App Store.</span
+                  >
+                  <div class="context-thumb-signal">
+                    <span class="context-thumb-signal-label"
+                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
+                    >
+                    <a
+                      class="context-thumb-signal-link"
+                      href="https://x.com/OpenAI"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >@OpenAI —
+                      <span class="context-thumb-signal-em">Testing ads in ChatGPT</span></a
+                    >
+                  </div>
+                </span>
+              </div>
+              <div class="context-thumb" role="button" tabindex="0" data-idx="2" aria-label="Sam Altman defends ads (open)">
+                <img src="context-signals/03.png?v=5" alt="" width="280" height="160" loading="lazy" decoding="async" />
+                <span class="context-thumb-hover">
+                  <span class="context-thumb-hover-title">Altman: ads won't bend the answer</span>
+                  <span class="context-thumb-hover-desc"
+                    >“We will not accept money to influence the answer ChatGPT gives you.” The promise — and the trust budget — every ad agent now operates inside.</span
+                  >
+                  <div class="context-thumb-signal">
+                    <span class="context-thumb-signal-label"
+                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
+                    >
+                    <a
+                      class="context-thumb-signal-link"
+                      href="https://x.com/sama"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >@sama —
+                      <span class="context-thumb-signal-em">ads do not influence ChatGPT's answers</span></a
+                    >
+                  </div>
+                </span>
+              </div>
+              <div class="context-thumb" role="button" tabindex="0" data-idx="3" aria-label="Anthropic Super Bowl ad (open)">
+                <img src="context-signals/04.png?v=5" alt="" width="280" height="160" loading="lazy" decoding="async" />
+                <span class="context-thumb-hover">
+                  <span class="context-thumb-hover-title">“Ads are coming to AI. But not to Claude.”</span>
+                  <span class="context-thumb-hover-desc"
+                    >Anthropic spent ~$8M on Super Bowl LX spots dunking on ChatGPT ads. The category is officially big enough to fight over.</span
+                  >
+                  <div class="context-thumb-signal">
+                    <span class="context-thumb-signal-label"
+                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
+                    >
+                    <a
+                      class="context-thumb-signal-link"
+                      href="https://x.com/AnthropicAI"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >@AnthropicAI —
+                      <span class="context-thumb-signal-em">Ads are coming to AI. But not to Claude.</span></a
+                    >
+                  </div>
+                </span>
+              </div>
+              <div class="context-thumb" role="button" tabindex="0" data-idx="4" aria-label="Altman responds to Anthropic (open)">
+                <img src="context-signals/05.png?v=5" alt="" width="280" height="160" loading="lazy" decoding="async" />
+                <span class="context-thumb-hover">
+                  <span class="context-thumb-hover-title">“Funny, but clearly dishonest”</span>
+                  <span class="context-thumb-hover-desc"
+                    >Altman fires back at Anthropic's Super Bowl ads on X. The trash-talk era of AI advertising has officially started.</span
+                  >
+                  <div class="context-thumb-signal">
+                    <span class="context-thumb-signal-label"
+                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
+                    >
+                    <a
+                      class="context-thumb-signal-link"
+                      href="https://x.com/sama"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >@sama —
+                      <span class="context-thumb-signal-em">Anthropic's ads are clearly dishonest</span></a
+                    >
+                  </div>
+                </span>
+              </div>
+              <div class="context-thumb" role="button" tabindex="0" data-idx="5" aria-label="$200K minimum commitment (open)">
+                <img src="context-signals/06.png?v=5" alt="" width="280" height="160" loading="lazy" decoding="async" />
+                <span class="context-thumb-hover">
+                  <span class="context-thumb-hover-title">$200K minimum to advertise in ChatGPT</span>
+                  <span class="context-thumb-hover-desc"
+                    >Adweek confirms OpenAI's beta floor: a $200K commitment to play. Buy-side automation is suddenly a budget multiplier, not a cost.</span
+                  >
+                  <div class="context-thumb-signal">
+                    <span class="context-thumb-signal-label"
+                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
+                    >
+                    <a
+                      class="context-thumb-signal-link"
+                      href="https://x.com/Adweek"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >@Adweek —
+                      <span class="context-thumb-signal-em">OpenAI's $200K ChatGPT ad floor</span></a
+                    >
+                  </div>
+                </span>
+              </div>
+              <div class="context-thumb" role="button" tabindex="0" data-idx="6" aria-label="Expedia Best Buy ChatGPT ads (open)">
+                <img src="context-signals/07.png?v=5" alt="" width="280" height="160" loading="lazy" decoding="async" />
+                <span class="context-thumb-hover">
+                  <span class="context-thumb-hover-title">Expedia, Best Buy, Qualcomm — ads in the wild</span>
+                  <span class="context-thumb-hover-desc"
+                    >First conversational ads spotted: travel, retail, hardware. The intent surface every brand has wanted for ten years just opened.</span
+                  >
+                  <div class="context-thumb-signal">
+                    <span class="context-thumb-signal-label"
+                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
+                    >
+                    <a
+                      class="context-thumb-signal-link"
+                      href="https://x.com/verge"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >@verge —
+                      <span class="context-thumb-signal-em">ChatGPT ads in the wild</span></a
+                    >
+                  </div>
+                </span>
+              </div>
+              <div class="context-thumb" role="button" tabindex="0" data-idx="7" aria-label="CPM to CPC pivot (open)">
+                <img src="context-signals/08.png?v=5" alt="" width="280" height="160" loading="lazy" decoding="async" />
+                <span class="context-thumb-hover">
+                  <span class="context-thumb-hover-title">CPM → CPC: $3–$5 a click</span>
+                  <span class="context-thumb-hover-desc"
+                    >Ten weeks in, OpenAI cuts over to cost-per-click. The whole optimization curve — bidding, creative, attribution — is up for grabs.</span
+                  >
+                  <div class="context-thumb-signal">
+                    <span class="context-thumb-signal-label"
+                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
+                    >
+                    <a
+                      class="context-thumb-signal-link"
+                      href="https://x.com/Digiday"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >@Digiday —
+                      <span class="context-thumb-signal-em">OpenAI turns on CPC ads inside ChatGPT</span></a
+                    >
+                  </div>
+                </span>
+              </div>
+              <div class="context-thumb" role="button" tabindex="0" data-idx="8" aria-label="Omnicom Dentsu ChatGPT (open)">
+                <img src="context-signals/09.png?v=5" alt="" width="280" height="160" loading="lazy" decoding="async" />
+                <span class="context-thumb-hover">
+                  <span class="context-thumb-hover-title">Omnicom + Dentsu plug into ChatGPT</span>
+                  <span class="context-thumb-hover-desc"
+                    >Holding companies move first. The agency-side tooling — planning, trafficking, reporting — is a green field for agentic builders.</span
+                  >
+                  <div class="context-thumb-signal">
+                    <span class="context-thumb-signal-label"
+                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
+                    >
+                    <a
+                      class="context-thumb-signal-link"
+                      href="https://x.com/adage"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >@adage —
+                      <span class="context-thumb-signal-em">Omnicom, Dentsu in on ChatGPT ads</span></a
+                    >
+                  </div>
+                </span>
+              </div>
+              <div class="context-thumb" role="button" tabindex="0" data-idx="9" aria-label="AWS Thrad case study (open)">
+                <img src="context-signals/10.png?v=5" alt="" width="280" height="160" loading="lazy" decoding="async" />
+                <span class="context-thumb-hover">
+                  <span class="context-thumb-hover-title">AWS × Thrad — agentic ad architecture</span>
+                  <span class="context-thumb-hover-desc"
+                    >AWS uses Thrad as its case study for how an agentic ad platform actually scales — millions of bid requests, 0ms latency, contextual ranking.</span
+                  >
+                  <div class="context-thumb-signal">
+                    <span class="context-thumb-signal-label"
+                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
+                    >
+                    <a
+                      class="context-thumb-signal-link"
+                      href="https://www.thrad.ai/newsroom/aws"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >Thrad newsroom —
+                      <span class="context-thumb-signal-em">AWS case study on agentic ads</span></a
+                    >
+                  </div>
+                </span>
+              </div>
+              <div class="context-thumb" role="button" tabindex="0" data-idx="10" aria-label="BCG Thrad report (open)">
+                <img src="context-signals/11.png?v=5" alt="" width="280" height="160" loading="lazy" decoding="async" />
+                <span class="context-thumb-hover">
+                  <span class="context-thumb-hover-title">BCG × Thrad — the AI advertising report</span>
+                  <span class="context-thumb-hover-desc"
+                    >BCG partners with Thrad on the first cross-industry report sizing AI advertising. The category is now in the consultants' decks.</span
+                  >
+                  <div class="context-thumb-signal">
+                    <span class="context-thumb-signal-label"
+                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
+                    >
+                    <a
+                      class="context-thumb-signal-link"
+                      href="https://www.thrad.ai/newsroom/bcg"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >Thrad newsroom —
+                      <span class="context-thumb-signal-em">BCG × AI advertising report</span></a
+                    >
+                  </div>
+                </span>
+              </div>
+              <div class="context-thumb" role="button" tabindex="0" data-idx="11" aria-label="Last resort to endgame meme (open)">
+                <img src="context-signals/12.png?v=5" alt="" width="280" height="160" loading="lazy" decoding="async" />
+                <span class="context-thumb-hover">
+                  <span class="context-thumb-hover-title">“Last resort” → endgame</span>
+                  <span class="context-thumb-hover-desc"
+                    >2024: Altman calls ads a last resort. 2026: ads are live. The meme that crystallized why every AI app suddenly needs an ad strategy.</span
+                  >
+                  <div class="context-thumb-signal">
+                    <span class="context-thumb-signal-label"
+                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
+                    >
+                    <a
+                      class="context-thumb-signal-link"
+                      href="https://x.com/search?q=%22last%20resort%22%20chatgpt%20ads&src=typed_query"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >X search —
+                      <span class="context-thumb-signal-em">“last resort” → ChatGPT ads</span></a
+                    >
+                  </div>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tracks-grid" role="group" aria-label="Hackathon tracks">
+        <article class="track-card">
+          <div class="track-card-head">
+            <span class="track-card-eyebrow">Track 01 · Advertiser side</span>
+            <span class="track-card-badge badge-accent">Buy-Side Agents</span>
+          </div>
+          <h2 class="track-card-title">Buy-Side Agents</h2>
+          <p class="track-card-desc">
+            Agents that <strong>plan, bid, and buy</strong> ads inside LLM
+            channels — ChatGPT-style placements, Thrad-powered apps, sponsored
+            conversational answers. The risk is direct: misplaced spend, off-brand
+            creative, or runaway budget. The human-in-the-loop question: when
+            can the agent commit money alone, what counts as a brand-safety
+            violation, and who signs off on creative before it serves?
+          </p>
+          <ul class="track-card-examples" aria-label="Buy-Side Agents examples">
+            <li>Auto-bids on conversational intent, escalates spend spikes</li>
+            <li>Generates and rotates ad creative inside brand guardrails</li>
+            <li>Detects wasted spend, pauses unprofitable placements</li>
+          </ul>
+          <p class="track-card-note">
+            Build for the <em>advertiser</em>: brands, agencies, DSPs.
+          </p>
+        </article>
+        <article class="track-card">
+          <div class="track-card-head">
+            <span class="track-card-eyebrow">Track 02 · Publisher side</span>
+            <span class="track-card-badge badge-accent"
+              >Sell-Side &amp; Measurement</span
+            >
+          </div>
+          <h2 class="track-card-title">Sell-Side &amp; Measurement</h2>
+          <p class="track-card-desc">
+            Agents that help AI <strong>publishers monetize and prove ROI</strong> —
+            picking placements, scoring prompt-level intent, attributing
+            conversions back to chat sessions. The risk is indirect: a bad
+            signal becomes a bad billing event. The human-in-the-loop question:
+            when is intent strong enough to monetize, and which conversions
+            need a human-confirmed audit?
+          </p>
+          <ul
+            class="track-card-examples"
+            aria-label="Sell-Side and Measurement examples"
+          >
+            <li>Scores prompt intent in real time, gates ad eligibility</li>
+            <li>Stitches attribution from chat → click → conversion</li>
+            <li>Flags suspicious traffic, asks before refunding spend</li>
+          </ul>
+          <p class="track-card-note">
+            Build for the <em>publisher / SSP / measurement</em> side: AI apps, chatbots, attribution platforms.
+          </p>
+        </article>
+      </div>
+      <div class="subtracks" aria-labelledby="subtracks-heading">
+        <p class="subtracks-eyebrow" id="subtracks-heading">Judge bonus bucket</p>
+        <ul class="subtracks-grid">
+          <li class="subtrack-card subtrack-card--with-sub">
+            <div class="subtrack-card-main">
+              <div class="subtrack-logo-wrap" aria-hidden="true">
+                <img
+                  class="subtrack-img subtrack-img--cursor"
+                  src="spotlight-cursor-cube-2d.svg"
+                  width="32"
+                  height="32"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <h3 class="subtrack-title">Best use of Cursor</h3>
+            </div>
+            <div class="subtrack-sub">
+              <p class="subtrack-sub-lead subtrack-sub-lead--sdk">
+                <span class="subtrack-sub-lead-text"
+                  >$100 credits to be shared on Discord +
+                  <a
+                    class="subtrack-access-link"
+                    href="https://x.com/cursor_ai/status/2049499866217185492"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Cursor SDK</a
+                  ></span
+                >
+                <span class="subtrack-info-wrap">
+                  <button
+                    type="button"
+                    class="subtrack-info-btn"
+                    aria-label="About Cursor SDK (details on hover, focus, or click)"
+                    aria-expanded="false"
+                    aria-controls="cursor-sdk-popover"
+                  >
+                    i
+                  </button>
+                </span>
+              </p>
+              <div
+                id="cursor-sdk-popover"
+                class="subtrack-sdk-popover"
+                role="tooltip"
+              >
+                <div class="subtrack-sdk-popover__inner">
+                  <p class="subtrack-sdk-popover__title">Cursor SDK: Custom Agents</p>
+                  <p class="subtrack-sdk-popover__subtitle">Build programmatic agents</p>
+                  <p class="subtrack-sdk-popover__p">
+                    Call agents directly from CI/CD pipelines, build bespoke automations, or embed
+                    Cursor in your products.
+                  </p>
+                  <p class="subtrack-sdk-popover__section-title">Get to production quickly</p>
+                  <p class="subtrack-sdk-popover__p">
+                    Build on Cursor&apos;s optimized infrastructure and full harness, with access to
+                    every model.
+                  </p>
+                  <p class="subtrack-sdk-popover__section-title">50% off Composer 2</p>
+                  <p class="subtrack-sdk-popover__p">
+                    Composer 2 usage through the SDK is 50% off through May 5th. Start building from
+                    our public repo of examples.
+                  </p>
+                </div>
+              </div>
+              <a
+                class="btn btn-ghost btn-small subtrack-sub-cta"
+                href="https://cursor.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >DOWNLOAD →</a>
+            </div>
+          </li>
+          <li class="subtrack-card subtrack-card--with-sub">
+            <div class="subtrack-card-main">
+              <div class="subtrack-logo-wrap" aria-hidden="true">
+                <img
+                  class="subtrack-img subtrack-img--specter"
+                  src="https://media.licdn.com/dms/image/v2/D4E0BAQHYV3gJWMwQ-Q/company-logo_200_200/company-logo_200_200/0/1725877369815/specterhq_logo?e=1779321600&amp;v=beta&amp;t=HHRyh4eqmLYkO3SMPMRQc-GobfUOagqaiYSYuWDATCg"
+                  width="32"
+                  height="32"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  referrerpolicy="no-referrer"
+                />
+              </div>
+              <h3 class="subtrack-title">Best use of Specter</h3>
+            </div>
+            <div class="subtrack-sub">
+              <p class="subtrack-sub-lead">
+                Ping
+                <a
+                  class="subtrack-access-link"
+                  href="https://www.linkedin.com/in/francisco-t-334545144/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Francisco</a
+                >
+                for access on Discord
+                <br />+
+                <a
+                  class="subtrack-access-link"
+                  href="https://x.com/SpecterHQ/status/2049150321381765258"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Specter MCP</a
+                >
+              </p>
+              <a
+                class="btn btn-ghost btn-small subtrack-sub-cta"
+                href="https://api.tryspecter.com/api-ref/introduction"
+                target="_blank"
+                rel="noopener noreferrer"
+                >API DOCS →</a>
+            </div>
+          </li>
+          <li class="subtrack-card">
+            <div class="subtrack-logo-wrap" aria-hidden="true">
+              <img
+                class="subtrack-img subtrack-img--openai"
+                src="spotlight-openai-monoblossom.svg"
+                width="32"
+                height="32"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <h3 class="subtrack-title">Best use of LLM models</h3>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="submissions" class="submissions-section">
+      <div class="section-header">
+        <span class="eyebrow">What was built</span>
+        <h2 class="section-title">
+          The <span class="accent-script">submissions</span>
+        </h2>
+        <p class="section-sub">
+          Every project shipped at Cursor × Thrads London. Open the repo or
+          watch the demo.
+        </p>
+      </div>
+      <p
+        id="submissions-meta"
+        class="submissions-meta"
+        aria-live="polite"
+      ></p>
+      <div class="submissions-table-wrap">
+        <table class="submissions-table" aria-label="All submissions">
+          <thead>
+            <tr>
+              <th scope="col" class="col-num">#</th>
+              <th scope="col" class="col-project">Project</th>
+              <th scope="col" class="col-team">Team</th>
+              <th scope="col" class="col-track">Track</th>
+              <th scope="col" class="col-actions">Links</th>
+            </tr>
+          </thead>
+          <tbody id="submissions-tbody">
+            <tr>
+              <td colspan="5" class="submissions-empty">
+                Loading submissions…
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="footer-left">
+        <span
+          class="brand-mark brand-mark--video brand-mark--footer"
+          tabindex="0"
+          role="button"
+          aria-label="Play Cursor logo animation"
+        >
+          <div class="brand-cursor-video-tint">
+            <video
+              class="brand-cursor-video video-smooth"
+              playsinline
+              muted
+              preload="auto"
+              aria-hidden="true"
+            >
+              <source type="video/webm" src="https://cursor.com/marketing-static/logo/logo-dark-theme.webm" />
+              <source type="video/mp4" src="https://cursor.com/marketing-static/logo/logo-dark-theme.mp4" />
+              <source type="video/quicktime" src="https://cursor.com/marketing-static/logo/logo-dark-theme.mov" />
+            </video>
+        </div>
+        </span>
+        <span>
+          Cursor × Thrads ·
+          <a
+            class="footer-halkin"
+            href="https://www.thrad.ai/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Thrads</a>
+          · London 2026
+        </span>
+      </div>
+    </footer>
+    </main>
+
+    <!-- Submit modal -->
+    <div
+      class="modal hidden"
+      id="submit-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="submit-modal-title"
+    >
+      <div class="modal-backdrop" data-close-modal></div>
+      <div class="modal-card" role="document">
+        <header class="modal-head">
+          <div>
+            <span class="eyebrow">Submit your project</span>
+            <h2 id="submit-modal-title" class="modal-title">
+              Drop your repo in the ring
+            </h2>
+          </div>
+          <button
+            type="button"
+            class="close-btn"
+            data-close-modal
+            aria-label="Close submit modal"
+          >
+            &times;
+          </button>
+        </header>
+        <form id="submit-form" class="modal-body" novalidate>
+          <div class="form-row two">
+            <label class="field">
+              <span class="field-label">Team name <em>*</em></span>
+              <input
+                name="team_name"
+                required
+                placeholder="e.g. Loop Engineers"
+              />
+            </label>
+            <label class="field">
+              <span class="field-label">Project name <em>*</em></span>
+              <input name="project_name" required placeholder="e.g. PayPause" />
+            </label>
+          </div>
+          <label class="field">
+            <span class="field-label">GitHub URL <em>*</em></span>
+            <input
+              name="github_url"
+              type="url"
+              required
+              placeholder="https://github.com/team/project"
+            />
+          </label>
+          <div class="form-row two">
+            <div class="field">
+              <span class="field-label">Track <em>*</em></span>
+              <div
+                class="track-picker"
+                role="radiogroup"
+                aria-label="Choose track"
+              >
+                <label class="track-pick">
+                  <input
+                    type="radio"
+                    name="chosen_track"
+                    value="Buy-Side Agents"
+                    required
+                  />
+                  <span>Buy-Side Agents</span>
+                </label>
+                <label class="track-pick">
+                  <input
+                    type="radio"
+                    name="chosen_track"
+                    value="Sell-Side & Measurement"
+                  />
+                  <span>Sell-Side &amp; Measurement</span>
+                </label>
+              </div>
+            </div>
+            <label class="field">
+              <span class="field-label">Demo URL <em>*</em></span>
+              <input
+                name="demo_url"
+                type="url"
+                required
+                placeholder="https://youtu.be/…"
+              />
+            </label>
+          </div>
+          <label class="field">
+            <span class="field-label">Team members <em>*</em></span>
+            <input
+              name="team_members"
+              required
+              placeholder="Alice, Bob, Charlie"
+            />
+          </label>
+          <label class="field">
+            <span class="field-label">One-line description <em>*</em></span>
+            <input
+              name="description"
+              required
+              maxlength="140"
+              placeholder="What does the agent do in one sentence?"
+            />
+          </label>
+          <label class="field">
+            <span class="field-label">Notes (optional)</span>
+            <textarea
+              name="notes"
+              rows="3"
+              placeholder="Anything judges should know — architecture, integrations, known gaps"
+            ></textarea>
+          </label>
+          <footer class="modal-foot">
+            <div class="modal-actions">
+              <button type="button" class="btn btn-ghost" data-close-modal>
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary btn-submit-project"
+                id="submit-project-btn"
+              >
+                <span class="btn-submit-label">Submit project</span>
+              </button>
+            </div>
+          </footer>
+        </form>
+      </div>
+    </div>
+
+    <!-- Judge modal -->
+    <div
+      class="modal hidden"
+      id="judge-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="judge-modal-title"
+    >
+      <div class="modal-backdrop" data-close-modal></div>
+      <div class="judge-modal-shell">
+      <div class="modal-card modal-card--judge" role="document">
+        <form id="judge-form" class="modal-body judge-review" novalidate>
+          <input name="submission_id" id="judge-submission-hidden" type="hidden" required />
+          <select
+            id="judge-submission-select"
+            class="judge-submission-select judge-submission-select--hidden"
+            hidden
+            aria-hidden="true"
+            tabindex="-1"
+          ></select>
+
+          <section class="judge-video-column" aria-label="Submission demo review">
+            <article class="judge-demo-card">
+              <div class="judge-video-top">
+                <button type="button" class="judge-nav-btn" id="judge-prev-submission" aria-label="Previous submission">&larr;</button>
+                <div class="judge-video-title-wrap">
+                  <p class="judge-video-count" id="judge-video-count">0 / 0</p>
+                  <h3 class="judge-video-title" id="judge-video-title">Pick a submission</h3>
+                  <p class="judge-video-meta" id="judge-video-meta"></p>
+                </div>
+                <button type="button" class="judge-nav-btn judge-nav-btn--refresh" id="judge-refresh-submissions" aria-label="Refresh submissions list" title="Refresh submissions list">↻</button>
+                <button type="button" class="judge-nav-btn" id="judge-next-submission" aria-label="Next submission">&rarr;</button>
+              </div>
+              <div id="judge-demo-stage" class="judge-demo-stage" aria-live="polite"></div>
+              <div
+                class="judge-card-swipe-layer"
+                id="judge-card-swipe-layer"
+                aria-hidden="true"
+              ></div>
+              <button
+                type="button"
+                class="judge-panel-toggle"
+                id="judge-panel-toggle"
+                aria-controls="judge-side-panel"
+                aria-label="Toggle judge panel"
+              >
+                <span aria-hidden="true">›</span>
+              </button>
+            </article>
+
+            <div
+              id="judge-submission-summary"
+              class="judge-submission-summary judge-submission-summary--compact"
+              aria-live="polite"
+            ></div>
+            <div
+              id="judge-submission-toolbar"
+              class="judge-submission-toolbar"
+              aria-live="polite"
+            ></div>
+            <p
+              id="judge-quick-recap"
+              class="judge-quick-recap"
+              hidden
+              aria-live="polite"
+            ></p>
+          </section>
+
+        </form>
+      </div>
+      <aside
+        id="judge-side-panel"
+        class="judge-side-panel"
+        role="complementary"
+        aria-label="Full submission and scores"
+        hidden
+        aria-hidden="true"
+      >
+        <header class="judge-side-compact-head">
+          <span id="judge-modal-title" class="eyebrow judge-side-compact-title">Judge panel</span>
+          <button
+            type="button"
+            class="close-btn judge-side-close"
+            data-close-modal
+            aria-label="Close judge modal"
+          >
+            &times;
+          </button>
+        </header>
+        <details class="judge-rubric-card judge-rubric-card--side">
+          <summary class="judge-rubric-summary">Rubric reminder</summary>
+          <div id="judge-rubric-reminder-side" class="judge-rubric-reminder"></div>
+        </details>
+        <section class="judge-score-rail judge-score-rail--side" aria-label="Judge scoring controls">
+          <label class="field">
+            <span class="field-label">Submission</span>
+            <select id="judge-submission-picker" class="judge-submission-picker"></select>
+          </label>
+          <div
+            id="judge-coverage-wrap"
+            class="judge-coverage-wrap"
+            aria-live="polite"
+          >
+            <p class="judge-coverage-label">Judge coverage</p>
+            <div id="judge-coverage-chips" class="judge-coverage-chips"></div>
+            <p
+              id="judge-queue-stats"
+              class="judge-queue-stats"
+              aria-live="polite"
+            ></p>
+          </div>
+          <details
+            id="judge-mine-toggle-wrap"
+            class="judge-mine-toggle-wrap"
+            hidden
+            aria-hidden="true"
+          >
+            <summary class="judge-mine-toggle-summary">
+              Filter to my assigned slice (advanced)
+            </summary>
+            <label class="judge-mine-toggle">
+              <input type="checkbox" id="judge-mine-only" />
+              <span>Show only my assigned 12</span>
+            </label>
+          </details>
+          <div class="field judge-session-field">
+            <span class="field-label">Judging as</span>
+            <p
+              id="judge-display-name"
+              class="judge-session-banner"
+              aria-live="polite"
+            >
+              —
+            </p>
+            <input
+              type="hidden"
+              name="judge_name"
+              id="judge-name-hidden"
+              form="judge-form"
+              value=""
+            />
+          </div>
+
+          <section class="judge-score-card">
+            <div class="judge-score-card-main">
+              <label class="field">
+                <span class="field-label">Score out of 10 <em>*</em></span>
+                <div class="judge-score-card-queue">
+                  <p class="judge-rubric-kicker">Scoring queue</p>
+                  <div id="judge-score-queue" class="judge-score-queue"></div>
+                </div>
+                <input
+                  type="number"
+                  name="judge_score"
+                  id="judge-score-input"
+                  form="judge-form"
+                  min="0"
+                  max="10"
+                  step="0.1"
+                  inputmode="decimal"
+                  required
+                  placeholder="e.g. 8.4"
+                />
+              </label>
+              <button type="submit" form="judge-form" class="btn btn-primary judge-save-btn">
+                Save score
+              </button>
+            </div>
+          </section>
+          <label class="field">
+            <span class="field-label">Notes for the record</span>
+            <textarea
+              name="thoughts"
+              form="judge-form"
+              rows="3"
+              placeholder="What did this submission nail? Where did it cut corners?"
+            ></textarea>
+          </label>
+          <span id="judge-running-total" class="score-running-num judge-running-total-hidden">0</span>
+
+        </section>
+        <div class="judge-side-panel-head">
+          <h3 class="judge-side-panel-title">Full view</h3>
+        </div>
+        <div
+          class="judge-side-tabs"
+          role="tablist"
+          aria-label="Full view"
+        >
+          <button
+            type="button"
+            class="judge-side-tab is-active"
+            id="judge-tab-submission"
+            role="tab"
+            aria-selected="true"
+            aria-controls="judge-panel-submission"
+            data-judge-side-tab="submission"
+          >
+            Full submission
+          </button>
+          <button
+            type="button"
+            class="judge-side-tab"
+            id="judge-tab-scores"
+            role="tab"
+            aria-selected="false"
+            aria-controls="judge-panel-scores"
+            tabindex="-1"
+            data-judge-side-tab="scores"
+          >
+            Scores
+          </button>
+        </div>
+        <div
+          id="judge-panel-submission"
+          class="judge-side-panel-body is-active"
+          role="tabpanel"
+          aria-labelledby="judge-tab-submission"
+        >
+          <div class="judge-side-scroll">
+            <p class="judge-side-repo-pill" id="judge-side-detail-title" hidden></p>
+            <h4 class="judge-side-section-h">Project</h4>
+            <div
+              class="judge-side-block"
+              id="judge-side-submission-output"
+            ></div>
+            <h4 class="judge-side-section-h">AI analysis</h4>
+            <div
+              class="judge-side-block judge-side-block--ai"
+              id="judge-side-ai-output"
+            ></div>
+            <h4 class="judge-side-section-h">Judge responses (aggregate)</h4>
+            <div
+              class="judge-side-block"
+              id="judge-side-judge-output"
+            ></div>
+            <h4 class="judge-side-section-h">Metrics — summary</h4>
+            <pre
+              class="judge-side-metric-pre"
+              id="judge-side-metrics-summary"
+            ></pre>
+            <h4 class="judge-side-section-h">Metrics — flags</h4>
+            <pre
+              class="judge-side-metric-pre"
+              id="judge-side-metrics-flags"
+            ></pre>
+            <h4 class="judge-side-section-h">Metrics — time</h4>
+            <pre
+              class="judge-side-metric-pre"
+              id="judge-side-metrics-time"
+            ></pre>
+            <h4 class="judge-side-section-h">Commits <span class="judge-side-commit-count" id="judge-side-commit-count">(0)</span></h4>
+            <div class="judge-side-commits-wrap">
+              <table class="commits-table judge-side-commits" id="judge-side-commits-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Time</th>
+                    <th>+</th>
+                    <th>−</th>
+                    <th>Files</th>
+                    <th>Bulk</th>
+                    <th>Pre T₀</th>
+                    <th>After T₁</th>
+                    <th>Subject</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div
+          id="judge-panel-scores"
+          class="judge-side-panel-body"
+          role="tabpanel"
+          aria-labelledby="judge-tab-scores"
+        >
+          <div class="judge-side-scroll">
+            <div
+              class="judge-side-block"
+              id="judge-side-scores-aggregate"
+            ></div>
+            <h4 class="judge-side-section-h">All scores (merged)</h4>
+            <div class="judge-prior-scroll">
+              <table class="judge-prior-table" id="judge-side-merged-scores">
+                <thead>
+                  <tr>
+                    <th scope="col">Judge</th>
+                    <th scope="col">When</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Breakdown</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+    </div>
+
+    <!-- Manager modal -->
+    <div
+      class="modal hidden"
+      id="manager-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="manager-modal-title"
+    >
+      <div class="modal-backdrop" data-close-modal></div>
+      <div class="modal-card manager-card" role="document">
+        <header class="modal-head">
+          <div>
+            <span class="eyebrow">Hackathon manager</span>
+            <h2 id="manager-modal-title" class="modal-title">
+              Organizer cockpit
+            </h2>
+          </div>
+          <button
+            type="button"
+            class="close-btn"
+            data-close-modal
+            aria-label="Close manager modal"
+          >
+            &times;
+          </button>
+        </header>
+        <div class="modal-body">
+          <div data-manager-dashboard tabindex="-1" id="manager-recap-start">
+            <div
+              class="manager-tablist"
+              role="tablist"
+              aria-label="Organizer views"
+            >
+              <button
+                type="button"
+                class="manager-tab"
+                role="tab"
+                id="tab-mgr-submissions"
+                data-manager-tab="submissions"
+                aria-selected="true"
+                aria-controls="panel-mgr-submissions"
+              >
+                Submissions
+              </button>
+              <button
+                type="button"
+                class="manager-tab"
+                role="tab"
+                id="tab-mgr-leaderboards"
+                data-manager-tab="leaderboards"
+                aria-selected="false"
+                aria-controls="panel-mgr-leaderboards"
+                tabindex="-1"
+              >
+                Leaderboards
+              </button>
+              <button
+                type="button"
+                class="manager-tab"
+                role="tab"
+                id="tab-mgr-integrity"
+                data-manager-tab="integrity"
+                aria-selected="false"
+                aria-controls="panel-mgr-integrity"
+                tabindex="-1"
+              >
+                Integrity &amp; local
+              </button>
+            </div>
+
+            <div
+              id="panel-mgr-submissions"
+              role="tabpanel"
+              class="manager-tab-panel"
+              data-manager-panel="submissions"
+              aria-labelledby="tab-mgr-submissions"
+            >
+              <div
+                class="manager-stats manager-stats--compact"
+                id="manager-stats"
+                aria-label="Submission and analysis totals"
+              ></div>
+
+              <section
+                class="manager-section manager-section--compact"
+                aria-label="Engineering signals aggregate"
+              >
+                <h3>Engineering signals (aggregate)</h3>
+                <p class="manager-hint">
+                  Aggregated from the Git analysis feed (commits + churn). Use
+                  alongside integrity flags when reviewing submissions.
+                </p>
+                <div class="manager-aggregates" id="manager-aggregates"></div>
+              </section>
+
+              <div
+                id="manager-submissions-host"
+                class="manager-submissions-host"
+                aria-label="Live submissions table"
+              ></div>
+
+              <section class="manager-section manager-section--first">
+                <h3>All submissions · snapshot</h3>
+                <p class="manager-hint">
+                  Quick scan with commits, churn, and links. Row actions open the
+                  same detail drawer as the main table. API-backed lists are
+                  scoped to the active hackathon on the server.
+                </p>
+                <div class="manager-table-scroll">
+                  <table class="manager-snapshot-table" id="manager-snapshot-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Project</th>
+                        <th scope="col">Track</th>
+                        <th scope="col">Commits</th>
+                        <th scope="col">+LOC</th>
+                        <th scope="col">−LOC</th>
+                        <th scope="col">Integrity</th>
+                        <th scope="col">Judge Ø</th>
+                        <th scope="col">Links</th>
+                      </tr>
+                    </thead>
+                    <tbody id="manager-snapshot-tbody"></tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
+
+            <div
+              id="panel-mgr-leaderboards"
+              role="tabpanel"
+              class="manager-tab-panel"
+              data-manager-panel="leaderboards"
+              aria-labelledby="tab-mgr-leaderboards"
+              hidden
+            >
+              <section class="manager-section manager-section--first">
+                <h3>Leaderboard · overall (judge average)</h3>
+                <p class="manager-hint">
+                  Highest combined rubric scores — across both tracks.
+                </p>
+                <div class="leaderboard leaderboard--full">
+                  <ol id="leaderboard-overall"></ol>
+                </div>
+              </section>
+
+          <section class="manager-section">
+            <h3>Leaderboard · by track</h3>
+                <p class="manager-hint">
+                  When a submission has no track label, it appears only in the
+                  overall board — tag submissions in the form or data to split
+                  leaderboards.
+                </p>
+            <div class="leaderboards">
+              <div class="leaderboard">
+                <h4>Buy-Side Agents</h4>
+                <ol id="leaderboard-money-movement"></ol>
+              </div>
+              <div class="leaderboard">
+                <h4>Sell-Side &amp; Measurement</h4>
+                <ol id="leaderboard-financial-intelligence"></ol>
+              </div>
+            </div>
+          </section>
+            </div>
+
+            <div
+              id="panel-mgr-integrity"
+              role="tabpanel"
+              class="manager-tab-panel"
+              data-manager-panel="integrity"
+              aria-labelledby="tab-mgr-integrity"
+              hidden
+            >
+              <section class="manager-section manager-section--first">
+            <h3>Integrity watchlist</h3>
+            <p class="manager-hint">
+              Projects with one or more integrity flags raised.
+            </p>
+            <ul id="flagged-list" class="flagged-list"></ul>
+          </section>
+
+          <section class="manager-section">
+            <h3>Locally-submitted projects</h3>
+            <p class="manager-hint">
+                  Submissions entered through the Submit modal this session
+                  (browser only).
+            </p>
+            <ul id="local-submissions" class="flagged-list"></ul>
+          </section>
+            </div>
+          </div>
+
+          <footer class="modal-foot">
+            <p class="form-help">
+              Export downloads JSON including merged Git summary rows
+              (<code>github_summary_rows</code>), local scores, and
+              browser-only submissions. Production can POST the same payload to
+              your API.
+            </p>
+            <div class="modal-actions">
+              <button
+                type="button"
+                class="btn btn-ghost"
+                id="export-submissions-btn"
+              >
+                Export submissions JSON
+              </button>
+              <button type="button" class="btn btn-primary" data-close-modal>
+                Close
+              </button>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+
+    <!-- Password gate (judges + organizers) -->
+    <div
+      class="modal hidden"
+      id="password-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="password-modal-title"
+    >
+      <div class="modal-backdrop" data-close-modal></div>
+      <div class="modal-card password-card" role="document">
+        <header class="modal-head">
+          <div>
+            <span class="eyebrow">Restricted</span>
+            <h2 id="password-modal-title" class="modal-title">
+              Enter access code
+            </h2>
+          </div>
+          <button
+            type="button"
+            class="close-btn"
+            data-close-modal
+            aria-label="Close password prompt"
+          >
+            &times;
+          </button>
+        </header>
+        <form id="password-form" class="modal-body" novalidate>
+          <p class="form-help" style="margin-top: 0">
+            Judge &amp; Hack Manager panels are password-protected. Ask the
+            organizers for the code. Judges: use the name you want shown on
+            scores.
+          </p>
+          <label class="field">
+            <span class="field-label">Judge / organizer full name <em>*</em></span>
+            <input
+              name="gate_judge_name"
+              id="password-judge-name"
+              type="text"
+              autocomplete="name"
+              required
+              minlength="2"
+              placeholder="e.g. Ján Stehlík"
+            />
+          </label>
+          <label class="field">
+            <span class="field-label">Access code <em>*</em></span>
+            <input
+              name="password"
+              type="password"
+              autocomplete="off"
+              required
+              placeholder="••••••••"
+            />
+          </label>
+          <p
+            id="password-error"
+            class="form-help"
+            role="alert"
+            style="color: var(--danger); min-height: 1.2em; margin-top: -4px"
+          ></p>
+          <footer class="modal-foot">
+            <div class="modal-actions">
+              <button type="button" class="btn btn-ghost" data-close-modal>
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-primary">Unlock</button>
+            </div>
+          </footer>
+        </form>
+      </div>
+    </div>
+
+    <!-- Slide-out details panel (body-level so it is not clipped inside modals) -->
+    <aside
+      id="details-drawer"
+      class="drawer hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="detail-title"
+      tabindex="-1"
+    >
+      <div class="drawer-header">
+        <h2 id="detail-title">Repository Details</h2>
+        <div class="drawer-actions">
+          <button
+            type="button"
+            class="btn btn-ghost btn-small"
+            id="drawer-judge-btn"
+          >
+            Score this
+          </button>
+          <button
+            id="close-drawer"
+            class="close-btn"
+            aria-label="Close details"
+          >
+            &times;
+          </button>
+        </div>
+      </div>
+      <div class="drawer-content">
+        <div class="ai-section">
+          <h3>AI Analysis</h3>
+          <div id="ai-output" class="ai-output"></div>
+        </div>
+        <div class="judge-section">
+          <h3>Submission</h3>
+          <div id="submission-output" class="judge-output"></div>
+        </div>
+        <div class="judge-section">
+          <h3>Judge Responses</h3>
+          <div id="judge-output" class="judge-output"></div>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <h4>Summary</h4>
+            <pre id="metrics-summary"></pre>
+          </div>
+          <div class="metric-card">
+            <h4>Flags</h4>
+            <pre id="metrics-flags"></pre>
+          </div>
+          <div class="metric-card">
+            <h4>Time Distribution</h4>
+            <pre id="metrics-time"></pre>
+          </div>
+        </div>
+        <div class="commits-section">
+          <h3>Commits <span class="commit-count"></span></h3>
+          <div class="table-wrapper commits-table-wrapper">
+            <table id="commits-table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Time</th>
+                  <th scope="col">+</th>
+                  <th scope="col">−</th>
+                  <th scope="col">Files</th>
+                  <th scope="col">Bulk</th>
+                  <th scope="col">&lt;T0</th>
+                  <th scope="col">&gt;T1</th>
+                  <th scope="col">Message</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <div id="drawer-overlay" class="drawer-overlay hidden"></div>
+
+    <template id="manager-submissions-template">
+            <section class="panel full-width manager-submissions-panel">
+              <div class="panel-header">
+                <div class="panel-header-text">
+                  <h2>Submissions</h2>
+                  <p class="panel-sub">
+                    <span id="submissions-count">—</span> projects · live dashboard
+                  </p>
+                </div>
+                <div class="filters">
+                  <label><input type="checkbox" id="filter-preT0" /> Pre-T0</label>
+                  <label><input type="checkbox" id="filter-bulk" /> Bulk</label>
+                  <label><input type="checkbox" id="filter-merge" /> Merge</label>
+                  <div class="sorter">
+                    <span>Sort by</span>
+                    <select id="sort-select" aria-label="Sort submissions">
+                      <option value="default">Default</option>
+                      <option value="judge">Judge total</option>
+                      <option value="commits">Commits</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="table-wrapper manager-summary-table-wrap">
+                <table id="summary-table">
+                  <caption class="sr-only">
+                    Hackathon submissions, integrity flags, and judge scores
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col" class="th-repo">Submission</th>
+                      <th scope="col" class="th-track">Track</th>
+                      <th scope="col" class="th-status">Status</th>
+                      <th
+                        scope="col"
+                        class="th-judge"
+                        data-tooltip="Average total score using the 7 core + 3 judge bonus bucket model"
+                      >
+                        Judge Total
+                      </th>
+                      <th
+                        scope="col"
+                        class="th-num"
+                        data-tooltip="Total number of commits in the repository"
+                      >
+                        Commits
+                      </th>
+                      <th
+                        scope="col"
+                        class="th-num"
+                        data-tooltip="Lines of code added across all commits"
+                      >
+                        LOC+
+                      </th>
+                      <th
+                        scope="col"
+                        class="th-num"
+                        data-tooltip="Lines of code deleted across all commits"
+                      >
+                        LOC−
+                      </th>
+                      <th
+                        scope="col"
+                        class="th-flag"
+                        data-tooltip="Commits made before the hackathon start time (T0)"
+                      >
+                        Pre-T0
+                      </th>
+                      <th
+                        scope="col"
+                        class="th-flag"
+                        data-tooltip="Contains bulk commits with unusually large changes"
+                      >
+                        Bulk
+                      </th>
+                      <th
+                        scope="col"
+                        class="th-flag"
+                        data-tooltip="Large initial commit after T0 (potential pre-work)"
+                      >
+                        Init
+                      </th>
+                      <th
+                        scope="col"
+                        class="th-flag"
+                        data-tooltip="Contains merge commits (may indicate external collaboration)"
+                      >
+                        Merge
+                      </th>
+                      <th
+                        scope="col"
+                        class="th-verdict"
+                        data-tooltip="AI assessment of project authenticity"
+                      >
+                        Assessment
+                      </th>
+                      <th scope="col" class="th-ai">AI Summary</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </section>
+    </template>
+
+    <div
+      id="context-lightbox"
+      class="context-lightbox"
+      hidden
+      role="dialog"
+      aria-modal="true"
+      aria-label="Focused market signal"
+    >
+      <div class="context-lightbox__backdrop" tabindex="-1" aria-hidden="true"></div>
+      <div class="context-lightbox__shell">
+        <button
+          type="button"
+          class="context-lightbox__nav context-lightbox__nav--prev"
+          id="context-lb-prev"
+          aria-label="Previous image"
+        >
+          <span class="context-lightbox__nav-icon" aria-hidden="true">‹</span>
+        </button>
+        <div class="context-lightbox__column">
+          <div class="context-lightbox__imgrow">
+            <div class="context-lightbox__links" id="context-lb-links">
+              <a
+                id="context-lb-href"
+                class="context-lightbox__link"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Post on X</a
+              >
+              <a
+                id="context-lb-href2"
+                class="context-lightbox__link context-lightbox__link--secondary"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                hidden
+                >Follow-up</a
+              >
+            </div>
+            <img id="context-lb-img" src="" alt="" width="900" height="520" decoding="async" />
+          </div>
+          <p id="context-lb-desc" class="context-lightbox__desc"></p>
+        </div>
+        <button
+          type="button"
+          class="context-lightbox__nav context-lightbox__nav--next"
+          id="context-lb-next"
+          aria-label="Next image"
+        >
+          <span class="context-lightbox__nav-icon" aria-hidden="true">›</span>
+        </button>
+      </div>
+    </div>
+
+    <script src="script.js?v=101"></script>
+  </body>
+</html>

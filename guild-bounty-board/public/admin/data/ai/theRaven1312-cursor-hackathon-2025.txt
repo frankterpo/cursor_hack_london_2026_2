@@ -1,0 +1,7 @@
+- Commit cadence shows six pushes during the six-hour window, followed by three modest follow-ups; median spacing of ~30 minutes during the event is reasonable for a solo or small team sprint.
+- Metrics flag a single ~5k LOC bulk commit shortly after T0, which is unusually large but not unheard of when scaffolding both frontend and backend pieces at once—still worth a quick look for assembled off-line work.
+- No commits before the event, so no direct evidence of prep work, but the flagged bulk change plus the 3 post-event commits warrants a semantic check around the boundaries (T1 adjustments or deployment tweaks).
+- Project is a React + Vite SPA with a supporting Node/SQLite server (`server/` + `src/`/`App.jsx` etc.), suggesting a data-driven frontend experience that fits a hackathon build, especially if aided by modern AI tooling to generate boilerplate quickly.
+- Overall code surface (React + Express-style backend + seedable DB) is believable for a half-day sprint once you accept that scaffolding can be automated; just confirm the large commit isn’t a full copy of a prior project.
+
+Overall authenticity assessment: looks consistent with a hackathon project

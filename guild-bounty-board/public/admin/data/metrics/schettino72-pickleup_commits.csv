@@ -1,0 +1,33 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+schettino72-pickleup,0,fe72441192ae49fd73372b608bda3b7085d7de77,2025-11-29T06:36:04+00:00,,36.07,15599,0,67,0,0,1,0,1,"scafold todo-app with fastpi, surreal. ionic vue."
+schettino72-pickleup,1,62c78b10c3e15aa40385879fe9fa1ad8961fbab1,2025-11-29T07:48:04+00:00,72.00,108.07,730,38,12,0,0,1,0,0,add profile.
+schettino72-pickleup,2,e7ee709146939a97152e009a6d6e89f2fc972f22,2025-11-29T07:58:05+00:00,10.02,118.08,508,21,9,0,0,1,0,0,add UserList
+schettino72-pickleup,3,866d4d25863ba38f898d84b0c74d5b01dfe115e6,2025-11-29T08:02:47+00:00,4.70,122.78,31,521,19,0,0,1,0,0,name app. remove dead TODO code.
+schettino72-pickleup,4,f8b7298e5f51bae2af7c3d6d150b24e68063143e,2025-11-29T08:16:17+00:00,13.50,136.28,0,0,1,0,0,1,0,0,added logo.
+schettino72-pickleup,5,4a5fc8bd59ad3168345653ddbd817b9d211ac345,2025-11-29T08:17:40+00:00,1.38,137.67,645,56,9,0,0,1,0,0,add basic DUPR ratings.
+schettino72-pickleup,6,0f3234d857454abc50b89df48b341cbf189371cd,2025-11-29T08:27:54+00:00,10.23,147.90,96,8,3,0,0,1,0,0,show rating in profile page.
+schettino72-pickleup,7,2eb6d95b43196b5a2b6520798c48cec285dbb1f0,2025-11-29T08:32:23+00:00,4.48,152.38,358,0,2,0,0,1,0,0,script to load mock users.
+schettino72-pickleup,8,cc76f9255f7baba3a71c4c2ba39c422656d16e89,2025-11-29T08:39:23+00:00,7.00,159.38,53,3,3,0,0,1,0,0,fix. user progile navigation.
+schettino72-pickleup,9,e7a153dee0dd0ef6dfeb52acdbf82dd8fcc8db9f,2025-11-29T08:42:50+00:00,3.45,162.83,78,11,2,0,0,1,0,0,server: try to fix DB concurrency issues.
+schettino72-pickleup,10,19707610cbd57768696f8db68313e187aff5b47f,2025-11-29T08:44:07+00:00,1.28,164.12,23,30,2,0,0,1,0,0,add swiper.
+schettino72-pickleup,11,984044922797987d4d97bc10398eede5c003dc73,2025-11-29T08:53:54+00:00,9.78,173.90,122,2,4,0,0,1,0,0,about page.
+schettino72-pickleup,12,55cc11472cebd750e460d6aa34a41054327afb5b,2025-11-29T08:55:37+00:00,1.72,175.62,289,103,6,0,0,1,0,0,header show handle instead of email.
+schettino72-pickleup,13,6903089ecb7f7eea51d8e705fade6e271604226c,2025-11-29T09:03:59+00:00,8.37,183.98,20,0,2,0,0,1,0,0,ui: add chart.js
+schettino72-pickleup,14,e0ee3db1ce223d13dc38cd57a7b8e5453fb098ba,2025-11-29T09:10:49+00:00,6.83,190.82,38,5,1,0,0,1,0,0,about: better intro with real features.
+schettino72-pickleup,15,6573e6d18300bed5bf883ee444cbe8977ecc53da,2025-11-29T09:22:18+00:00,11.48,202.30,161,61,1,0,0,1,0,0,more mock data.
+schettino72-pickleup,16,77fc45539b936faee2050023715eb8ced4424143,2025-11-29T09:27:38+00:00,5.33,207.63,523,6,5,0,0,1,0,0,dupr rating chart and details.
+schettino72-pickleup,17,1fa618ac283001e5696f7145ae7770c82a31e3a2,2025-11-29T09:37:03+00:00,9.42,217.05,746,1,8,0,0,1,0,0,add matches.
+schettino72-pickleup,18,51c249b5f04404fcb11f69c279c161c2e858e0ac,2025-11-29T09:46:04+00:00,9.02,226.07,250,0,2,0,0,1,0,0,add basic implementation of ELO rating.
+schettino72-pickleup,19,7e4da49d0c4af7b8e287723a0d4886d3ac13749a,2025-11-29T09:51:10+00:00,5.10,231.17,114,22,3,0,0,1,0,0,matches: saves meta information.
+schettino72-pickleup,20,567047a81add6409045dd1f6cbc7821fa74bf4a0,2025-11-29T09:59:36+00:00,8.43,239.60,95,9,4,0,0,1,0,0,view matches per user.
+schettino72-pickleup,21,38cc9009f4953f6581f9545e398c8011800d7731,2025-11-29T10:13:58+00:00,14.37,253.97,1349,148,12,0,0,1,0,1,add clubs.
+schettino72-pickleup,22,9834f3797b3d1a01872898d75970f6198f6f65c1,2025-11-29T10:22:52+00:00,8.90,262.87,29,0,1,0,0,1,0,0,add license file.
+schettino72-pickleup,23,00a71e8207e5f1e94927ef28322b72f9c253f602,2025-11-29T10:29:05+00:00,6.22,269.08,18,1,1,0,0,1,0,0,README add intro about features.
+schettino72-pickleup,24,602bebc9d2874aa6f50d9f33f004ab2006573b3f,2025-11-29T10:34:34+00:00,5.48,274.57,579,122,9,0,0,1,0,0,club: add detail page.
+schettino72-pickleup,25,d3db24cb1bd410298da58e7f2a2be1b523854d55,2025-11-29T10:45:25+00:00,10.85,285.42,1,1,1,0,0,1,0,0,header goes to profile page.
+schettino72-pickleup,26,7203ff3612232209d4d6ce470068fe4b762dee20,2025-11-29T10:51:36+00:00,6.18,291.60,219,9,3,0,0,1,0,0,"clubs: tabbed biew, my clubs and all."
+schettino72-pickleup,27,8dc8647570fae8e3ec1db061c76bab541e5afbf1,2025-11-29T10:54:50+00:00,3.23,294.83,182,27,1,0,0,1,0,0,ui: better match display.
+schettino72-pickleup,28,5e6fd3998a28a19947cc5abe6cf5fffce1e93abb,2025-11-29T11:04:10+00:00,9.33,304.17,1361,1,8,0,0,1,0,1,add events.
+schettino72-pickleup,29,44f636d11aa99cabe37eb032de99486d8f406e9b,2025-11-29T11:21:25+00:00,17.25,321.42,482,28,2,0,0,1,0,0,mock data for events.
+schettino72-pickleup,30,cc2e9ab73bfea57a54e3b98476c4d1c6b86f2017,2025-11-29T11:22:29+00:00,1.07,322.48,140,80,6,0,0,1,0,0,show avatars. fix filtering of my events.
+schettino72-pickleup,31,c5b51638b1261a1f1a8f87c4c896c7da1338d08f,2025-11-29T11:26:13+00:00,3.73,326.22,440,1,3,0,0,1,0,0,add event detail page.

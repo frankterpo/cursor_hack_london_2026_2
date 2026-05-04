@@ -1,0 +1,7 @@
+- All 16 commits land squarely between the T0 and T1 window and none precede or follow it, with a median 12.65‑minute spacing, so the cadence matches a focused hackathon sprint.
+- A bulk commit (max 6,128 LOC touching up to 22 files) is flagged by the metrics, but it happens mid-event rather than before, suggesting an on‑the‑clock scaffold/dump rather than hidden work.
+- README.md:7 introduces “Spotlightify,” a drop‑a‑track stage light simulator, and README.md:13 elaborates how uploads drive beat/bass/energy/section‑aware light reactions.
+- README.md:58 sketches the ambitious feature stack (audio pre‑analysis, BPM/sections, lighting planner, fixtures, particle/strobe effects), and the `src` tree actually mirrors that split via audio, mapping, stage, and style modules—complex but aligned with the stated scope.
+- No merges, no after‑hours commits, and the repo structure matches the described product; nothing blatantly anomalous beyond the expected large introduction of files.
+
+Overall authenticity assessment: looks consistent with a hackathon project

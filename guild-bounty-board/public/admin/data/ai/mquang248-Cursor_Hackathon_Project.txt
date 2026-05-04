@@ -1,0 +1,7 @@
+- All four commits land between 07:52 and 11:04 UTC on 2025-11-29 (14:52–18:04 +07), which aligns perfectly with the stated hackathon window and yields a ~65-minute median spacing, so there’s no evidence of prep work outside the event.
+- The “large initial commit” (6276 LOC) flagged in the metrics largely adds the Next.js scaffold plus dozens of high-resolution avatars/events images under `public/`, explaining the bulk without invoking suspicious padding.
+- The app itself is a bilingual VietChronicle/Vietnamese history social feed: see `src/app/page.tsx:1` for the multi-column dashboard, `src/components/ComposeModal.tsx:1` plus `EditPostModal.tsx:1` for post creation/edits, and `LanguageToggle.tsx` for localization, all hinting at a lightweight but polished UX built in-session.
+- Backend-like functionality—API routes for auth, posts, notifications, stats, seeding plus Mongo/Cloudinary utilities and the `useFeedGenerator` hook that reuses curated historical data (`src/hooks/useFeedGenerator.ts:1`)—matches what a small team could scaffold with modern Next.js/TypeScript tooling in a few focused pushes.
+- Commit pattern is “few but chunky” (1000+ LOC per step) yet consistent with an AI-assisted workflow or batch coding sprint; no pre-T0/vs-after-T1 activity or branching anomalies were observed, so nothing glaringly fraudulent stands out.
+
+Overall authenticity assessment: looks consistent with a hackathon project

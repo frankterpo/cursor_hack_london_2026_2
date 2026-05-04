@@ -1,0 +1,7 @@
+- All three commits fall inside the 6h event window (t0–t1), with no before/after commits; median spacing ~15 minutes, so the timing matches an intense hackathon push.
+- The “bulk commit” flag comes from a single large change (~10k LOC, 30 files), but since it coincides with bootstrapping an app it reads more like initial scaffolding than suspicious backdating.
+- README + tree show a Next.js UI centered on photography education (“ExposureTriangle,” “CameraSelector,” “LessonCard,” etc.), suggesting an interactive learning/demo site rather than a complex backend.
+- Code structure—Next layout, CSS modules, componentized simulator, and store—feels natural for a fast-paced build leveraging modern tooling or AI helpers; nothing points to an unfinished or copied-in feature.
+- Notable pattern: components focus on camera controls/lessons, so reviewers might double-check for reused assets, but the overall code shape fits a cohesive hackathon demo rather than a pre-existing product.
+
+Overall authenticity assessment: looks consistent with a hackathon project

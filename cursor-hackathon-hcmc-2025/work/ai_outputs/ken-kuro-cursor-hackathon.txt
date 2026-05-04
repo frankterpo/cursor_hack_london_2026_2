@@ -1,0 +1,7 @@
+- All 28 commits landed strictly between T0 and T1 with a median of 9 seconds between them, which is extremely dense but still within the hackathon window so timing doesn’t rule out an in-event effort (although such a rapid burst hints at a single concentrated coding stretch or automation).
+- No commits before or after the window, but the “has_bulk_commits” and a single commit with ~5.9k LOC added stands out; judges may want to inspect whether that large change was scripted (e.g., generated boilerplate) versus handcrafted incrementally.
+- Repo implements “Relief Load Balancer – AI Triage Dispatcher,” with a React + Tailwind frontend using @vis.gl/react-google-maps and a Node/Express + Socket.io backend doing AI triage, saturation tracking, and routing—ambitious but coherent for a hackathon proof-of-concept.
+- Folder structure shows dedicated components/hooks, shared types, and socket services, which feels consistent with modern assisted coding workflows (generators, templates, or AI helpers to stitch the stack quickly).
+- No unusual commit timing patterns beyond the very tight window; consider verifying whether the large commit contains mostly generated files (e.g., frontend build artifacts) versus handcrafted logic before ruling out suspicious automation.
+
+Overall authenticity assessment: looks consistent with a hackathon project

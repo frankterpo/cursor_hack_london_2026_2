@@ -1,0 +1,11 @@
+{
+  "name": "guild-bounty-board",
+  "private": true,
+  "description": "Wrapper scripts; Next.js app and ops live in credits-portal/",
+  "scripts": {
+    "ops:firebase:provision-london": "pnpm -C credits-portal run ops:firebase:provision-london",
+    "ops:firebase:clear-project-children": "pnpm -C credits-portal run ops:firebase:clear-project-children",
+    "ops:luma:sync-checked-in": "pnpm -C credits-portal run ops:luma:sync-checked-in",
+    "ops:hackathon-credits-wizard": "pnpm -C credits-portal run ops:hackathon-credits-wizard"
+  }
+}

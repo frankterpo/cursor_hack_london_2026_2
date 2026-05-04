@@ -1,0 +1,7 @@
+- Commits start at 08:00 UTC on Nov 29 (right after t₀) and run through 15:53 UTC; metrics show 5 commits inside the 6‑hour window, 4 after, and a median commit interval (~18 min) that feels normal for a solo/team sprint.
+- A single “final” commit (04515bd) within the window adds ~1k lines across README/SETUP, Gemini helpers, server.js, translations, styling, and a new `src/components/Fireworks.jsx`, indicating most of the feature polish landed mid-event rather than before.
+- README.md paints “Pho-tographer: Vietnamese Street Food Decoder,” a mobile-first React + Vite frontend that snaps/upload Vietnamese dishes, calls Gemini 2.5 Flash for identification, and surfaces rich info (ingredients, pronunciation, calories, cultural notes) with speech synthesis and language switching.
+- The repo pairs that React UI with an Express backend plus Gemini API helpers, multi-language context/translation files, camera/upload screens, and celebratory/loading components—scope matches a themed AI-assisted hackathon build using modern toolchains.
+- No commits precede the hackathon window, but the last four (post‑t₁) add language tweaks and polish; nothing screams automation abuse besides the one big mid-event commit flagged as a bulk change.
+
+Overall authenticity assessment: looks consistent with a hackathon project

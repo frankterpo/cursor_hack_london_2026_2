@@ -1,0 +1,9 @@
+repo_id,seq_index,sha,author_time_iso,minutes_since_prev_commit,minutes_since_t0,insertions,deletions,files_changed,is_merge,is_before_t0,is_during_event,is_after_t1,flag_bulk_commit,subject
+supernovalx-tinder4decision-next,0,7be5e7068fd696f14c91235990547494cbc43863,2025-11-29T09:47:16+00:00,,227.27,6856,0,17,0,0,1,0,1,Initial commit from Create Next App
+supernovalx-tinder4decision-next,1,5208d95cab1838b831f74a73ba80a4bf6b420252,2025-11-29T10:19:54+00:00,32.63,259.90,1168,87,10,0,0,1,0,1,v1
+supernovalx-tinder4decision-next,2,5ed229f6b4ed9d0f86605a46372f1326aa31c42a,2025-11-29T10:25:57+00:00,6.05,265.95,60,20,4,0,0,1,0,0,"gen question color, emoji"
+supernovalx-tinder4decision-next,3,a6196f2bc575b59d80f69f97cec48777afa50570,2025-11-29T10:30:46+00:00,4.82,270.77,349,181,1,0,0,1,0,0,improve result page
+supernovalx-tinder4decision-next,4,8098e4ab8bd15243143b92d741833f686534a325,2025-11-29T10:37:34+00:00,6.80,277.57,2,7,1,0,0,1,0,0,update cta
+supernovalx-tinder4decision-next,5,d356d0feec916a5a661cc04a9be979f80d1e8aca,2025-11-29T10:46:48+00:00,9.23,286.80,1296,66,5,0,0,1,0,1,Enhance decision analysis with markdown support and typography styling
+supernovalx-tinder4decision-next,6,b9bd81447dd20b70dc82454f429a384c4766a20c,2025-11-29T10:51:01+00:00,4.22,291.02,7,10,1,0,0,1,0,0,clean up ui
+supernovalx-tinder4decision-next,7,6f1427c540ae04b2868aaba803a286eff0f97bfa,2025-11-29T11:21:55+00:00,30.90,321.92,144,23,5,0,0,1,0,0,update readme

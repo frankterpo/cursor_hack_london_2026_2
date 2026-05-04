@@ -1,0 +1,195 @@
+{
+  "event_name": "Cursor Live · London · Q3 2026",
+  "event_tagline": "Human out of the loop in high-risk financial workflows",
+  "event_dates": "September 2026 (TBA)",
+  "event_location": "London",
+  "hack_id": "cursor-live-london-q3-2026",
+  "timeline": {
+    "t0": "2026-09-15T10:00:00+01:00",
+    "t1": "2026-09-15T18:00:00+01:00",
+    "submissions_close": "2026-09-15T18:00:00+01:00",
+    "judging_closes": "2026-09-15T19:30:00+01:00",
+    "winners_announced": "2026-09-15T20:00:00+01:00"
+  },
+  "main_tracks": [
+    {
+      "id": "Money-Movement",
+      "name": "Money Movement",
+      "short": "Money Movement",
+      "summary": "Agents that actually move money. A wrong action means real money is gone.",
+      "description": "Workflows where your agent moves money — paying invoices, running payroll, sending refunds, transferring between accounts. The risk is direct: get it wrong and the money is gone. The human-in-the-loop question: how big is too big to act alone, what counts as suspicious, and who can the agent trust?",
+      "examples": [
+        "Agent that auto-pays small invoices and escalates the rest",
+        "Payroll runner that pauses when something looks off",
+        "Refund bot that handles routine cases and asks before the rest"
+      ]
+    },
+    {
+      "id": "Financial-Intelligence",
+      "name": "Financial Intelligence",
+      "short": "Financial Intelligence",
+      "summary": "Agents that read, interpret, and explain. A wrong answer means a wrong decision downstream.",
+      "description": "Agents that read and interpret money — categorising transactions, spotting fraud, explaining bank lines, answering \"what is this charge for?\". The risk is indirect: a wrong answer becomes a wrong decision downstream. The human-in-the-loop question: how confident is the agent really, and which edge cases deserve a human eye?",
+      "examples": [
+        "Agent that categorises transactions and flags the ones it isn't sure about",
+        "Fraud detector that asks a human when the signal is mixed",
+        "Bot that explains every line on a bank statement"
+      ]
+    }
+  ],
+  "rubric": {
+    "core_max_points": 7,
+    "side_bonus_cap": 3,
+    "total_cap": 10,
+    "criteria": [
+      {
+        "id": "concrete_workflow_value",
+        "name": "Concrete Workflow Value",
+        "points": 2,
+        "description": "Does it replace or compress a real finance workflow a human does today?"
+      },
+      {
+        "id": "track_fit",
+        "name": "Track Fit",
+        "points": 2,
+        "description": "How purely does the submission embody its chosen track (money movement vs financial intelligence)?"
+      },
+      {
+        "id": "human_in_the_loop_decision",
+        "name": "Human-in-the-Loop Decision",
+        "points": 1,
+        "description": "Does the system know when a human should be in the loop vs not? Thresholds, confidence gates, escalation paths."
+      },
+      {
+        "id": "technical_execution",
+        "name": "Technical Execution",
+        "points": 1,
+        "description": "Architecture quality, tool design, latency, integrations that actually work."
+      },
+      {
+        "id": "demo_clarity",
+        "name": "Demo Clarity",
+        "points": 1,
+        "description": "Can the judge, in 90 seconds, see exactly what this agent does and why it matters?"
+      }
+    ]
+  },
+  "judge_bonus_bucket": {
+    "name": "Judge Bonus Bucket",
+    "max_points": 3,
+    "description": "Three sponsor-aligned buckets (1 + 1 + 1 points). Judges score each bucket independently — 3 bonus total."
+  },
+  "side_quests": [
+    {
+      "id": "best_use_cursor",
+      "name": "Best use of Cursor",
+      "points": 1,
+      "blurb": "How effectively the build used Cursor — editor, agents, and workflow — end to end."
+    },
+    {
+      "id": "best_use_specter",
+      "name": "Best use of Specter",
+      "points": 1,
+      "blurb": "Standout use of Specter's API, MCP, or data for market intelligence in the product."
+    },
+    {
+      "id": "best_use_llm_models",
+      "name": "Best use of LLM models",
+      "points": 1,
+      "blurb": "Smart or effective use of models — APIs, routing, evals, or multi-model design."
+    }
+  ],
+  "prizes": [
+    {
+      "tier": "first",
+      "name": "1st place",
+      "value": "£2,000 + 6 months Cursor Ultra",
+      "description": "Top-scoring submission across both tracks. Cash and half a year on Cursor's top tier."
+    },
+    {
+      "tier": "second",
+      "name": "2nd place",
+      "value": "4 months Cursor Ultra",
+      "description": "Runner-up across both tracks."
+    },
+    {
+      "tier": "third",
+      "name": "3rd place",
+      "value": "3 months Cursor Ultra",
+      "description": "Third highest score across both tracks."
+    }
+  ],
+  "judges": [
+    {
+      "name": "Ján Stehlík",
+      "title": "Co-Founder & CTO",
+      "role": "Briefcase",
+      "focus": "AI accounting automation",
+      "linkedin": "https://www.linkedin.com/in/jan-stehlik-5855aa123/",
+      "photo_url": "/judges/jan.jpg",
+      "avatar_color": "#429aaa"
+    },
+    {
+      "name": "Alec Barber",
+      "title": "Member of Technical Staff",
+      "role": "OpenAI",
+      "focus": "LLM evals · agents",
+      "linkedin": "https://www.linkedin.com/in/alec-barber/",
+      "photo_url": "/judges/alec.jpg",
+      "avatar_color": "#32737f"
+    },
+    {
+      "name": "Umberto Belluzzo",
+      "title": "Investor",
+      "role": "Earlybird Venture Capital",
+      "focus": "AI compute · deeptech VC",
+      "linkedin": "https://www.linkedin.com/in/umberto-belluzzo/",
+      "photo_url": "/judges/umberto.png",
+      "avatar_color": "#6dc9db"
+    },
+    {
+      "name": "David Gelberg",
+      "title": "No10 Innovation Fellow",
+      "role": "10 Downing Street",
+      "focus": "Gov AI deployment",
+      "linkedin": "https://www.linkedin.com/in/davidgelberg/",
+      "photo_url": "/judges/david.jpg",
+      "avatar_color": "#214d55"
+    },
+    {
+      "name": "Jamesin Seidel",
+      "title": "General Partner",
+      "role": "Chapter One",
+      "focus": "Pre-seed AI · infra",
+      "linkedin": "https://www.linkedin.com/in/jamesin-seidel-5325b147/",
+      "photo_url": "/judges/jamesin.png",
+      "avatar_color": "#53c0d4"
+    }
+  ],
+  "sponsors": [
+    {
+      "name": "Cursor",
+      "tier": "host"
+    },
+    {
+      "name": "Briefcase",
+      "tier": "design-partner"
+    },
+    {
+      "name": "Specter",
+      "tier": "market-intelligence"
+    },
+    {
+      "name": "OpenAI",
+      "tier": "models"
+    },
+    {
+      "name": "Vercel",
+      "tier": "infra"
+    },
+    {
+      "name": "Anthropic",
+      "tier": "models"
+    }
+  ]
+}

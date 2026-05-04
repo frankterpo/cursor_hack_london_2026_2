@@ -1,0 +1,72 @@
+{
+  "event_name": "Cursor Live · London · Q3 2026",
+  "hack_id": "cursor-live-london-q3-2026",
+  "main_tracks": [
+    {
+      "id": "Money-Movement",
+      "name": "Money Movement",
+      "label": "Money Movement",
+      "description": "Agents that actually move money. A wrong action means real money is gone."
+    },
+    {
+      "id": "Financial-Intelligence",
+      "name": "Financial Intelligence",
+      "label": "Financial Intelligence",
+      "description": "Agents that read, interpret, and explain. A wrong answer means a wrong decision downstream."
+    }
+  ],
+  "rubric": {
+    "core_max_points": 7,
+    "side_bonus_cap": 3,
+    "total_cap": 10,
+    "criteria": [
+      {
+        "id": "concrete_workflow_value",
+        "name": "Concrete Workflow Value",
+        "points": 2
+      },
+      {
+        "id": "track_fit",
+        "name": "Track Fit",
+        "points": 2
+      },
+      {
+        "id": "human_in_the_loop_decision",
+        "name": "Human-in-the-Loop Decision",
+        "points": 1
+      },
+      {
+        "id": "technical_execution",
+        "name": "Technical Execution",
+        "points": 1
+      },
+      {
+        "id": "demo_clarity",
+        "name": "Demo Clarity",
+        "points": 1
+      }
+    ]
+  },
+  "judge_bonus_bucket": {
+    "name": "Judge Bonus Bucket",
+    "max_points": 3,
+    "description": "Three sponsor-aligned buckets (1 + 1 + 1 points). Judges score each bucket independently — 3 bonus total."
+  },
+  "side_quests": [
+    {
+      "id": "best_use_cursor",
+      "name": "Best use of Cursor",
+      "points": 1
+    },
+    {
+      "id": "best_use_specter",
+      "name": "Best use of Specter",
+      "points": 1
+    },
+    {
+      "id": "best_use_llm_models",
+      "name": "Best use of LLM models",
+      "points": 1
+    }
+  ]
+}

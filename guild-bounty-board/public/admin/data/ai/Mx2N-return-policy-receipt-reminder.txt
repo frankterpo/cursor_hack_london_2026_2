@@ -1,0 +1,7 @@
+- Single commit on 2025‑11‑29 at 11:01 UTC (inside the 06:00–12:00 event window) adds all 2,609 LOC and is the only history; flags around a “large initial commit” exist, but that pattern fits a team building and uploading everything mid-event rather than plagiarizing older work.
+- The UI is a single-page “Return Date Tracker” with settings/export/clear buttons, floating add action, and modals for receipt upload and AI+notification configuration (`index.html:1`).
+- `script.js` defines the receipt data model, localStorage persistence, CSV export, and controls for clearing/data export plus general UI wiring (`script.js:1`, `script.js:43`, `script.js:278`), keeping the app’s scope focused on a single workflow.
+- AI/notification affordances (optional OpenAI parsing toggles, optional EmailJS configuration, reminders, and safety prompts) are explicitly wired into the same script, alongside the free Tesseract OCR fallback, making the codebase consistent with a hack using modern AI/automation tooling (`script.js:43`, `script.js:535`, `script.js:575`).
+- Overall project shape—a self-contained front-end that parses receipts, calculates return windows, offers exports, and can optionally send reminders—feels reasonable for a short hackathon effort built with popular web/AI libs.
+
+Overall authenticity assessment: looks consistent with a hackathon project

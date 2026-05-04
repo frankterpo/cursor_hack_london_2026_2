@@ -1,0 +1,7 @@
+- Commit log shows only one upload during the event window (t0–t1) with 208k LOC added across 755 files in a single shot, which is extremely dense for a “small hackathon project” and flags a bulk/backloaded effort.
+- No history before the start or after the end of the window, so there’s no gradual progress trail—everything was dropped late, which often indicates prep outside the judged session or a massive auto-generated dump.
+- The README at `README.md` describes “SSync,” a full multi-service social media management platform (Next.js frontend, NestJS backend, workers, extensions, etc.), so the proclaimed scope is very large.
+- The tree shows a mature microservices-style workspace (apps for backend, frontend, extension, SDK, workers, cron, shared libs), which seems disproportionate for a single hackathon entry unless scaffolded via advanced templates/AI tooling.
+- Large bulk commit combined with extensive infrastructure and dependencies suggests heavy prep or auto-generated scaffolding, so judges may want to confirm if the work was actually created during the event or just imported.
+
+Overall authenticity assessment: some suspicious patterns

@@ -1,0 +1,7 @@
+- Two commits during the 6-hour hackathon window with zero prior commits align with the event timeline, although the median 190‑minute gap between the in-event commits is long for a short sprint.
+- The bulk of work (25k LOC added, 14k in a single commit touching 145 files) came after the official window, suggesting a large post-hackathon push rather than iterative sprinting during the event.
+- No commits before T0 is a good sign, but the huge large initial commit flagged as “bulk” raises a red flag about whether the hackathon work was mostly prepped earlier unseen.
+- Repository structure shows a standard React+TypeScript+Vite frontend with a Python backend (FastAPI/SQLAlchemy likely from folder names), so it appears to be a full-stack project; README still retains the default Vite template instructions, so documentation hasn’t been tailored yet.
+- Scope feels realistic for hackathon-sized effort, but the large code dump plus very few commits during the window makes it hard to confirm whether AI tools (or local prep) produced much of the work in a short burst.
+
+Overall authenticity assessment: some suspicious patterns

@@ -1,0 +1,7 @@
+- Commit cadence fits a short sprint: all 8 commits land within the 6 a.m.–noon hackathon window, with a median 6.8 minutes between pushes, so there’s no sign of pre- or post-hackathon work slipped in.
+- Metrics flag a “bulk” large initial commit (6,856 LOC across 17 files) but given the single-day effort this could reflect setting up the whole Next.js/AI stack rather than masking prior work; still worth a light check.
+- The repo houses a Next.js 16 + React 19 frontend (`app/page.tsx`, `components/*`) that wires react-tinder-card swipes to Claude Sonnet via OpenRouter, matching the README pitch for “Decidr” as an AI-assisted Tinder-style decision helper.
+- Project scope (UI, swipe logic, OpenRouter integration) is consistent with modern AI tooling accelerating prototyping, and the codebase looks focused on the intended feature set rather than sprawling unrelated modules.
+- No commits before T0 and all changes are frontend-focused; judges can validate that the single large commit isn’t a merged history of older work but rather genuine bulk setup from the event.
+
+Overall authenticity assessment: looks consistent with a hackathon project

@@ -1,0 +1,212 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Cursor × Briefcase · London 2026 — aligned with cursor-hackathon-hcmc-2025/ui/static */
+
+@layer base {
+  :root {
+    --background: 220 39% 11%;
+    --foreground: 210 20% 98%;
+    --card: 217 19% 27%;
+    --card-foreground: 210 20% 98%;
+    --popover: 217 19% 27%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 189 58% 58%;
+    --primary-foreground: 220 39% 11%;
+    --secondary: 217 19% 22%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 217 19% 27%;
+    --muted-foreground: 218 11% 65%;
+    --accent: 189 40% 24%;
+    --accent-foreground: 189 70% 88%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 215 16% 34%;
+    --input: 215 16% 34%;
+    --ring: 189 58% 58%;
+    --radius: 0.625rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    @apply scroll-smooth;
+    font-size: 15px;
+  }
+  body {
+    @apply bg-background text-foreground antialiased min-h-screen;
+    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+    font-feature-settings: "cv01", "cv02", "cv03", "cv04", "tnum";
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-bricolage), var(--font-inter), sans-serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Event page backdrop — teal washes + faint grid */
+.event-canvas {
+  position: relative;
+  min-height: 100vh;
+}
+
+.event-canvas::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(1200px 500px at 90% -10%, rgba(109, 201, 219, 0.1), transparent 60%),
+    radial-gradient(900px 400px at 0% 0%, rgba(66, 154, 170, 0.06), transparent 60%),
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: auto, auto, 44px 44px, 44px 44px;
+  pointer-events: none;
+}
+
+@layer components {
+  .event-site-header {
+    @apply sticky top-0 z-50 flex items-center justify-between border-b border-border bg-background/85;
+    min-height: 65px;
+    padding: 16px 28px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
+    backdrop-filter: saturate(160%) blur(12px);
+    -webkit-backdrop-filter: saturate(160%) blur(12px);
+  }
+  .event-brand {
+    @apply flex min-w-0 items-center no-underline transition-opacity hover:opacity-90;
+    gap: 14px;
+  }
+  .event-brand:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+  .event-brand-mark {
+    @apply inline-flex shrink-0 items-center justify-center overflow-visible;
+  }
+  /* Shared Cursor marketing video mark (hover plays spin — see CursorBrandVideoMark) */
+  .cursor-brand-video-wrap {
+    @apply inline-flex shrink-0 cursor-pointer items-center justify-center overflow-visible;
+  }
+  .cursor-brand-video-tint {
+    @apply flex items-center justify-center;
+    line-height: 0;
+  }
+  .cursor-brand-video-tint--header {
+    height: 36px;
+  }
+  .cursor-brand-video-tint--hero {
+    height: 64px;
+  }
+  .cursor-brand-video {
+    display: block;
+    width: auto;
+    object-fit: contain;
+    opacity: 1;
+    /* Native asset colors — avoid PNG / sepia teal “resting” wash */
+    filter: drop-shadow(0 0 5px rgba(160, 220, 231, 0.22));
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+  .cursor-brand-video--header {
+    height: 36px;
+    max-width: min(112px, 32vw);
+  }
+  .cursor-brand-video--hero {
+    height: 64px;
+    max-width: min(200px, 48vw);
+  }
+  .event-brand-text {
+    @apply flex min-w-0 flex-col;
+    line-height: 1.1;
+  }
+  .event-brand-title {
+    @apply font-display text-base font-semibold tracking-tight text-foreground;
+  }
+  .event-brand-subtitle {
+    @apply mt-1.5 inline-flex items-center text-muted-foreground;
+    gap: 8px;
+  }
+  .event-brand-location {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .event-brand-halkin {
+    @apply inline-flex items-center text-foreground;
+    line-height: 0;
+  }
+  .event-brand-halkin-inner {
+    @apply inline-flex items-center;
+    image-rendering: pixelated;
+    transform: translateY(3px);
+  }
+  .event-brand-halkin-svg {
+    display: block;
+    height: 13px;
+    width: auto;
+    max-width: min(78px, 32vw);
+  }
+  .event-brand-halkin-rule {
+    fill: hsl(var(--muted-foreground));
+  }
+  .event-header-actions {
+    @apply flex items-center;
+    gap: 20px;
+  }
+  .event-header-button {
+    @apply inline-flex h-9 items-center justify-center gap-1.5 whitespace-nowrap rounded-md border px-4 text-sm font-semibold leading-none no-underline transition-colors;
+  }
+  .event-header-button-primary {
+    @apply border-transparent bg-primary/70 text-white hover:bg-primary/60;
+  }
+  .event-header-button-ghost {
+    @apply border-border bg-card/80 text-foreground hover:border-primary/50 hover:bg-primary/10;
+  }
+  .btn-event-primary {
+    @apply inline-flex items-center justify-center rounded-[var(--radius)] px-5 py-2.5 text-sm font-semibold transition-opacity;
+    @apply bg-primary text-primary-foreground shadow-md;
+    box-shadow: 0 4px 14px rgba(109, 201, 219, 0.25);
+  }
+  .btn-event-primary:hover {
+    @apply opacity-90;
+  }
+  .btn-event-ghost {
+    @apply inline-flex items-center justify-center rounded-[var(--radius)] px-4 py-2 text-sm font-medium transition-colors;
+    @apply border border-border bg-card/60 text-foreground hover:bg-muted;
+  }
+  .panel-event {
+    @apply rounded-xl border border-border bg-card/90 p-6 shadow-lg backdrop-blur-sm;
+    box-shadow: var(--shadow-md, 0 6px 16px -4px rgba(0, 0, 0, 0.45));
+  }
+  .eyebrow-event {
+    @apply text-xs font-semibold uppercase tracking-widest text-primary;
+  }
+}
+
+@media (max-width: 640px) {
+  .event-site-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  .event-header-actions {
+    width: 100%;
+    gap: 8px;
+  }
+  .event-header-button {
+    flex: 1;
+  }
+  .event-brand-subtitle {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0;
+  }
+}

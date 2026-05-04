@@ -1,0 +1,72 @@
+{
+  "rows": [
+    {
+      "repo_id": "nxgiangdev-renderlandingpage",
+      "seq_index": "0",
+      "sha": "18a3b64522194fee8fa92fb67951c07b24c8d31b",
+      "author_time_iso": "2025-11-29T10:11:38+00:00",
+      "minutes_since_prev_commit": "",
+      "minutes_since_t0": "251.63",
+      "insertions": "573",
+      "deletions": "0",
+      "files_changed": "1",
+      "is_merge": "0",
+      "is_before_t0": "0",
+      "is_during_event": "1",
+      "is_after_t1": "0",
+      "flag_bulk_commit": "0",
+      "subject": "first commit"
+    },
+    {
+      "repo_id": "nxgiangdev-renderlandingpage",
+      "seq_index": "1",
+      "sha": "cca4ff9783e0245b514744cff650fe00f3ae2484",
+      "author_time_iso": "2025-11-29T10:12:00+00:00",
+      "minutes_since_prev_commit": "0.37",
+      "minutes_since_t0": "252.00",
+      "insertions": "13147",
+      "deletions": "0",
+      "files_changed": "58",
+      "is_merge": "0",
+      "is_before_t0": "0",
+      "is_during_event": "1",
+      "is_after_t1": "0",
+      "flag_bulk_commit": "1",
+      "subject": "a"
+    },
+    {
+      "repo_id": "nxgiangdev-renderlandingpage",
+      "seq_index": "2",
+      "sha": "9028f9ea1a3cfe6193e5325d19433a1b55fd9d16",
+      "author_time_iso": "2025-11-29T10:39:10+00:00",
+      "minutes_since_prev_commit": "27.17",
+      "minutes_since_t0": "279.17",
+      "insertions": "244",
+      "deletions": "205",
+      "files_changed": "21",
+      "is_merge": "0",
+      "is_before_t0": "0",
+      "is_during_event": "1",
+      "is_after_t1": "0",
+      "flag_bulk_commit": "0",
+      "subject": "ba"
+    },
+    {
+      "repo_id": "nxgiangdev-renderlandingpage",
+      "seq_index": "3",
+      "sha": "f2c7938a287f0e47bf00c5fb52fc6b0d6bbfeaab",
+      "author_time_iso": "2025-11-29T11:29:35+00:00",
+      "minutes_since_prev_commit": "50.42",
+      "minutes_since_t0": "329.58",
+      "insertions": "166",
+      "deletions": "25",
+      "files_changed": "8",
+      "is_merge": "0",
+      "is_before_t0": "0",
+      "is_during_event": "1",
+      "is_after_t1": "0",
+      "flag_bulk_commit": "0",
+      "subject": "fa"
+    }
+  ]
+}
