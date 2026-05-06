@@ -106,7 +106,7 @@ export default function AdminLayout({
             <button type="button" onClick={handleProjectSwitch} className="btn-event-ghost text-xs">
               Switch project
             </button>
-            <Link href={`/event/${selectedProject.slug}/redeem`} className="btn-event-ghost text-xs">
+            <Link href="/redeem" className="btn-event-ghost text-xs">
               Public redeem
             </Link>
             <button type="button" onClick={handleLogout} className="btn-event-ghost text-xs">

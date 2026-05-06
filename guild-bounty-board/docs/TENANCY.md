@@ -122,8 +122,6 @@ cd guild-bounty-board && pnpm run ops:firebase:provision-thrads
 
 CLI sanity checklist: `./scripts/ops/thrads-london-2026-vercel-check.sh`
 
-Public redemption URL (Firestore slug): `/credits/event/cursor-thrads-london-2026/redeem`.
-
 ---
 
 ## London 2026 cutover (empty Supabase event + new Firebase code batch)
@@ -168,4 +166,4 @@ Public redemption URL (Firestore slug): `/credits/event/cursor-thrads-london-202
   ```
    Prompts: **create vs update**, **hosted Luma event** (*evt-* + title*), `**starts_at`/`ends_at` when creating**, **Cursor CSV path**, Firestore `**projects`** pick on updates. Writes `hackathons`, `projects/` (codes pool), attendee sync, and assigns codes (**all checked-in on create**, **late joiners only** on update paths).
 
-For **Cursor × Thrads**, the credits CTA is `/credits/event/cursor-thrads-london-2026/redeem` (Firestore `projects.slug`). Briefcase London remains `/credits/event/cursor-hackathon-london-2026/redeem`.
+Credits redemption is always **`/credits/redeem`**. Legacy **`/credits/event/[slug]/redeem`** URLs redirect there; configure the active slug via **`NEXT_PUBLIC_CREDITS_FIRESTORE_PROJECT_SLUG`**. Hackathon marketing (tracks, judges, prizes) lives only on **`/credits/hackathon`** via `NEXT_PUBLIC_HACKATHON_*` env vars (see `credits-portal/env.example`).

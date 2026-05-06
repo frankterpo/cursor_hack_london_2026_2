@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { EventMarketingHeader } from '@/components/event/EventMarketingHeader';
+import { CreditsPortalHeader } from '@/components/credits/CreditsPortalHeader';
 
 export default function AdminPage() {
   const [password, setPassword] = useState('');
@@ -51,7 +51,7 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen">
-      <EventMarketingHeader />
+        <CreditsPortalHeader />
       <div className="mx-auto flex min-h-[60vh] max-w-md items-center px-4 py-12">
         <div className="panel-event w-full">
           <h2 className="font-display text-center text-lg font-semibold text-foreground">Admin access</h2>

@@ -15,8 +15,8 @@ const bricolage = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
-  title: "Cursor × Briefcase · Credits & Hackathon",
-  description: "Cursor credits redemption and London 2026 hackathon hub",
+  title: "Cursor credits",
+  description: "Cursor credits redemption — standard /redeem flow for every hackathon deploy",
   themeColor: "#111827",
   icons: {
     icon: [
@@ -34,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.variable} ${bricolage.variable} event-canvas`}>{children}</body>
+      <body className={`${inter.variable} ${bricolage.variable} credits-canvas event-canvas`}>{children}</body>
     </html>
   );
 }

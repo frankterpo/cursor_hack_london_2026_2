@@ -6,7 +6,7 @@ CREDITS_HOST="${CREDITS_VERCEL_URL:-https://cursor-thrads-london-2026.vercel.app
 BOARD_HOST="${BOARD_VERCEL_URL:-https://cusor-hack-london-2026-2.vercel.app}"
 
 echo "Expected public URLs:"
-echo "  Credits Next: $CREDITS_HOST/credits/event/cursor-thrads-london-2026/redeem"
+echo "  Credits Next: $CREDITS_HOST/credits/redeem   (set NEXT_PUBLIC_CREDITS_FIRESTORE_PROJECT_SLUG=cursor-thrads-london-2026)"
 echo "  Static board:   $BOARD_HOST (CREDITS_APP_URL should point at credits origin, no trailing slash)"
 echo ""
 
