@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "ops:firebase:provision-london": "node scripts/provision-london-2026-firebase-project.js",
+    "ops:firebase:provision-thrads": "node scripts/provision-thrads-london-2026-firebase-project.js",
     "ops:firebase:clear-project-children": "node scripts/clear-firebase-project-children.js",
     "ops:luma:sync-checked-in": "node scripts/luma-firebase-checked-in-sync.js",
     "ops:luma:import-checked-in-csv": "node scripts/luma-csv-checked-in-import.js",

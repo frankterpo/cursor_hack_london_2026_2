@@ -79,6 +79,9 @@
     backdrop-filter: saturate(160%) blur(12px);
     -webkit-backdrop-filter: saturate(160%) blur(12px);
   }
+  .event-brand-leading {
+    @apply flex min-w-0 flex-1 items-end gap-2 sm:gap-3;
+  }
   .event-brand {
     @apply flex min-w-0 items-center no-underline transition-opacity hover:opacity-90;
     gap: 14px;
@@ -155,6 +158,23 @@
   }
   .event-brand-halkin-rule {
     fill: hsl(var(--muted-foreground));
+  }
+  .event-brand-thrads-link {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: hsl(var(--foreground));
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    margin-bottom: 2px;
+    flex-shrink: 0;
+  }
+  .event-brand-thrads-link:hover {
+    opacity: 0.88;
+  }
+  .event-brand-thrads-link:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background rounded-sm;
   }
   .event-header-actions {
     @apply flex items-center;

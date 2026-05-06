@@ -2,10 +2,10 @@ import Link from "next/link";
 import { EventMarketingHeader } from "@/components/event/EventMarketingHeader";
 import { CursorBrandVideoMark } from "@/components/event/CursorBrandVideoMark";
 
-const redeemHref = "/event/cursor-hackathon-london-2026/redeem";
+const redeemHref = "/event/cursor-thrads-london-2026/redeem";
 
 const readiness = [
-  { label: "Event", value: "London 2026" },
+  { label: "Event", value: "Thrads · London · 2026" },
   { label: "Flow", value: "Name + email match" },
 ];
 

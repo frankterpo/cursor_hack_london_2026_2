@@ -22,8 +22,9 @@ Migrations to apply in order (names may vary):
 
 1. `20260402000000_create_tables.sql` …
 2. `20260427150000_hackathons_multitenant.sql` — adds `hackathons` + `hackathon_id` columns.
-3. `20260428120000_hackathon_composite_pk_and_london_2026.sql` — composite PKs + seeds **London 2026**.
+3. `20260428120000_hackathon_composite_pk_and_london_2026.sql` — composite PKs + seeds **London 2026 (Briefcase)**.
 4. `20260429120000_london_2026_analysis_settings_backfill.sql` — `analysis_settings` row for London (event window + analysis thresholds).
+5. `20260506120000_thrads_london_2026_hackathon.sql` — **`thrads-london-2026`** hackathon row + `analysis_settings` (`a0000003-…`).
 
 ### Environment
 
@@ -38,13 +39,14 @@ Migrations to apply in order (names may vary):
 Seeded rows (run migrations):
 
 
-| `slug`           | `id` (example)                         | Notes                                       |
-| ---------------- | -------------------------------------- | ------------------------------------------- |
-| `legacy-default` | `a0000001-0000-4000-8000-000000000001` | HCMC seed data                              |
-| `london-2026`    | `a0000002-0000-4000-8000-000000000002` | London 2026 (adjust dates in SQL if needed) |
+| `slug`             | `id` (example)                         | Notes                                       |
+| ------------------ | -------------------------------------- | ------------------------------------------- |
+| `legacy-default`   | `a0000001-0000-4000-8000-000000000001` | HCMC seed data                              |
+| `london-2026`      | `a0000002-0000-4000-8000-000000000002` | Cursor × Briefcase — London 2026            |
+| `thrads-london-2026` | `a0000003-0000-4000-8000-000000000003` | Cursor × Thrads — London 2026 (Firestore slug uses `cursor-thrads-london-2026`) |
 
 
-Set `**DEFAULT_HACKATHON_ID`** to the UUID for the hack you are running **on that Vercel project** (e.g. London → `a0000002-…`).
+Set `**DEFAULT_HACKATHON_ID`** to the UUID for the hack you are running **on that Vercel project** (Thrads → `a0000003-…`, Briefcase London → `a0000002-…`).
 
 **Judge rubric:** Live scoring uses `public/api/_lib/judging.js` (`JUDGE_CONFIG`). The judge UI loads `public/judge-config.json`. Keep both in sync with the event rubric (for London, mirror `cursor-hackathon-hcmc-2025/data/event-format.json`). The public board’s `public/eric-bounties.json` → `hackathon_format` drives the submission track `<select>` and on-page copy — update it when tracks or bonus buckets change.
 
@@ -77,6 +79,50 @@ We do not sync Supabase and Firebase in real time. They remain:
 - **Firebase** — credit URLs, attendees, redemptions.
 
 Link them in ops via `**DEFAULT_HACKATHON_ID`** (Supabase) and `**supabaseHackathonId*`* (Firebase project doc).
+
+---
+
+## Cursor × Thrads London 2026 (GCP Firebase + Supabase + Vercel)
+
+**1) GCP / Firebase project (idempotent shell)**
+
+From repo root (requires `gcloud` auth):
+
+```bash
+./scripts/ops/thrads-london-2026-gcp-firebase.sh
+```
+
+Creates `cursor-thrads-london-2026` if missing, enables Firestore-related APIs, then finish Firebase onboarding in Console (or `firebase-tools`) and register a Web app for `NEXT_PUBLIC_FIREBASE_*`.
+
+**2) Supabase tenant row**
+
+After linking the Supabase project (`cd guild-bounty-board && npx supabase link`):
+
+```bash
+cd guild-bounty-board && npx supabase db push
+```
+
+Verify with `scripts/ops/thrads-london-2026-supabase-verify.sql` (Dashboard SQL Editor or CLI).
+
+Idempotent: migration uses `ON CONFLICT` on `hackathons.slug` and `analysis_settings.hackathon_id`.
+
+**3) Firestore `projects` doc + bootstrap collections**
+
+With `credits-portal/.env.local` filled from Firebase Console:
+
+```bash
+cd guild-bounty-board && pnpm run ops:firebase:provision-thrads
+```
+
+**4) Vercel**
+
+- **Credits Next** (`cursor-thrads-london-2026` or your linked project): set `DEFAULT_HACKATHON_ID=a0000003-0000-4000-8000-000000000003` and Firebase env vars.
+- **Static guild board**: `DEFAULT_HACKATHON_ID` same as above; `CREDITS_APP_URL=https://cursor-thrads-london-2026.vercel.app` (no trailing slash).
+- Root `vercel.json` rewrites `/credits-portal/*` to that credits origin — redeploy the **root static** project after merging.
+
+CLI sanity checklist: `./scripts/ops/thrads-london-2026-vercel-check.sh`
+
+Public redemption URL (Firestore slug): `/credits/event/cursor-thrads-london-2026/redeem`.
 
 ---
 
@@ -122,4 +168,4 @@ Link them in ops via `**DEFAULT_HACKATHON_ID`** (Supabase) and `**supabaseHackat
   ```
    Prompts: **create vs update**, **hosted Luma event** (*evt-* + title*), `**starts_at`/`ends_at` when creating**, **Cursor CSV path**, Firestore `**projects`** pick on updates. Writes `hackathons`, `projects/` (codes pool), attendee sync, and assigns codes (**all checked-in on create**, **late joiners only** on update paths).
 
-The credits landing page CTA is `/credits/event/cursor-hackathon-london-2026/redeem` — it resolves the Firestore project by `slug`, not the document id.
+For **Cursor × Thrads**, the credits CTA is `/credits/event/cursor-thrads-london-2026/redeem` (Firestore `projects.slug`). Briefcase London remains `/credits/event/cursor-hackathon-london-2026/redeem`.

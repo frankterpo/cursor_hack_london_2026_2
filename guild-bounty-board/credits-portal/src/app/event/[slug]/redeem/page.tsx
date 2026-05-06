@@ -20,6 +20,12 @@ function isLondonRedeemSlug(slug: string) {
   ].includes(slug);
 }
 
+/** Firestore project slug for redemption API (Supabase uses thrads-london-2026). */
+function redeemSlugForApi(slug: string): string {
+  if (slug === 'thrads-london-2026') return 'cursor-thrads-london-2026';
+  return slug;
+}
+
 export default function ProjectRedeemPage() {
   const params = useParams();
   const slug = params.slug as string;
@@ -40,7 +46,8 @@ export default function ProjectRedeemPage() {
 
   const fetchProjectBySlug = async () => {
     try {
-      const response = await fetch(`/credits/api/public/projects/${slug}`);
+      const apiSlug = redeemSlugForApi(slug);
+      const response = await fetch(`/credits/api/public/projects/${apiSlug}`);
       if (!response.ok) {
         throw new Error('Project not found');
       }
