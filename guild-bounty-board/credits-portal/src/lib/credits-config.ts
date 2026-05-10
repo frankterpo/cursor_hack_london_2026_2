@@ -17,3 +17,15 @@ export function boardBaseUrl(): string {
   ).replace(/\/$/, "");
   return raw || "/";
 }
+
+/** Guild static board deep-link for submit / judge / manager panels (OG Cursor UI lives behind this URL). */
+export function boardPanelUrl(panel: "submit" | "judge" | "manager"): string {
+  const raw = boardBaseUrl();
+  const base = raw.startsWith("http")
+    ? raw
+    : "https://cusor-hack-london-2026-2.vercel.app";
+  const param =
+    panel === "submit" ? "open=submit" : panel === "judge" ? "open=judge" : "open=manager";
+  const origin = base.replace(/\/$/, "");
+  return `${origin}/?${param}`;
+}

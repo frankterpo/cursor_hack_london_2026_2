@@ -38,7 +38,8 @@ A friction-free, self-service portal for distributing Cursor credits at hackatho
 
 ### 👥 **Attendee Experience (Enhanced MVP)**
 - **Smart Redemption Flow**: Two-step validation with attendee autocomplete
-- **Canonical redemption**: `/redeem` (Firestore batch via `NEXT_PUBLIC_CREDITS_FIRESTORE_PROJECT_SLUG`). Hackathon-specific copy: `/hackathon`.
+- **Thematic landing (per collaborator)**: `/` — env `NEXT_PUBLIC_HACKATHON_*` (`/hackathon` redirects here).
+- **OG Cursor (fixed across hacks)**: `/redeem`, `/submit`, `/judge`, `/manager` — credits + embedded guild board (`NEXT_PUBLIC_BOARD_URL`).
 - **Instant Code Delivery**: Direct Cursor URL redemption (no copy-paste needed)
 - **Mobile-First Design**: Optimized for all devices with loading states
 - **Real-Time Validation**: Prevents errors with immediate feedback

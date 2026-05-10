@@ -11,7 +11,7 @@
     },
     {
       "src": "/credits-portal",
-      "dest": "https://cursor-thrads-london-2026.vercel.app/credits/redeem"
+      "dest": "https://cursor-thrads-london-2026.vercel.app/credits"
     }
   ],
   "headers": [

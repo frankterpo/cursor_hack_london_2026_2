@@ -6,8 +6,11 @@ CREDITS_HOST="${CREDITS_VERCEL_URL:-https://cursor-thrads-london-2026.vercel.app
 BOARD_HOST="${BOARD_VERCEL_URL:-https://cusor-hack-london-2026-2.vercel.app}"
 
 echo "Expected public URLs:"
-echo "  Credits Next: $CREDITS_HOST/credits/redeem   (set NEXT_PUBLIC_CREDITS_FIRESTORE_PROJECT_SLUG=cursor-thrads-london-2026)"
-echo "  Static board:   $BOARD_HOST (CREDITS_APP_URL should point at credits origin, no trailing slash)"
+echo "  Thematic landing: $CREDITS_HOST/credits   (/credits/hackathon → same)"
+echo "  OG Cursor:        $CREDITS_HOST/credits/redeem | /submit | /judge | /manager"
+echo "  Set NEXT_PUBLIC_BOARD_URL=$BOARD_HOST on credits project (iframes)"
+echo "  Set NEXT_PUBLIC_CREDITS_FIRESTORE_PROJECT_SLUG=cursor-thrads-london-2026"
+echo "  Static guild:     $BOARD_HOST (CREDITS_APP_URL → credits origin, no trailing slash)"
 echo ""
 
 if ! command -v vercel >/dev/null 2>&1; then
