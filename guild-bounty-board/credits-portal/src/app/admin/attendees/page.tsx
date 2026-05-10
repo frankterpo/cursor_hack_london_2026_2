@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { creditsAppPath } from '@/lib/credits-config';
 
 interface Attendee {
   id: string;
@@ -63,7 +64,9 @@ export default function AdminAttendees() {
       }
 
       const selectedProject = JSON.parse(selectedProjectData);
-      const response = await fetch(`/credits/api/admin/attendees?projectId=${selectedProject.id}`);
+      const response = await fetch(
+        creditsAppPath(`/api/admin/attendees?projectId=${encodeURIComponent(selectedProject.id)}`),
+      );
       if (!response.ok) throw new Error('Failed to fetch attendees');
       
       const data = await response.json();

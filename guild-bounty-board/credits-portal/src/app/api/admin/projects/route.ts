@@ -124,9 +124,9 @@ export async function POST(request: NextRequest) {
         id: docRef.id,
         ...projectData,
         eventDate: projectData.eventDate?.toDate?.()?.toISOString() || null,
-        createdAt: projectData.createdAt.toDate().toISOString(),
-        updatedAt: projectData.updatedAt.toDate().toISOString(),
-      }
+        createdAt: now.toDate().toISOString(),
+        updatedAt: now.toDate().toISOString(),
+      },
     });
   } catch (error) {
     console.error('Project creation error:', error);

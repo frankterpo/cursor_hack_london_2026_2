@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { creditsAppPath } from "@/lib/credits-config";
 
 type Submission = {
   repo_key: string;
@@ -41,7 +42,8 @@ export function HackathonLiveSnapshot({ variant = "landing" }: HackathonLiveSnap
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch("/credits/api/hackathon/snapshot");
+        const res = await fetch(creditsAppPath("/api/hackathon/snapshot"));
+        if (!res.ok) throw new Error(`snapshot ${res.status}`);
         const json = (await res.json()) as SnapshotResponse;
         if (!cancelled) setData(json);
       } catch {

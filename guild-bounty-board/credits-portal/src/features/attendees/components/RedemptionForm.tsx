@@ -1,6 +1,7 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
+import { creditsAppPath } from "@/lib/credits-config";
 import { AttendeeAutocomplete } from './AttendeeAutocomplete';
 import type { AttendeeForSuggestion } from '../hooks/useAttendees';
 import type { AttendeeValidationResponse } from '../model';
@@ -43,7 +44,7 @@ export function RedemptionForm({ projectId }: RedemptionFormProps = {}) {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch('/credits/api/attendees/validate', {
+      const response = await fetch(creditsAppPath("/api/attendees/validate"), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -79,7 +80,7 @@ export function RedemptionForm({ projectId }: RedemptionFormProps = {}) {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch('/credits/api/attendees/validate', {
+      const response = await fetch(creditsAppPath("/api/attendees/validate"), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -100,7 +101,7 @@ export function RedemptionForm({ projectId }: RedemptionFormProps = {}) {
           cursorUrl: validationData.cursorUrl,
           name: name.trim(),
         });
-        window.location.href = `/credits/success?${params.toString()}`;
+        window.location.href = creditsAppPath(`/success?${params.toString()}`);
         return;
       }
       setCurrentStep('ready');
@@ -115,7 +116,7 @@ export function RedemptionForm({ projectId }: RedemptionFormProps = {}) {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch('/credits/api/redeem', {
+      const response = await fetch(creditsAppPath("/api/redeem"), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -131,7 +132,7 @@ export function RedemptionForm({ projectId }: RedemptionFormProps = {}) {
         cursorUrl: result.data.cursorUrl,
         name: result.data.name || name.trim(),
       });
-      window.location.href = `/credits/success?${params.toString()}`;
+      window.location.href = creditsAppPath(`/success?${params.toString()}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Redemption failed');
     } finally {

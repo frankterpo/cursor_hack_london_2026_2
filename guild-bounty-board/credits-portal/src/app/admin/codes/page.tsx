@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { creditsAppPath } from '@/lib/credits-config';
 
 interface Code {
   id: string;
@@ -63,7 +64,9 @@ export default function AdminCodes() {
       }
 
       const selectedProject = JSON.parse(selectedProjectData);
-      const response = await fetch(`/credits/api/admin/codes?projectId=${selectedProject.id}`);
+      const response = await fetch(
+        creditsAppPath(`/api/admin/codes?projectId=${encodeURIComponent(selectedProject.id)}`),
+      );
       if (!response.ok) throw new Error('Failed to fetch codes');
       
       const data = await response.json();

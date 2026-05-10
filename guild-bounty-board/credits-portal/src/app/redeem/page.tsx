@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { CreditsPortalHeader } from "@/components/credits/CreditsPortalHeader";
 import { RedemptionForm } from "@/features/attendees/components/RedemptionForm";
-import { getCreditsFirestoreProjectSlug } from "@/lib/credits-config";
+import { creditsAppPath, getCreditsFirestoreProjectSlug } from "@/lib/credits-config";
 
 export default function RedeemPage() {
   const slug = getCreditsFirestoreProjectSlug();
@@ -16,7 +16,9 @@ export default function RedeemPage() {
     let cancelled = false;
     (async () => {
       try {
-        const response = await fetch(`/credits/api/public/projects/${encodeURIComponent(slug)}`);
+        const response = await fetch(
+          creditsAppPath(`/api/public/projects/${encodeURIComponent(slug)}`),
+        );
         if (!response.ok) throw new Error("Project not found");
         const result = await response.json();
         if (!cancelled) {

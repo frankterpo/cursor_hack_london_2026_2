@@ -308,6 +308,22 @@
   color: rgba(242, 237, 233, 0.92);
 }
 
+.hackathon-skin-thrad .hackathon-landing-main a.text-primary {
+  color: #ffb59a;
+}
+
+.hackathon-skin-thrad .hackathon-landing-main a.text-primary:hover {
+  color: var(--thrad-accent-hot);
+}
+
+.hackathon-skin-thrad .hackathon-landing-main thead.bg-card\/95 {
+  background: rgba(26, 24, 22, 0.92) !important;
+}
+
+.hackathon-skin-thrad .hackathon-landing-main .divide-border\/60 > :not([hidden]) ~ :not([hidden]) {
+  border-color: rgba(232, 226, 220, 0.12);
+}
+
 .hackathon-partner-wordmark {
   font-family: var(--font-inter-tight), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }

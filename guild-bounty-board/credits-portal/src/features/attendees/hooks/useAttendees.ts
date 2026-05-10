@@ -5,7 +5,8 @@
  * Ops may pre-assign codes (hasRedeemed); those names still appear in the picker.
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import { creditsAppPath } from "@/lib/credits-config";
 
 export interface AttendeeForSuggestion {
   id: string;
@@ -29,7 +30,9 @@ export function useAttendees(projectId?: string) {
   const fetchAttendees = async () => {
     try {
       setIsLoading(true);
-      const url = projectId ? `/credits/api/attendees?projectId=${projectId}` : '/credits/api/attendees';
+      const url = projectId
+        ? creditsAppPath(`/api/attendees?projectId=${encodeURIComponent(projectId)}`)
+        : creditsAppPath("/api/attendees");
       const response = await fetch(url);
       
       if (!response.ok) {

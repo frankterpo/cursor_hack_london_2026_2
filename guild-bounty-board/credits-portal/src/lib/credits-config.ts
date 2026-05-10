@@ -4,6 +4,18 @@
  * for this batch (codes + attendees). Supabase scope stays on DEFAULT_HACKATHON_ID server-side.
  */
 
+/** Matches `basePath` in next.config — client fetch() does not auto-prefix like `<Link>`. */
+export function creditsBasePath(): string {
+  const raw = (process.env.NEXT_PUBLIC_CREDITS_BASE_PATH || "/credits").replace(/\/$/, "");
+  return raw || "/credits";
+}
+
+/** Absolute path under this app, e.g. `creditsAppPath("/api/redeem")` → `/credits/api/redeem`. */
+export function creditsAppPath(path: string): string {
+  const p = path.startsWith("/") ? path : `/${path}`;
+  return `${creditsBasePath()}${p}`;
+}
+
 export function getCreditsFirestoreProjectSlug(): string {
   const raw =
     process.env.NEXT_PUBLIC_CREDITS_FIRESTORE_PROJECT_SLUG?.trim() ||

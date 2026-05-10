@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { creditsAppPath } from '@/lib/credits-config';
 
 /**
  * Admin page for uploading CSV files (codes and attendees)
@@ -40,7 +41,7 @@ export default function AdminUploads() {
       formData.append('type', type);
       formData.append('projectId', selectedProject.id);
 
-      const response = await fetch('/credits/api/admin/upload', {
+      const response = await fetch(creditsAppPath('/api/admin/upload'), {
         method: 'POST',
         body: formData
       });

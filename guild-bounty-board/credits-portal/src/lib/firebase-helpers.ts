@@ -133,19 +133,21 @@ export async function redeemCodeForAttendee(
       const now = Timestamp.now();
       const attendeeRef = doc(collection(db, 'attendees'));
       const redemptionRef = doc(collection(db, 'redemptions'));
-      
-      // Create attendee record
-      const attendee: Omit<Attendee, 'id'> = {
-        ...attendeeData,
+      const projectId = attendeeData.eventId;
+
+      // Create attendee record (canonical field is projectId; queries still use legacy eventId in Firestore)
+      const attendee: Omit<Attendee, "id"> = {
+        name: attendeeData.name,
+        email: attendeeData.email,
+        projectId,
         hasRedeemedCode: true,
         redeemedCodeId: codeDoc.id,
         createdAt: now.toDate(),
         redeemedAt: now.toDate(),
       };
-      
-      // Create redemption record
-      const redemption: Omit<Redemption, 'id'> = {
-        eventId: attendeeData.eventId,
+
+      const redemption: Omit<Redemption, "id"> = {
+        projectId,
         attendeeId: attendeeRef.id,
         codeId: codeDoc.id,
         attendeeName: attendeeData.name,
@@ -163,9 +165,10 @@ export async function redeemCodeForAttendee(
         redeemedBy: attendeeRef.id,
       });
       
-      // Create attendee record
+      // Create attendee record (eventId mirrors projectId for legacy queries in this module)
       transaction.set(attendeeRef, {
         ...attendee,
+        eventId: projectId,
         createdAt: now,
         redeemedAt: now,
       });

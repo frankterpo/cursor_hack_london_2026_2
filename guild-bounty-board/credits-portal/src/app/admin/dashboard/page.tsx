@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { HackathonLiveSnapshot } from '@/components/hackathon/HackathonLiveSnapshot';
+import { creditsAppPath } from '@/lib/credits-config';
 interface DashboardStats {
   totalCodes: number;
   usedCodes: number;
@@ -41,7 +42,9 @@ export default function AdminDashboard() {
       }
 
       const selectedProject = JSON.parse(selectedProjectData) as { id: string };
-      const response = await fetch(`/credits/api/admin/dashboard?projectId=${selectedProject.id}`);
+      const response = await fetch(
+        creditsAppPath(`/api/admin/dashboard?projectId=${encodeURIComponent(selectedProject.id)}`),
+      );
       if (!response.ok) throw new Error('Failed to fetch data');
 
       const data = await response.json();

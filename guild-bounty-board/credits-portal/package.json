@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "eslint src",
     "ops:firebase:provision-london": "node scripts/provision-london-2026-firebase-project.js",
     "ops:firebase:provision-thrads": "node scripts/provision-thrads-london-2026-firebase-project.js",
     "ops:firebase:clear-project-children": "node scripts/clear-firebase-project-children.js",

@@ -18,25 +18,25 @@ export function CursorBrandVideoMark({
 
   useEffect(() => {
     const shell = shellRef.current;
-    const brandVideo = videoRef.current;
-    if (!shell || !brandVideo) return;
+    const video = videoRef.current;
+    if (!shell || !video) return;
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    brandVideo.pause();
-    brandVideo.currentTime = 0;
+    video.pause();
+    video.currentTime = 0;
 
     const ac = new AbortController();
     const { signal } = ac;
 
     function isActivelyPlaying() {
-      return !brandVideo.paused && !brandVideo.ended;
+      return !video.paused && !video.ended;
     }
 
     function tryPlayBrandVideo() {
       if (reduceMotion) return;
       if (isActivelyPlaying()) return;
-      if (brandVideo.ended) brandVideo.currentTime = 0;
-      const p = brandVideo.play();
+      if (video.ended) video.currentTime = 0;
+      const p = video.play();
       if (p !== undefined) p.catch(() => {});
     }
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { CreditsPortalHeader } from '@/components/credits/CreditsPortalHeader';
+import { creditsAppPath } from '@/lib/credits-config';
 
 export default function AdminPage() {
   const [password, setPassword] = useState('');
@@ -28,7 +29,7 @@ export default function AdminPage() {
     setError('');
 
     try {
-      const response = await fetch('/credits/api/admin/auth', {
+      const response = await fetch(creditsAppPath('/api/admin/auth'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password }),
