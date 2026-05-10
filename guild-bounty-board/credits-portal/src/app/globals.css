@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Cursor × Briefcase · London 2026 — aligned with cursor-hackathon-hcmc-2025/ui/static */
+/* OG Cursor credits portal tokens (teal / dark). Hackathon-specific visuals live under `/hackathon` only. */
 
 @layer base {
   :root {
@@ -50,12 +50,14 @@
   }
 }
 
-/* Event page backdrop — teal washes + faint grid */
+/* Credits shell backdrop — teal washes + faint grid */
+.credits-canvas,
 .event-canvas {
   position: relative;
   min-height: 100vh;
 }
 
+.credits-canvas::before,
 .event-canvas::before {
   content: "";
   position: fixed;
@@ -71,7 +73,8 @@
 }
 
 @layer components {
-  .event-site-header {
+  .event-site-header,
+  .credits-site-header {
     @apply sticky top-0 z-50 flex items-center justify-between border-b border-border bg-background/85;
     min-height: 65px;
     padding: 16px 28px;
@@ -79,14 +82,17 @@
     backdrop-filter: saturate(160%) blur(12px);
     -webkit-backdrop-filter: saturate(160%) blur(12px);
   }
-  .event-brand {
+  .event-brand,
+  .credits-brand {
     @apply flex min-w-0 items-center no-underline transition-opacity hover:opacity-90;
     gap: 14px;
   }
-  .event-brand:focus-visible {
+  .event-brand:focus-visible,
+  .credits-brand:focus-visible {
     @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
   }
-  .event-brand-mark {
+  .event-brand-mark,
+  .credits-brand-mark {
     @apply inline-flex shrink-0 items-center justify-center overflow-visible;
   }
   /* Shared Cursor marketing video mark (hover plays spin — see CursorBrandVideoMark) */
@@ -121,14 +127,17 @@
     height: 64px;
     max-width: min(200px, 48vw);
   }
-  .event-brand-text {
+  .event-brand-text,
+  .credits-brand-text {
     @apply flex min-w-0 flex-col;
     line-height: 1.1;
   }
-  .event-brand-title {
+  .event-brand-title,
+  .credits-brand-title {
     @apply font-display text-base font-semibold tracking-tight text-foreground;
   }
-  .event-brand-subtitle {
+  .event-brand-subtitle,
+  .credits-brand-subtitle {
     @apply mt-1.5 inline-flex items-center text-muted-foreground;
     gap: 8px;
   }
@@ -156,17 +165,21 @@
   .event-brand-halkin-rule {
     fill: hsl(var(--muted-foreground));
   }
-  .event-header-actions {
+  .event-header-actions,
+  .credits-header-actions {
     @apply flex items-center;
     gap: 20px;
   }
-  .event-header-button {
+  .event-header-button,
+  .credits-header-button {
     @apply inline-flex h-9 items-center justify-center gap-1.5 whitespace-nowrap rounded-md border px-4 text-sm font-semibold leading-none no-underline transition-colors;
   }
-  .event-header-button-primary {
+  .event-header-button-primary,
+  .credits-header-button-primary {
     @apply border-transparent bg-primary/70 text-white hover:bg-primary/60;
   }
-  .event-header-button-ghost {
+  .event-header-button-ghost,
+  .credits-header-button-ghost {
     @apply border-border bg-card/80 text-foreground hover:border-primary/50 hover:bg-primary/10;
   }
   .btn-event-primary {
@@ -190,18 +203,39 @@
   }
 }
 
+.hackathon-landing-main {
+  position: relative;
+}
+
+.hackathon-landing-main::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 1rem;
+  background: radial-gradient(
+    800px 280px at 10% 0%,
+    rgba(109, 201, 219, 0.12),
+    transparent 55%
+  );
+  pointer-events: none;
+}
+
 @media (max-width: 640px) {
-  .event-site-header {
+  .event-site-header,
+  .credits-site-header {
     align-items: flex-start;
     flex-direction: column;
     gap: 12px;
     padding: 14px 16px;
   }
-  .event-header-actions {
+  .event-header-actions,
+  .credits-header-actions {
     width: 100%;
     gap: 8px;
   }
-  .event-header-button {
+  .event-header-button,
+  .credits-header-button {
     flex: 1;
   }
   .event-brand-subtitle {

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ExternalLink, Copy, Check } from 'lucide-react';
 import Link from 'next/link';
-import { EventMarketingHeader } from '@/components/event/EventMarketingHeader';
+import { CreditsPortalHeader } from '@/components/credits/CreditsPortalHeader';
 
 export function SuccessContent() {
   const searchParams = useSearchParams();
@@ -41,7 +41,7 @@ export function SuccessContent() {
 
   return (
     <div className="min-h-screen pb-16">
-      <EventMarketingHeader />
+      <CreditsPortalHeader />
       <div className="mx-auto max-w-lg px-4 py-12">
         <div className="mb-8 text-center">
           <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border-2 border-primary/60 bg-primary/10">

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { HackathonLiveSnapshot } from '@/components/hackathon/HackathonLiveSnapshot';
 interface DashboardStats {
   totalCodes: number;
   usedCodes: number;
@@ -55,14 +56,7 @@ export default function AdminDashboard() {
   };
 
   const openTestRedeem = () => {
-    try {
-      const raw = localStorage.getItem('admin_selected_project');
-      if (!raw) return;
-      const { slug } = JSON.parse(raw) as { slug: string };
-      window.open(`/credits/event/${slug}/redeem`, '_blank', 'noopener,noreferrer');
-    } catch {
-      /* ignore */
-    }
+    window.open('/credits/redeem', '_blank', 'noopener,noreferrer');
   };
 
   if (isLoading) {
@@ -191,6 +185,17 @@ export default function AdminDashboard() {
             </Button>
           </CardContent>
         </Card>
+      </div>
+
+      <div className="space-y-4 pt-4">
+        <div>
+          <h2 className="font-display text-xl font-semibold text-foreground">Hackathon manager</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Same Supabase-backed view as the public hackathon landing — submissions and judge rollups for{' '}
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">DEFAULT_HACKATHON_ID</code>.
+          </p>
+        </div>
+        <HackathonLiveSnapshot variant="admin" />
       </div>
     </div>
   );

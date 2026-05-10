@@ -38,7 +38,7 @@ A friction-free, self-service portal for distributing Cursor credits at hackatho
 
 ### 👥 **Attendee Experience (Enhanced MVP)**
 - **Smart Redemption Flow**: Two-step validation with attendee autocomplete
-- **Event-Specific URLs**: Access via `/event/{slug}/redeem` for each hackathon
+- **Canonical redemption**: `/redeem` (Firestore batch via `NEXT_PUBLIC_CREDITS_FIRESTORE_PROJECT_SLUG`). Hackathon-specific copy: `/hackathon`.
 - **Instant Code Delivery**: Direct Cursor URL redemption (no copy-paste needed)
 - **Mobile-First Design**: Optimized for all devices with loading states
 - **Real-Time Validation**: Prevents errors with immediate feedback
@@ -120,7 +120,7 @@ See `README_PRD.txt` for detailed implementation status.
 ## 📝 Usage
 
 ### For Attendees:
-1. Visit your event's redemption URL: `/event/{your-event-slug}/redeem`
+1. Visit **`/redeem`** (after setting `NEXT_PUBLIC_CREDITS_FIRESTORE_PROJECT_SLUG` to your Firestore `projects.slug`).
 2. Start typing your name (autocomplete will suggest matches)
 3. Confirm your email address
 4. Click to instantly claim your Cursor credits
