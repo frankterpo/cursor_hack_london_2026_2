@@ -1,4 +1,4 @@
-# cusor_hack_london_2026_1
+# cusor_hack_london_2026_2
 
 Workspace for the Cursor hackathon board, submission manager, judging flow, and supporting artifacts.
 
