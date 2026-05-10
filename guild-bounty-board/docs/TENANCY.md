@@ -116,7 +116,7 @@ cd guild-bounty-board && pnpm run ops:firebase:provision-thrads
 
 **4) Vercel**
 
-- **Credits Next** (`cursor-thrads-london-2026` or your linked project): set `DEFAULT_HACKATHON_ID=a0000003-0000-4000-8000-000000000003` and Firebase env vars.
+- **Credits Next** (`cursor-thrads-london-2026` or your linked project): set `DEFAULT_HACKATHON_ID=a0000003-0000-4000-8000-000000000003`, Firebase env vars, and **`NEXT_PUBLIC_HACKATHON_SKIN=thrad`** plus `NEXT_PUBLIC_HACKATHON_*` copy so the landing page matches thrad.ai marketing (OG routes stay Cursor-themed).
 - **Static guild board**: `DEFAULT_HACKATHON_ID` same as above; `CREDITS_APP_URL=https://cursor-thrads-london-2026.vercel.app` (no trailing slash).
 - Root `vercel.json` rewrites `/credits-portal/*` to that credits origin — redeploy the **root static** project after merging.
 
@@ -166,4 +166,4 @@ CLI sanity checklist: `./scripts/ops/thrads-london-2026-vercel-check.sh`
   ```
    Prompts: **create vs update**, **hosted Luma event** (*evt-* + title*), `**starts_at`/`ends_at` when creating**, **Cursor CSV path**, Firestore `**projects`** pick on updates. Writes `hackathons`, `projects/` (codes pool), attendee sync, and assigns codes (**all checked-in on create**, **late joiners only** on update paths).
 
-**Public routes (same on every hack — swap env per deploy):** collaborator-themed landing **`/credits/`** (alias **`/credits/hackathon`**); OG Cursor **`/credits/redeem`**, **`/credits/submit`**, **`/credits/judge`**, **`/credits/manager`** (guild board embedded). Credits slug: **`NEXT_PUBLIC_CREDITS_FIRESTORE_PROJECT_SLUG`**. Landing copy: **`NEXT_PUBLIC_HACKATHON_*`**. Legacy **`/credits/event/[slug]/redeem`** → **`/credits/redeem`**.
+**Public routes (same on every hack — swap env per deploy):** collaborator-themed landing **`/credits/`** (alias **`/credits/hackathon`**); OG Cursor **`/credits/redeem`**, **`/credits/submit`**, **`/credits/judge`**, **`/credits/manager`** (guild board embedded). Credits slug: **`NEXT_PUBLIC_CREDITS_FIRESTORE_PROJECT_SLUG`**. Landing copy: **`NEXT_PUBLIC_HACKATHON_*`**. Optional Thrads chrome on **`/`** only: **`NEXT_PUBLIC_HACKATHON_SKIN=thrad`** (or `"skin":"thrad"` inside **`NEXT_PUBLIC_HACKATHON_LANDING_JSON`**). Legacy **`/credits/event/[slug]/redeem`** → **`/credits/redeem`**.

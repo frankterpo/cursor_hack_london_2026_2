@@ -2,21 +2,44 @@
 
 import Link from "next/link";
 import { CursorBrandVideoMark } from "@/components/event/CursorBrandVideoMark";
-import type { HackathonLandingConfig } from "@/lib/hackathon-landing";
+import type { HackathonLandingConfig, HackathonSkin } from "@/lib/hackathon-landing";
 
 type Props = {
   cfg: HackathonLandingConfig;
 };
 
+function ThradWordmark() {
+  return (
+    <a
+      href="https://thrad.ai"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="hackathon-partner-wordmark shrink-0 rounded-md px-2 py-1 text-[1.05rem] font-semibold tracking-tight text-[var(--thrad-paper,#f2ede9)] no-underline ring-1 ring-[rgba(236,82,27,0.45)] transition-colors hover:bg-[rgba(236,82,27,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--thrad-accent,#ec521b)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]"
+    >
+      Thrad
+    </a>
+  );
+}
+
 /**
  * Only used on `/` — collaborator-themed chrome. Every other route uses `CreditsPortalHeader` (OG Cursor).
  */
 export function HackathonLandingHeader({ cfg }: Props) {
+  const skin: HackathonSkin = cfg.skin ?? "default";
+
   return (
     <header className="hackathon-themed-header border-b border-primary/25 bg-gradient-to-r from-background via-primary/5 to-background backdrop-blur-sm">
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-        <div className="flex min-w-0 items-center gap-4">
+        <div className="flex min-w-0 items-center gap-3 sm:gap-4">
           <CursorBrandVideoMark size="header" />
+          {skin === "thrad" ? (
+            <>
+              <span className="text-lg font-light text-muted-foreground" aria-hidden>
+                ×
+              </span>
+              <ThradWordmark />
+            </>
+          ) : null}
           <div className="min-w-0">
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary">Hackathon</p>
             <p className="font-display truncate text-lg font-semibold text-foreground sm:text-xl">{cfg.title}</p>

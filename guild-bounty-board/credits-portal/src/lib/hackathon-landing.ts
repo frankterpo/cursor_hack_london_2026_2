@@ -1,6 +1,9 @@
 export type HackathonJudge = { name: string; title?: string };
 export type HackathonPartnerLink = { label: string; href: string };
 
+/** Visual skin for `/` only — OG Cursor routes stay unchanged. */
+export type HackathonSkin = "default" | "thrad";
+
 export type HackathonLandingConfig = {
   title: string;
   subtitle?: string;
@@ -8,6 +11,7 @@ export type HackathonLandingConfig = {
   judges?: HackathonJudge[];
   prizes?: string[];
   partnerLinks?: HackathonPartnerLink[];
+  skin?: HackathonSkin;
 };
 
 function splitLines(s?: string): string[] | undefined {
@@ -25,9 +29,16 @@ function parseJson<T>(raw?: string): T | undefined {
   }
 }
 
-/** Env-driven copy for `/hackathon` only — keeps partner/event theming off standard credits routes. */
+function parseSkin(raw?: string): HackathonSkin | undefined {
+  const v = raw?.trim().toLowerCase();
+  if (v === "thrad") return "thrad";
+  if (v === "default") return "default";
+  return undefined;
+}
+
+/** Env-driven copy for `/` — keeps partner/event theming off standard credits routes. */
 export function getHackathonLandingConfig(): HackathonLandingConfig {
-  const fromJson = parseJson<Partial<HackathonLandingConfig>>(
+  const fromJson = parseJson<Partial<HackathonLandingConfig & { skin?: string }>>(
     process.env.NEXT_PUBLIC_HACKATHON_LANDING_JSON,
   );
   if (fromJson && typeof fromJson.title === "string" && fromJson.title.trim()) {
@@ -38,6 +49,10 @@ export function getHackathonLandingConfig(): HackathonLandingConfig {
       judges: fromJson.judges,
       prizes: fromJson.prizes,
       partnerLinks: fromJson.partnerLinks,
+      skin:
+        parseSkin(typeof fromJson.skin === "string" ? fromJson.skin : undefined) ??
+        parseSkin(process.env.NEXT_PUBLIC_HACKATHON_SKIN) ??
+        "default",
     };
   }
 
@@ -60,5 +75,6 @@ export function getHackathonLandingConfig(): HackathonLandingConfig {
     partnerLinks: parseJson<HackathonPartnerLink[]>(
       process.env.NEXT_PUBLIC_HACKATHON_PARTNER_LINKS_JSON,
     ),
+    skin: parseSkin(process.env.NEXT_PUBLIC_HACKATHON_SKIN) ?? "default",
   };
 }

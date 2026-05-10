@@ -9,6 +9,15 @@ Workspace for the Cursor hackathon board, submission manager, judging flow, and 
 - `artifacts`: hackathon briefs and supporting docs
 - `scripts`: helper scripts for publishing admin snapshots
 
+## Hackathon building blocks (how to stop re-theming every repo)
+
+Target split (incremental — this repo still ships both for now):
+
+1. **Partner landing** — one small deploy per event with collaborator chrome only (`/`). Copy is env-driven (`NEXT_PUBLIC_HACKATHON_*`, optional `NEXT_PUBLIC_HACKATHON_SKIN=thrad` for thrad.ai-aligned palette on the landing route).
+2. **Shared Cursor infra** — stable OG-themed routes you reuse unchanged: `/redeem`, `/submit`, `/judge`, `/manager` (this app under `guild-bounty-board/credits-portal`). Point `NEXT_PUBLIC_BOARD_URL` at the guild static board; keep Firebase + Supabase IDs per event.
+
+New hacks add a landing deploy (or static marketing site) plus env vars — not new judge/credits UI. Extracting (2) into its own GitHub repo later is a straight move of `credits-portal` + docs.
+
 ## Environment variables
 
 Two deploy surfaces:

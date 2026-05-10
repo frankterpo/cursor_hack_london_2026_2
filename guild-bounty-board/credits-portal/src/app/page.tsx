@@ -11,9 +11,11 @@ import { getHackathonLandingConfig } from "@/lib/hackathon-landing";
  */
 export default function HackathonLandingPage() {
   const cfg = getHackathonLandingConfig();
+  const skin = cfg.skin ?? "default";
+  const skinClass = skin === "thrad" ? "hackathon-skin-thrad" : "hackathon-skin-default";
 
   return (
-    <div className="min-h-screen pb-20">
+    <div className={`min-h-screen pb-20 ${skinClass}`}>
       <HackathonLandingHeader cfg={cfg} />
 
       <main className="hackathon-landing-main mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
