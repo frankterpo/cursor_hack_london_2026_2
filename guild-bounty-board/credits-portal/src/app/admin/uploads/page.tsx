@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { creditsAppPath } from '@/lib/credits-config';
 
 /**
@@ -14,7 +13,7 @@ export default function AdminUploads() {
     type: 'codes' | 'attendees';
     success: boolean;
     message: string;
-    details?: any;
+    details?: unknown;
   } | null>(null);
 
   const handleFileUpload = async (file: File, type: 'codes' | 'attendees') => {
@@ -34,7 +33,7 @@ export default function AdminUploads() {
         return;
       }
 
-      const selectedProject = JSON.parse(selectedProjectData);
+      const selectedProject = JSON.parse(selectedProjectData) as { id: string };
 
       const formData = new FormData();
       formData.append('file', file);
@@ -54,7 +53,7 @@ export default function AdminUploads() {
         message: result.message,
         details: result.details
       });
-    } catch (error) {
+    } catch {
       setUploadResults({
         type,
         success: false,
@@ -91,7 +90,7 @@ export default function AdminUploads() {
             
             <div className="text-xs text-gray-500 space-y-1">
               <p><strong>Expected CSV format:</strong></p>
-              <p>• Header row with 'url' column</p>
+              <p>{`• Header row with 'url' column`}</p>
               <p>• Each row: cursor.com redemption link</p>
               <p>• Example: https://cursor.com/redeem/abc123...</p>
             </div>
@@ -119,7 +118,7 @@ export default function AdminUploads() {
             
             <div className="text-xs text-gray-500 space-y-1">
               <p><strong>Expected CSV format:</strong></p>
-              <p>• Header row with 'name' and 'email' columns</p>
+              <p>{`• Header row with 'name' and 'email' columns`}</p>
               <p>• Each row: attendee name and email address</p>
               <p>• Example: John Doe, john@example.com</p>
             </div>
@@ -160,7 +159,7 @@ export default function AdminUploads() {
           <div>
             <h4 className="font-medium text-gray-900">Codes CSV:</h4>
             <ul className="list-disc list-inside space-y-1 ml-2">
-              <li>Must have 'url' column header</li>
+              <li>{`Must have 'url' column header`}</li>
               <li>Each URL should be a complete cursor.com redemption link</li>
               <li>Duplicate codes will be skipped</li>
               <li>Invalid URLs will be reported</li>
@@ -170,7 +169,7 @@ export default function AdminUploads() {
           <div>
             <h4 className="font-medium text-gray-900">Attendees CSV:</h4>
             <ul className="list-disc list-inside space-y-1 ml-2">
-              <li>Must have 'name' and 'email' columns</li>
+              <li>{`Must have 'name' and 'email' columns`}</li>
               <li>Email addresses will be validated</li>
               <li>Duplicate entries will be skipped</li>
               <li>Names are case-sensitive for redemption matching</li>
