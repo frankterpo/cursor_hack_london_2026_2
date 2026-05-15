@@ -3612,7 +3612,7 @@ document.addEventListener("DOMContentLoaded", () => {
         video: {
           src:
             "https://video.twimg.com/amplify_video/2054991214714277888/vid/avc1/1366x720/kdy550GL5fSNwmpm.mp4?tag=27",
-          poster: "context-post-thumbs/sirupsen-shopify-thumb.jpg",
+          poster: "context-post-thumbs/0.jpg",
         },
       },
       {
