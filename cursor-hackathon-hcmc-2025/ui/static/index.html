@@ -4,18 +4,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark" />
-    <meta name="theme-color" content="#111827" />
+    <meta name="theme-color" content="#0a0a0b" />
     <title>Cursor × Thrads · London 2026</title>
     <meta
       name="description"
-      content="Cursor × Thrads London hackathon — two tracks, 10 points, five judges. AI-native agents for the conversational ad stack."
+      content="Cursor × Thrads London 2026 — agentic builds on conversational ad infrastructure: buy-side, sell-side, and measurement inside LLM-native channels."
     />
-    <link rel="stylesheet" href="style.css?v=100" />
+    <link rel="stylesheet" href="style.css?v=102" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Caveat:wght@500;600;700&family=JetBrains+Mono:wght@500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Caveat:wght@500;600;700&family=JetBrains+Mono:wght@500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap"
     />
     <link rel="icon" type="image/png" href="cursor-cube-briefcase-32.png" sizes="32x32" />
   </head>
@@ -98,10 +98,17 @@
           <span class="eyebrow">London · 2026 · Date TBA</span>
           <h1 class="tracks-title">
             Two tracks.
-            <span class="tracks-title-accent">One ad stack.</span>
+            <span class="tracks-title-accent">One conversational stack.</span>
           </h1>
+          <p class="tracks-infra-kicker">
+            Ad infrastructure for AI — ship agents that operate the same
+            real-time prompt, intent, and placement surface brands and publishers
+            use in chat-native inventory.
+          </p>
           <p class="tracks-sub">
-            Agents that buy, sell, and measure attention in LLM-native channels
+            Build in Cursor; tension-test buy-side, sell-side, and measurement
+            workflows the way a production conversational stack would — fast,
+            contextual, and explicit about policy boundaries.
           </p>
           <div class="tracks-stats" aria-label="Event stats at a glance">
             <div class="tstat">
@@ -150,8 +157,24 @@
       <div id="context" class="context context--in-tracks" aria-labelledby="context-title">
         <div class="context-inner">
           <span class="eyebrow">Why this moment</span>
-          <h2 id="context-title" class="context-title">Ads moved into the chat box. Now agents move the ads.</h2>
+          <h2 id="context-title" class="context-title">Ads moved into the chat box. Agents move the infrastructure.</h2>
           <p class="context-lead">
+            <a
+              class="context-inline-link"
+              href="https://www.thrad.ai/"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Thrad</a
+            >
+            frames it plainly: ad infrastructure for AI — publishers monetize
+            with in-chat placements; brands buy impressions in LLM-native
+            channels. That stack monitors prompts, scores intent, ranks creative,
+            and deploys sponsored answers in milliseconds. This hackathon is the
+            agentic layer on top: who automates bids, who guards brand safety,
+            who proves ROI back to the conversation — with humans clear on what
+            ships autonomously.
+          </p>
+          <p class="context-lead context-lead--tight">
             In February 2026 OpenAI flipped the switch on
             <a
               class="context-inline-link"
@@ -170,17 +193,9 @@
               rel="noopener noreferrer"
               >“ads are coming to AI, but not to Claude.”</a
             >
-            The
-            <a
-              class="context-inline-link"
-              href="https://www.thrad.ai/"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Thrad team</a
-            >
-            is here beside you — they run the real-time bidding layer powering
-            paid ads in LLMs, used by Fortune 500 brands and case-studied by
-            AWS and BCG. You are building in Cursor — the strongest agentic IDE
+            Thrads co-hosts — same real-time bidding layer powering paid ads in
+            LLMs, used by Fortune 500 brands and case-studied by AWS and BCG. You
+            are building in Cursor — the strongest agentic IDE
             available — and the ask is concrete: ship agents that
             <strong>buy</strong>, <strong>sell</strong>, or
             <strong>measure</strong> attention inside conversations, and make
@@ -190,280 +205,163 @@
           <div
             class="context-strip-wrap"
             role="region"
-            aria-label="Signal screenshots, left to right, each with a post on X (illustrative, not an endorsement). Click a card to focus; open links in a new tab."
+            aria-label="Market signal previews, left to right (illustrative). Click a card to expand; links open in a new tab."
           >
             <div class="context-strip" id="context-strip">
-              <div class="context-thumb" role="button" tabindex="0" data-idx="0" aria-label="Thrad — paid ads in AI (open)">
-                <img
-                  src="context-signals/01.png?v=4"
-                  alt=""
-                  width="280"
-                  height="160"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <span class="context-thumb-hover">
-                  <span class="context-thumb-hover-title">Thrad — paid ads in AI</span>
-                  <span class="context-thumb-hover-desc"
-                    >Real-time bidding inside LLM conversations. Brands buy, AI publishers monetize. The ad layer this hackathon ships against.</span
+              <article
+                class="context-post-card"
+                role="button"
+                tabindex="0"
+                data-idx="0"
+                aria-label="@Thrad_ai — Paid Ads in AI. Open expanded signal."
+              >
+                <header class="context-post-card__top">
+                  <span class="context-post-card__dot" aria-hidden="true"></span>
+                  <span class="context-post-card__handle">@Thrad_ai</span>
+                </header>
+                <h3 class="context-post-card__title">Paid Ads in AI</h3>
+                <p class="context-post-card__body">
+                  Real-time bidding inside LLM conversations.
+                </p>
+                <footer class="context-post-card__footer">
+                  <span class="context-post-card__footer-label">Signal on X · illustrative</span>
+                  <a
+                    class="context-post-card__cta"
+                    href="https://www.thrad.ai/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Open source</a
                   >
-                  <div class="context-thumb-signal">
-                    <span class="context-thumb-signal-label"
-                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
-                    >
-                    <a
-                      class="context-thumb-signal-link"
-                      href="https://x.com/Thrad_ai"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      >@Thrad_ai —
-                      <span class="context-thumb-signal-em">Paid Ads in AI</span></a
-                    >
-                  </div>
-                </span>
-              </div>
-              <div class="context-thumb" role="button" tabindex="0" data-idx="1" aria-label="ChatGPT ads roll out (open)">
-                <img src="context-signals/02.png?v=4" alt="" width="280" height="160" loading="lazy" decoding="async" />
-                <span class="context-thumb-hover">
-                  <span class="context-thumb-hover-title">ChatGPT ads go live</span>
-                  <span class="context-thumb-hover-desc"
-                    >Feb 2026: OpenAI flips on ads inside ChatGPT for Free + Go users. The biggest new ad surface since the App Store.</span
+                </footer>
+              </article>
+              <article
+                class="context-post-card"
+                role="button"
+                tabindex="0"
+                data-idx="1"
+                aria-label="@cursor_ai — Agents on the bidding rail. Open expanded signal."
+              >
+                <header class="context-post-card__top">
+                  <span class="context-post-card__dot" aria-hidden="true"></span>
+                  <span class="context-post-card__handle">@cursor_ai</span>
+                </header>
+                <h3 class="context-post-card__title">Agents on the bidding rail</h3>
+                <p class="context-post-card__body">
+                  Build buy / sell / measure flows where the IDE is the cockpit.
+                </p>
+                <footer class="context-post-card__footer">
+                  <span class="context-post-card__footer-label">Signal on X · illustrative</span>
+                  <a
+                    class="context-post-card__cta"
+                    href="https://cursor.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Cursor</a
                   >
-                  <div class="context-thumb-signal">
-                    <span class="context-thumb-signal-label"
-                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
-                    >
-                    <a
-                      class="context-thumb-signal-link"
-                      href="https://x.com/OpenAI"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      >@OpenAI —
-                      <span class="context-thumb-signal-em">Testing ads in ChatGPT</span></a
-                    >
-                  </div>
-                </span>
-              </div>
-              <div class="context-thumb" role="button" tabindex="0" data-idx="2" aria-label="Sam Altman defends ads (open)">
-                <img src="context-signals/03.png?v=4" alt="" width="280" height="160" loading="lazy" decoding="async" />
-                <span class="context-thumb-hover">
-                  <span class="context-thumb-hover-title">Altman: ads won't bend the answer</span>
-                  <span class="context-thumb-hover-desc"
-                    >“We will not accept money to influence the answer ChatGPT gives you.” The promise — and the trust budget — every ad agent now operates inside.</span
+                </footer>
+              </article>
+              <article
+                class="context-post-card"
+                role="button"
+                tabindex="0"
+                data-idx="2"
+                aria-label="@OpenAI — Ads in ChatGPT ship. Open expanded signal."
+              >
+                <header class="context-post-card__top">
+                  <span class="context-post-card__dot" aria-hidden="true"></span>
+                  <span class="context-post-card__handle">@OpenAI</span>
+                </header>
+                <h3 class="context-post-card__title">Ads in ChatGPT ship</h3>
+                <p class="context-post-card__body">
+                  A new prompt-level surface for brands — and new guardrails for agents.
+                </p>
+                <footer class="context-post-card__footer">
+                  <span class="context-post-card__footer-label">Signal on X · illustrative</span>
+                  <a
+                    class="context-post-card__cta"
+                    href="https://openai.com/blog/testing-ads-in-chatgpt/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >OpenAI blog</a
                   >
-                  <div class="context-thumb-signal">
-                    <span class="context-thumb-signal-label"
-                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
-                    >
-                    <a
-                      class="context-thumb-signal-link"
-                      href="https://x.com/sama"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      >@sama —
-                      <span class="context-thumb-signal-em">ads do not influence ChatGPT's answers</span></a
-                    >
-                  </div>
-                </span>
-              </div>
-              <div class="context-thumb" role="button" tabindex="0" data-idx="3" aria-label="Anthropic Super Bowl ad (open)">
-                <img src="context-signals/04.png?v=4" alt="" width="280" height="160" loading="lazy" decoding="async" />
-                <span class="context-thumb-hover">
-                  <span class="context-thumb-hover-title">“Ads are coming to AI. But not to Claude.”</span>
-                  <span class="context-thumb-hover-desc"
-                    >Anthropic spent ~$8M on Super Bowl LX spots dunking on ChatGPT ads. The category is officially big enough to fight over.</span
+                </footer>
+              </article>
+              <article
+                class="context-post-card"
+                role="button"
+                tabindex="0"
+                data-idx="3"
+                aria-label="@AnthropicAI — Not on Claude — for now. Open expanded signal."
+              >
+                <header class="context-post-card__top">
+                  <span class="context-post-card__dot" aria-hidden="true"></span>
+                  <span class="context-post-card__handle">@AnthropicAI</span>
+                </header>
+                <h3 class="context-post-card__title">“Not Claude” positioning</h3>
+                <p class="context-post-card__body">
+                  Competing narratives on where conversational inventory should live.
+                </p>
+                <footer class="context-post-card__footer">
+                  <span class="context-post-card__footer-label">Signal on X · illustrative</span>
+                  <a
+                    class="context-post-card__cta"
+                    href="https://www.anthropic.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Anthropic</a
                   >
-                  <div class="context-thumb-signal">
-                    <span class="context-thumb-signal-label"
-                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
-                    >
-                    <a
-                      class="context-thumb-signal-link"
-                      href="https://x.com/AnthropicAI"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      >@AnthropicAI —
-                      <span class="context-thumb-signal-em">Ads are coming to AI. But not to Claude.</span></a
-                    >
-                  </div>
-                </span>
-              </div>
-              <div class="context-thumb" role="button" tabindex="0" data-idx="4" aria-label="Altman responds to Anthropic (open)">
-                <img src="context-signals/05.png?v=4" alt="" width="280" height="160" loading="lazy" decoding="async" />
-                <span class="context-thumb-hover">
-                  <span class="context-thumb-hover-title">“Funny, but clearly dishonest”</span>
-                  <span class="context-thumb-hover-desc"
-                    >Altman fires back at Anthropic's Super Bowl ads on X. The trash-talk era of AI advertising has officially started.</span
+                </footer>
+              </article>
+              <article
+                class="context-post-card"
+                role="button"
+                tabindex="0"
+                data-idx="4"
+                aria-label="@London — Cursor × Thrads hackathon brief. Open expanded signal."
+              >
+                <header class="context-post-card__top">
+                  <span class="context-post-card__dot" aria-hidden="true"></span>
+                  <span class="context-post-card__handle">@LondonHack</span>
+                </header>
+                <h3 class="context-post-card__title">Ship the agentic monetization lane</h3>
+                <p class="context-post-card__body">
+                  Two tracks: buy-side automation vs sell-side + measurement realism.
+                </p>
+                <footer class="context-post-card__footer">
+                  <span class="context-post-card__footer-label">Signal on X · illustrative</span>
+                  <a
+                    class="context-post-card__cta"
+                    href="#tracks"
+                    >Hackathon tracks</a
                   >
-                  <div class="context-thumb-signal">
-                    <span class="context-thumb-signal-label"
-                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
-                    >
-                    <a
-                      class="context-thumb-signal-link"
-                      href="https://x.com/sama"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      >@sama —
-                      <span class="context-thumb-signal-em">Anthropic's ads are clearly dishonest</span></a
-                    >
-                  </div>
-                </span>
-              </div>
-              <div class="context-thumb" role="button" tabindex="0" data-idx="5" aria-label="$200K minimum commitment (open)">
-                <img src="context-signals/06.png?v=4" alt="" width="280" height="160" loading="lazy" decoding="async" />
-                <span class="context-thumb-hover">
-                  <span class="context-thumb-hover-title">$200K minimum to advertise in ChatGPT</span>
-                  <span class="context-thumb-hover-desc"
-                    >Adweek confirms OpenAI's beta floor: a $200K commitment to play. Buy-side automation is suddenly a budget multiplier, not a cost.</span
+                </footer>
+              </article>
+              <article
+                class="context-post-card"
+                role="button"
+                tabindex="0"
+                data-idx="5"
+                aria-label="@AWS — Infrastructure for agentic ad graphs. Open expanded signal."
+              >
+                <header class="context-post-card__top">
+                  <span class="context-post-card__dot" aria-hidden="true"></span>
+                  <span class="context-post-card__handle">@awscloud</span>
+                </header>
+                <h3 class="context-post-card__title">Scale &amp; sub-second auctions</h3>
+                <p class="context-post-card__body">
+                  Case-study energy: pipelines that ingest intent and clear bids at chat speed.
+                </p>
+                <footer class="context-post-card__footer">
+                  <span class="context-post-card__footer-label">Signal on X · illustrative</span>
+                  <a
+                    class="context-post-card__cta"
+                    href="https://www.thrad.ai/newsroom/aws"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >AWS × Thrad</a
                   >
-                  <div class="context-thumb-signal">
-                    <span class="context-thumb-signal-label"
-                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
-                    >
-                    <a
-                      class="context-thumb-signal-link"
-                      href="https://x.com/Adweek"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      >@Adweek —
-                      <span class="context-thumb-signal-em">OpenAI's $200K ChatGPT ad floor</span></a
-                    >
-                  </div>
-                </span>
-              </div>
-              <div class="context-thumb" role="button" tabindex="0" data-idx="6" aria-label="Expedia Best Buy ChatGPT ads (open)">
-                <img src="context-signals/07.png?v=4" alt="" width="280" height="160" loading="lazy" decoding="async" />
-                <span class="context-thumb-hover">
-                  <span class="context-thumb-hover-title">Expedia, Best Buy, Qualcomm — ads in the wild</span>
-                  <span class="context-thumb-hover-desc"
-                    >First conversational ads spotted: travel, retail, hardware. The intent surface every brand has wanted for ten years just opened.</span
-                  >
-                  <div class="context-thumb-signal">
-                    <span class="context-thumb-signal-label"
-                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
-                    >
-                    <a
-                      class="context-thumb-signal-link"
-                      href="https://x.com/verge"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      >@verge —
-                      <span class="context-thumb-signal-em">ChatGPT ads in the wild</span></a
-                    >
-                  </div>
-                </span>
-              </div>
-              <div class="context-thumb" role="button" tabindex="0" data-idx="7" aria-label="CPM to CPC pivot (open)">
-                <img src="context-signals/08.png?v=4" alt="" width="280" height="160" loading="lazy" decoding="async" />
-                <span class="context-thumb-hover">
-                  <span class="context-thumb-hover-title">CPM → CPC: $3–$5 a click</span>
-                  <span class="context-thumb-hover-desc"
-                    >Ten weeks in, OpenAI cuts over to cost-per-click. The whole optimization curve — bidding, creative, attribution — is up for grabs.</span
-                  >
-                  <div class="context-thumb-signal">
-                    <span class="context-thumb-signal-label"
-                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
-                    >
-                    <a
-                      class="context-thumb-signal-link"
-                      href="https://x.com/Digiday"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      >@Digiday —
-                      <span class="context-thumb-signal-em">OpenAI turns on CPC ads inside ChatGPT</span></a
-                    >
-                  </div>
-                </span>
-              </div>
-              <div class="context-thumb" role="button" tabindex="0" data-idx="8" aria-label="Omnicom Dentsu ChatGPT (open)">
-                <img src="context-signals/09.png?v=4" alt="" width="280" height="160" loading="lazy" decoding="async" />
-                <span class="context-thumb-hover">
-                  <span class="context-thumb-hover-title">Omnicom + Dentsu plug into ChatGPT</span>
-                  <span class="context-thumb-hover-desc"
-                    >Holding companies move first. The agency-side tooling — planning, trafficking, reporting — is a green field for agentic builders.</span
-                  >
-                  <div class="context-thumb-signal">
-                    <span class="context-thumb-signal-label"
-                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
-                    >
-                    <a
-                      class="context-thumb-signal-link"
-                      href="https://x.com/adage"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      >@adage —
-                      <span class="context-thumb-signal-em">Omnicom, Dentsu in on ChatGPT ads</span></a
-                    >
-                  </div>
-                </span>
-              </div>
-              <div class="context-thumb" role="button" tabindex="0" data-idx="9" aria-label="AWS Thrad case study (open)">
-                <img src="context-signals/10.png?v=4" alt="" width="280" height="160" loading="lazy" decoding="async" />
-                <span class="context-thumb-hover">
-                  <span class="context-thumb-hover-title">AWS × Thrad — agentic ad architecture</span>
-                  <span class="context-thumb-hover-desc"
-                    >AWS uses Thrad as its case study for how an agentic ad platform actually scales — millions of bid requests, 0ms latency, contextual ranking.</span
-                  >
-                  <div class="context-thumb-signal">
-                    <span class="context-thumb-signal-label"
-                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
-                    >
-                    <a
-                      class="context-thumb-signal-link"
-                      href="https://www.thrad.ai/newsroom/aws"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      >Thrad newsroom —
-                      <span class="context-thumb-signal-em">AWS case study on agentic ads</span></a
-                    >
-                  </div>
-                </span>
-              </div>
-              <div class="context-thumb" role="button" tabindex="0" data-idx="10" aria-label="BCG Thrad report (open)">
-                <img src="context-signals/11.png?v=4" alt="" width="280" height="160" loading="lazy" decoding="async" />
-                <span class="context-thumb-hover">
-                  <span class="context-thumb-hover-title">BCG × Thrad — the AI advertising report</span>
-                  <span class="context-thumb-hover-desc"
-                    >BCG partners with Thrad on the first cross-industry report sizing AI advertising. The category is now in the consultants' decks.</span
-                  >
-                  <div class="context-thumb-signal">
-                    <span class="context-thumb-signal-label"
-                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
-                    >
-                    <a
-                      class="context-thumb-signal-link"
-                      href="https://www.thrad.ai/newsroom/bcg"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      >Thrad newsroom —
-                      <span class="context-thumb-signal-em">BCG × AI advertising report</span></a
-                    >
-                  </div>
-                </span>
-              </div>
-              <div class="context-thumb" role="button" tabindex="0" data-idx="11" aria-label="Last resort to endgame meme (open)">
-                <img src="context-signals/12.png?v=4" alt="" width="280" height="160" loading="lazy" decoding="async" />
-                <span class="context-thumb-hover">
-                  <span class="context-thumb-hover-title">“Last resort” → endgame</span>
-                  <span class="context-thumb-hover-desc"
-                    >2024: Altman calls ads a last resort. 2026: ads are live. The meme that crystallized why every AI app suddenly needs an ad strategy.</span
-                  >
-                  <div class="context-thumb-signal">
-                    <span class="context-thumb-signal-label"
-                      >Signal on X <span class="context-thumb-signal-nb">(illustrative, not an endorsement)</span></span
-                    >
-                    <a
-                      class="context-thumb-signal-link"
-                      href="https://x.com/search?q=%22last%20resort%22%20chatgpt%20ads&src=typed_query"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      >X search —
-                      <span class="context-thumb-signal-em">“last resort” → ChatGPT ads</span></a
-                    >
-                  </div>
-                </span>
-              </div>
+                </footer>
+              </article>
             </div>
           </div>
         </div>
@@ -665,8 +563,9 @@
           The <span class="accent-script">submissions</span>
         </h2>
         <p class="section-sub">
-          Every project shipped at Cursor × Thrads London. Open the repo or
-          watch the demo.
+          Projects that stressed conversational ad infra — programmatic
+          buying, publisher monetization, measurement. Open the repo or watch the
+          demo.
         </p>
       </div>
       <p
@@ -1653,7 +1552,7 @@
           type="button"
           class="context-lightbox__nav context-lightbox__nav--prev"
           id="context-lb-prev"
-          aria-label="Previous image"
+          aria-label="Previous signal"
         >
           <span class="context-lightbox__nav-icon" aria-hidden="true">‹</span>
         </button>
@@ -1666,7 +1565,7 @@
                 href="#"
                 target="_blank"
                 rel="noopener noreferrer"
-                >Post on X</a
+                >Primary link</a
               >
               <a
                 id="context-lb-href2"
@@ -1678,7 +1577,20 @@
                 >Follow-up</a
               >
             </div>
-            <img id="context-lb-img" src="" alt="" width="900" height="520" decoding="async" />
+            <article
+              class="context-lightbox-preview-card"
+              id="context-lb-preview-card"
+              aria-labelledby="context-lb-preview-title"
+            >
+              <div class="context-lightbox-preview-card__accent" aria-hidden="true"></div>
+              <header class="context-lightbox-preview-card__meta">
+                <span class="context-lightbox-preview-card__dot" aria-hidden="true"></span>
+                <span id="context-lb-handle" class="context-lightbox-preview-card__handle"></span>
+              </header>
+              <h3 id="context-lb-preview-title" class="context-lightbox-preview-card__title"></h3>
+              <p id="context-lb-preview-lead" class="context-lightbox-preview-card__lead"></p>
+              <p class="context-lightbox-preview-card__footer-cap">Signal on X · illustrative · not live posts</p>
+            </article>
           </div>
           <p id="context-lb-desc" class="context-lightbox__desc"></p>
         </div>
@@ -1686,13 +1598,13 @@
           type="button"
           class="context-lightbox__nav context-lightbox__nav--next"
           id="context-lb-next"
-          aria-label="Next image"
+          aria-label="Next signal"
         >
           <span class="context-lightbox__nav-icon" aria-hidden="true">›</span>
         </button>
       </div>
     </div>
 
-    <script src="script.js?v=101"></script>
+    <script src="script.js?v=103"></script>
   </body>
 </html>

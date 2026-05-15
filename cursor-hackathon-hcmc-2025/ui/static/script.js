@@ -3712,105 +3712,97 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   (function initContextLightbox() {
-    const N = 12;
     const GALLERY = [
       {
-        src: "context-signals/12-cursor-sdk.png?v=1",
-        href: "https://x.com/cursor_ai/status/2049499866217185492?s=20",
+        handle: "@Thrad_ai",
+        headline: "Paid Ads in AI",
+        lead: "Real-time bidding inside LLM conversations.",
+        desc: "Thrads articulates ad infrastructure for AI: publishers monetize in-chat placements, brands bid on conversational inventory, and clears happen fast enough to ride the prompt. Use this lane as your north star for realism in the hackathon.",
+        href: "https://www.thrad.ai/",
+        linkLabel: "Thrad.ai",
         href2: null,
-        title: "Cursor SDK",
-        desc: "Programmatic agents with the same runtime, harness, and models as Cursor—CI/CD, bespoke automations, or embedded in products.",
+        link2Label: null,
       },
       {
-        src: "context-signals/01.png?v=3",
-        href: "https://x.com/RogoAI/status/2044445676134654303",
-        href2: null,
-        title: "Rogo — Felix",
-        desc: "Purpose-built agent for high finance: long-running workflows, decks, models, and documents end-to-end.",
+        handle: "@cursor_ai",
+        headline: "Agents on the bidding rail",
+        lead: "Build buy / sell / measure flows where the IDE is the cockpit.",
+        desc: "Cursor is where you ship autonomous workflows with tight feedback loops — perfect for mocking DSP logic, pacing rules, or publisher-side eligibility gates without pretending infra is trivial.",
+        href: "https://cursor.com/",
+        linkLabel: "Cursor",
+        href2: "https://x.com/cursor_ai/status/2049499866217185492?s=20",
+        link2Label: "SDK note",
       },
       {
-        src: "context-signals/02.png?v=3",
-        href: "https://x.com/V7Labs/status/2046593801314021550",
+        handle: "@OpenAI",
+        headline: "Ads in ChatGPT ship",
+        lead: "A new prompt-level surface for brands — and new guardrails for agents.",
+        desc: "Paid formats inside widely used assistants change default user expectations overnight: disclosures, auctions, attribution, and the policy edge cases agents must enumerate before spending someone else’s budget.",
+        href: "https://openai.com/blog/testing-ads-in-chatgpt/",
+        linkLabel: "OpenAI announcement",
         href2: null,
-        title: "V7 — slide engine",
-        desc: "From vibe-coded drafts to slides that present and export without falling apart.",
+        link2Label: null,
       },
       {
-        src: "context-signals/11.png?v=3",
-        href: "https://x.com/Lovable/status/2043708202676568491",
-        href2: "https://x.com/Lovable/status/2043708204358443341",
-        title: "Lovable Payments",
-        desc: "Describe what you sell, test safely, one conversation to go live—vibe coding meets revenue.",
+        handle: "@AnthropicAI",
+        headline: "“Not Claude” positioning",
+        lead: "Competing narratives on where conversational inventory should live.",
+        desc: "When category leaders disagree in public on ads, downstream agents inherit conflicting safety priors — your demo should spell out assumptions about inventory, disclosures, and what “no ads” materially means technically.",
+        href: "https://www.theverge.com/ai-artificial-intelligence/873685/anthropics-first-super-bowl-ad-dunks-on-chatgpt",
+        linkLabel: "Category context",
+        href2: null,
+        link2Label: null,
       },
       {
-        src: "context-signals/09.png?v=3",
-        href: "https://x.com/immad/status/2048797308448587997",
+        handle: "@LondonHack",
+        headline: "Ship the agentic monetization lane",
+        lead: "Two tracks: buy-side automation vs sell-side + measurement realism.",
+        desc: "Pick a lane deliberately: advertiser tooling that moves money versus publisher/measurement systems that monetize responsibly and reconcile outcomes. Judges reward crisp boundaries and blunt lists of autonomy.",
+        href: "#tracks",
+        linkLabel: "Jump to tracks",
         href2: null,
-        title: "Mercury — national bank path",
-        desc: "Conditional OCC approval: regulated rails and long-term trust in fintech.",
+        link2Label: null,
       },
       {
-        src: "context-signals/10.png?v=3",
-        href: "https://x.com/apurvas96/status/2048795121005604926",
+        handle: "@awscloud",
+        headline: "Scale & sub-second auctions",
+        lead: "Case-study energy: pipelines that ingest intent and clear bids at chat speed.",
+        desc: "Real stacks fuse streaming signals, contextual ranking, and fleet-scale deployments — plausible fiction for demos should gesture at latency envelopes, failover, and what happens when auctions reject a bid.",
+        href: "https://www.thrad.ai/newsroom/aws",
+        linkLabel: "AWS × Thrad story",
         href2: null,
-        title: "Avoca — $125M+ / $1B",
-        desc: "AI agents for the services economy: capital flowing to operator-grade autonomy.",
-      },
-      {
-        src: "context-signals/05.png?v=3",
-        href: "https://x.com/Teknium/status/2048727164875592005",
-        href2: null,
-        title: "Teknium — Hermes",
-        desc: "Tooling, contests, and “achievement” energy around real agent session history.",
-      },
-      {
-        src: "context-signals/04.png?v=3",
-        href: "https://x.com/vikvang1/status/2048792916823285871",
-        href2: null,
-        title: "Autonomy, meet friction",
-        desc: "When the agent runs but still asks permission for the smallest tool calls.",
-      },
-      {
-        src: "context-signals/08.png?v=3",
-        href: "https://x.com/ryanvogel/status/2048447871834325416",
-        href2: null,
-        title: "Monitor everything",
-        desc: "Markets, timelines, and noise: the control-room problem for builder and bank desks alike.",
-      },
-      {
-        src: "context-signals/07.png?v=3",
-        href: "https://x.com/seraleev/status/2048612749555425323",
-        href2: null,
-        title: "Interfaces beyond the chat box",
-        desc: "Spatial UI concepts on top of money: high-agency, high-stakes, still emerging.",
-      },
-      {
-        src: "context-signals/03.png?v=3",
-        href: "https://x.com/MaginAbheet/status/2048391811576562152",
-        href2: null,
-        title: "Hyperscalers + London",
-        desc: "AI labs and big bets in Kings Cross: why the city is the venue for the next fintech act.",
-      },
-      {
-        src: "context-signals/06.png?v=3",
-        href: "https://x.com/VibesPatrol/status/2041121703099568225",
-        href2: null,
-        title: "Londonmaxxing",
-        desc: "Stop surviving the city; build and celebrate what only London stacks this way.",
+        link2Label: null,
       },
     ];
-    if (GALLERY.length !== N) return;
     const lightbox = document.getElementById("context-lightbox");
     const backdrop = lightbox && lightbox.querySelector(".context-lightbox__backdrop");
     const shell = lightbox && lightbox.querySelector(".context-lightbox__shell");
-    const img = document.getElementById("context-lb-img");
     const desc = document.getElementById("context-lb-desc");
     const hrefEl = document.getElementById("context-lb-href");
     const href2El = document.getElementById("context-lb-href2");
     const prevBtn = document.getElementById("context-lb-prev");
     const nextBtn = document.getElementById("context-lb-next");
     const strip = document.getElementById("context-strip");
-    if (!lightbox || !backdrop || !shell || !img || !desc || !hrefEl || !href2El || !prevBtn || !nextBtn || !strip) return;
+    const handleEl = document.getElementById("context-lb-handle");
+    const titleEl = document.getElementById("context-lb-preview-title");
+    const leadEl = document.getElementById("context-lb-preview-lead");
+    if (
+      !lightbox ||
+      !backdrop ||
+      !shell ||
+      !desc ||
+      !hrefEl ||
+      !href2El ||
+      !prevBtn ||
+      !nextBtn ||
+      !strip ||
+      !handleEl ||
+      !titleEl ||
+      !leadEl
+    ) {
+      return;
+    }
+    if (!GALLERY.length) return;
 
     let currentIndex = 0;
     let openFromEl = null;
@@ -3820,14 +3812,34 @@ document.addEventListener("DOMContentLoaded", () => {
       const idx = ((i % m) + m) % m;
       const item = GALLERY[idx];
       currentIndex = idx;
-      img.src = item.src;
-      img.alt = item.title;
+      handleEl.textContent = item.handle;
+      titleEl.textContent = item.headline;
+      leadEl.textContent = item.lead;
       desc.textContent = item.desc;
       hrefEl.href = item.href;
-      if (item.href2) {
+      hrefEl.textContent = item.linkLabel;
+      const isFragment = /^#/.test(item.href);
+      const isOpaque = /^javascript:/i.test(item.href);
+      if (isFragment || isOpaque) {
+        hrefEl.removeAttribute("target");
+        hrefEl.removeAttribute("rel");
+      } else {
+        hrefEl.target = "_blank";
+        hrefEl.rel = "noopener noreferrer";
+      }
+      if (item.href2 && item.link2Label) {
         href2El.href = item.href2;
+        href2El.textContent = item.link2Label;
         href2El.removeAttribute("hidden");
         href2El.classList.remove("hidden");
+        const frag2 = /^#/.test(item.href2);
+        if (frag2) {
+          href2El.removeAttribute("target");
+          href2El.removeAttribute("rel");
+        } else {
+          href2El.target = "_blank";
+          href2El.rel = "noopener noreferrer";
+        }
       } else {
         href2El.setAttribute("hidden", "");
         href2El.classList.add("hidden");
@@ -3873,20 +3885,20 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    strip.querySelectorAll(".context-thumb").forEach((thumb) => {
-      thumb.addEventListener("click", (e) => {
+    strip.querySelectorAll(".context-post-card[data-idx]").forEach((card) => {
+      card.addEventListener("click", (e) => {
         if (e.target.closest("a[href]")) return;
-        const raw = parseInt(thumb.getAttribute("data-idx") || "0", 10);
+        const raw = parseInt(card.getAttribute("data-idx") || "0", 10);
         const i = Number.isNaN(raw) ? 0 : raw;
-        openAt(i, thumb);
+        openAt(i, card);
       });
-      thumb.addEventListener("keydown", (e) => {
+      card.addEventListener("keydown", (e) => {
         if (e.key !== "Enter" && e.key !== " ") return;
         if (e.target.closest("a[href]")) return;
         e.preventDefault();
-        const raw = parseInt(thumb.getAttribute("data-idx") || "0", 10);
+        const raw = parseInt(card.getAttribute("data-idx") || "0", 10);
         const i = Number.isNaN(raw) ? 0 : raw;
-        openAt(i, thumb);
+        openAt(i, card);
       });
     });
 
@@ -3898,7 +3910,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (
         e.target.closest(".context-lightbox__nav") ||
         e.target.closest("a") ||
-        e.target.closest("img")
+        e.target.closest(".context-lightbox-preview-card") ||
+        e.target.closest(".context-lightbox__desc")
       ) {
         return;
       }
