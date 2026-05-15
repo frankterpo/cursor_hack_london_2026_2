@@ -1425,117 +1425,6 @@ function renderJudges() {
     .join("");
 }
 
-// Public submissions table on the marketing page.
-// Independent from the gated organizer/judge flows.
-async function loadAndRenderPublicSubmissions() {
-  const tbody = document.getElementById("submissions-tbody");
-  if (!tbody) return;
-  let submissions = [];
-  try {
-    const data = await fetchJSON("/api/submissions");
-    submissions = Array.isArray(data?.submissions) ? data.submissions : [];
-  } catch (err) {
-    console.error("Failed to load public submissions", err);
-    tbody.innerHTML =
-      '<tr><td colspan="5" class="submissions-empty">Submissions are temporarily unavailable. Refresh in a moment.</td></tr>';
-    return;
-  }
-
-  const filtered = submissions.filter(submissionWithinEventWindow);
-
-  // Dedupe by repo URL (fallback to project|team).
-  const byKey = new Map();
-  for (const s of filtered) {
-    const key = (s?.repo_url && normalizeRepoKey(s.repo_url)) ||
-      (s?.submission_id && `submission:${s.submission_id}`) ||
-      `${(s?.project_name || "").toLowerCase()}|${(s?.team_name || "").toLowerCase()}`;
-    if (!key) continue;
-    const prev = byKey.get(key);
-    // Prefer the most recently submitted version.
-    if (
-      !prev ||
-      Date.parse(s?.submitted_at || s?.timestamp || 0) >
-        Date.parse(prev?.submitted_at || prev?.timestamp || 0)
-    ) {
-      byKey.set(key, s);
-    }
-  }
-
-  const rows = Array.from(byKey.values()).sort((a, b) => {
-    const ta = Date.parse(a?.submitted_at || a?.timestamp || 0) || 0;
-    const tb = Date.parse(b?.submitted_at || b?.timestamp || 0) || 0;
-    if (tb !== ta) return tb - ta; // most recent first
-    return String(a?.project_name || "").localeCompare(
-      String(b?.project_name || "")
-    );
-  });
-
-  const meta = document.getElementById("submissions-meta");
-  if (meta) {
-    meta.textContent = `${rows.length} ${
-      rows.length === 1 ? "submission" : "submissions"
-    } · sorted by most recent first`;
-  }
-
-  if (rows.length === 0) {
-    tbody.innerHTML =
-      '<tr><td colspan="5" class="submissions-empty">No submissions yet.</td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = rows
-    .map((row, idx) => renderPublicSubmissionRow(row, idx + 1))
-    .join("");
-}
-
-function renderPublicSubmissionRow(submission, displayIndex) {
-  const project = String(submission?.project_name || "Untitled project").trim();
-  const team = String(submission?.team_name || "—").trim();
-  const desc = String(submission?.description || "").trim();
-  const track = String(submission?.chosen_track || "").trim();
-  const repoUrl = String(submission?.repo_url || "").trim();
-  const demoUrl = String(submission?.demo_url || "").trim();
-
-  const trackClass = track.toLowerCase().includes("money")
-    ? "track-money"
-    : track.toLowerCase().includes("intel")
-    ? "track-intel"
-    : "track-unknown";
-  const trackLabel = track || "—";
-
-  const repoBtn = repoUrl
-    ? `<a class="submission-link-btn is-repo" href="${escapeAttr(
-        repoUrl
-      )}" target="_blank" rel="noopener noreferrer" aria-label="Open ${escapeAttr(
-        project
-      )} repo on GitHub">Repo →</a>`
-    : `<span class="submission-link-btn is-repo" aria-disabled="true" title="No repo link">Repo</span>`;
-  const demoBtn = demoUrl
-    ? `<a class="submission-link-btn is-demo" href="${escapeAttr(
-        demoUrl
-      )}" target="_blank" rel="noopener noreferrer" aria-label="Watch the ${escapeAttr(
-        project
-      )} demo">Demo →</a>`
-    : `<span class="submission-link-btn is-demo" aria-disabled="true" title="No demo link">Demo</span>`;
-
-  return `
-    <tr>
-      <td class="col-num">${displayIndex.toString().padStart(2, "0")}</td>
-      <td class="col-project">
-        <span class="submission-project-name">${escapeHtml(project)}</span>
-        ${desc ? `<span class="submission-project-desc">${escapeHtml(desc)}</span>` : ""}
-      </td>
-      <td class="col-team">${escapeHtml(team)}</td>
-      <td class="col-track">
-        <span class="submission-track ${trackClass}">${escapeHtml(trackLabel)}</span>
-      </td>
-      <td class="col-actions">
-        <span class="submission-actions">${repoBtn}${demoBtn}</span>
-      </td>
-    </tr>
-  `;
-}
-
 function getLocalList(key) {
   try {
     return JSON.parse(localStorage.getItem(key) || "[]");
@@ -3379,11 +3268,6 @@ function updateSubmissionsCount(rows) {
 
 document.addEventListener("DOMContentLoaded", () => {
   initManagerTabs();
-
-  // Public submissions table on the marketing page (no auth required).
-  if (document.getElementById("submissions-tbody")) {
-    loadAndRenderPublicSubmissions();
-  }
 
   // Filters live inside a <template> until Manager opens — delegate changes.
   document.getElementById("manager-modal")?.addEventListener("change", (e) => {
