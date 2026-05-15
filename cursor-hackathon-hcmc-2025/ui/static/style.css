@@ -1,22 +1,22 @@
 /* ================================================================
    Cursor × Thrads · London 2026
-   Dark theme — Thrad-adjacent: near-black surfaces, orange infra accent
+   Dark theme — Thrad-adjacent: lifted zinc surfaces, disciplined orange
    ---------------------------------------------------------------- */
 
 :root {
-  /* Surfaces — deep zinc / ink (Thrad-style dark UI) */
-  --bg: #0a0a0b;
-  --bg-subtle: #121214;
-  --bg-tint: #141416;
-  --panel: #161618;
-  --panel-hover: #1f1f23;
-  --text: #f4f4f5;
-  --text-strong: #fafafa;
-  --text-secondary: #a1a1aa;
-  --muted: #71717a;
-  --faint: #52525b;
-  --border: #2a2a2e;
-  --border-subtle: #18181b;
+  /* Surfaces — lifted zinc (Thrad.ai-style: brighter panels, crisp ink) */
+  --bg: #0e0e12;
+  --bg-subtle: #18181d;
+  --bg-tint: #1a1a20;
+  --panel: #202026;
+  --panel-hover: #28282f;
+  --text: #f6f6f8;
+  --text-strong: #ffffff;
+  --text-secondary: #b9b9c4;
+  --muted: #8b8b99;
+  --faint: #5e5e6a;
+  --border: #34343c;
+  --border-subtle: #22222a;
 
   /* Brand — warm orange ramp (primary CTA + Thrad-adjacent glow) */
   --primary-50: #1c1008;
@@ -33,9 +33,21 @@
   /* Semantic accents */
   --accent: var(--primary-500);
   --accent-deep: var(--primary-900);
-  --accent-glow: rgba(249, 115, 22, 0.22);
-  --accent-subtle: rgba(249, 115, 22, 0.12);
-  --accent-ring: rgba(249, 115, 22, 0.38);
+  --accent-glow: rgba(249, 115, 22, 0.16);
+  --accent-subtle: rgba(249, 115, 22, 0.1);
+  --accent-ring: rgba(249, 115, 22, 0.42);
+
+  /* Social preview strip — same orange as primary CTAs */
+  --post-accent: var(--primary-500);
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 28px;
+  --space-7: 36px;
 
   --danger: #f87171;
   --danger-subtle: rgba(127, 29, 29, 0.3);
@@ -96,44 +108,44 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Soft dark backdrop — orange wash + dual-scale tech grid */
+/* Soft backdrop — restrained orange wash + fine grid */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
   background: radial-gradient(
-      1100px 480px at 88% -8%,
-      rgba(249, 115, 22, 0.14),
-      transparent 58%
+      1000px 440px at 92% -6%,
+      rgba(249, 115, 22, 0.09),
+      transparent 55%
     ),
     radial-gradient(
-      820px 400px at -6% 8%,
-      rgba(194, 65, 12, 0.09),
-      transparent 52%
+      760px 380px at -4% 10%,
+      rgba(194, 65, 12, 0.05),
+      transparent 50%
     ),
-    linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px),
-    linear-gradient(rgba(249, 115, 22, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(249, 115, 22, 0.045) 1px, transparent 1px);
-  background-size: auto, auto, 48px 48px, 48px 48px, 12px 12px, 12px 12px;
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(rgba(249, 115, 22, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(249, 115, 22, 0.028) 1px, transparent 1px);
+  background-size: auto, auto, 56px 56px, 56px 56px, 14px 14px, 14px 14px;
   pointer-events: none;
 }
 
 /* ---------------- Header ---------------- */
 header {
-  padding: 16px 28px;
+  padding: var(--space-4) var(--space-6);
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid var(--border);
-  background: rgba(10, 10, 11, 0.88);
-  backdrop-filter: saturate(160%) blur(12px);
-  -webkit-backdrop-filter: saturate(160%) blur(12px);
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: saturate(140%) blur(14px);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .brand {
@@ -356,7 +368,7 @@ header {
 .context {
   max-width: 1240px;
   margin: 0 auto;
-  padding: 40px 28px 8px;
+  padding: var(--space-7) var(--space-6) var(--space-2);
   border-bottom: 1px solid var(--border-subtle);
 }
 
