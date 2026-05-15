@@ -3599,6 +3599,8 @@ document.addEventListener("DOMContentLoaded", () => {
   (function initContextLightbox() {
     const GALLERY = [
       {
+        kind: "twitter_embed",
+        tweetId: "2054992106196787686",
         handle: "@sualehasif996",
         headline: "Scaling Shopify, turbopuffer, and databases",
         lead:
@@ -3609,11 +3611,6 @@ document.addEventListener("DOMContentLoaded", () => {
         linkLabel: "Open post on X",
         href2: null,
         link2Label: null,
-        video: {
-          src:
-            "https://video.twimg.com/amplify_video/2054991214714277888/vid/avc1/1366x720/kdy550GL5fSNwmpm.mp4?tag=27",
-          poster: "context-post-thumbs/0.jpg",
-        },
       },
       {
         handle: "@kamil_sattar",
@@ -3690,6 +3687,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const leadEl = document.getElementById("context-lb-preview-lead");
     const mediaSlot = document.getElementById("context-lb-media-slot");
     const lbVideo = document.getElementById("context-lb-video");
+    const lbTwitterEmbed = document.getElementById("context-lb-twitter-embed");
     if (
       !lightbox ||
       !backdrop ||
@@ -3714,6 +3712,23 @@ document.addEventListener("DOMContentLoaded", () => {
     function pauseLightboxVideo() {
       if (!lbVideo) return;
       lbVideo.pause();
+    }
+
+    function clearLightboxTwitterEmbed() {
+      if (!lbTwitterEmbed) return;
+      lbTwitterEmbed.src = "about:blank";
+      lbTwitterEmbed.setAttribute("hidden", "");
+    }
+
+    function hideLightboxMedia() {
+      pauseLightboxVideo();
+      if (lbVideo) {
+        lbVideo.removeAttribute("src");
+        lbVideo.removeAttribute("poster");
+        lbVideo.setAttribute("hidden", "");
+      }
+      clearLightboxTwitterEmbed();
+      if (mediaSlot) mediaSlot.setAttribute("hidden", "");
     }
 
     function renderAt(i) {
@@ -3755,19 +3770,36 @@ document.addEventListener("DOMContentLoaded", () => {
         href2El.classList.add("hidden");
       }
 
-      if (mediaSlot && lbVideo) {
-        const v = item.video;
-        if (v && v.src) {
-          mediaSlot.removeAttribute("hidden");
-          lbVideo.src = v.src;
-          lbVideo.poster = v.poster || "";
-          lbVideo.load();
-        } else {
-          pauseLightboxVideo();
+      const tw =
+        item.kind === "twitter_embed" &&
+        typeof item.tweetId === "string" &&
+        item.tweetId.length > 0;
+      const v = item.video;
+      const hasVideo = !!(v && v.src);
+
+      if (!mediaSlot || (!tw && !hasVideo)) {
+        hideLightboxMedia();
+      } else if (tw && lbTwitterEmbed) {
+        pauseLightboxVideo();
+        if (lbVideo) {
           lbVideo.removeAttribute("src");
           lbVideo.removeAttribute("poster");
-          mediaSlot.setAttribute("hidden", "");
+          lbVideo.setAttribute("hidden", "");
         }
+        mediaSlot.removeAttribute("hidden");
+        lbTwitterEmbed.removeAttribute("hidden");
+        lbTwitterEmbed.src = `https://platform.twitter.com/embed/Tweet.html?id=${encodeURIComponent(
+          item.tweetId,
+        )}&theme=dark`;
+      } else if (hasVideo && lbVideo) {
+        clearLightboxTwitterEmbed();
+        mediaSlot.removeAttribute("hidden");
+        lbVideo.removeAttribute("hidden");
+        lbVideo.src = v.src;
+        lbVideo.poster = v.poster || "";
+        lbVideo.load();
+      } else {
+        hideLightboxMedia();
       }
     }
 
@@ -3780,7 +3812,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function close() {
-      pauseLightboxVideo();
+      hideLightboxMedia();
       lightbox.setAttribute("hidden", "");
       document.body.style.overflow = "";
       if (openFromEl) {
@@ -3841,7 +3873,8 @@ document.addEventListener("DOMContentLoaded", () => {
         e.target.closest(".context-lightbox-preview-card") ||
         e.target.closest(".context-lightbox__desc") ||
         e.target.closest(".context-lightbox__media-slot") ||
-        e.target.closest("#context-lb-video")
+        e.target.closest("#context-lb-video") ||
+        e.target.closest("#context-lb-twitter-embed")
       ) {
         return;
       }

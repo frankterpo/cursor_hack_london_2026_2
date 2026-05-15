@@ -838,6 +838,23 @@ header {
   background: #000;
 }
 
+.context-lightbox__video[hidden] {
+  display: none !important;
+}
+
+.context-lightbox__embed {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: min(46vh, 480px);
+  border: 0;
+  background: #07070e;
+}
+
+.context-lightbox__embed[hidden] {
+  display: none !important;
+}
+
 .context-lightbox-preview-card {
   --context-post-accent: var(--post-accent);
   margin: 0;

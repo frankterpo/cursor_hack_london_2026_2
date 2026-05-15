@@ -10,7 +10,7 @@
       name="description"
       content="Cursor × Thrads London 2026 — agentic builds on conversational ad infrastructure: buy-side, sell-side, and measurement inside LLM-native channels."
     />
-    <link rel="stylesheet" href="style.css?v=109" />
+    <link rel="stylesheet" href="style.css?v=110" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -215,20 +215,7 @@
                 aria-label="@sualehasif996 — Scaling Shopify, turbopuffer, and databases. Open expanded signal."
               >
                 <div class="context-post-card__media" aria-hidden="true">
-                  <!-- Remote MP4 from video.twimg.com (tag query may expire); replace with context-videos/shopify-sirupsen.mp4 if needed -->
-                  <video
-                    class="context-post-card__media-video"
-                    controls
-                    playsinline
-                    muted
-                    preload="metadata"
-                    poster="context-post-thumbs/0.jpg"
-                  >
-                    <source
-                      type="video/mp4"
-                      src="https://video.twimg.com/amplify_video/2054991214714277888/vid/avc1/1366x720/kdy550GL5fSNwmpm.mp4?tag=27"
-                    />
-                  </video>
+                  <!-- Poster only: video plays via official Tweet embed in the lightbox (avoids flaky video.twimg.com MP4). -->
                   <img
                     class="context-post-card__media-img"
                     src="context-post-thumbs/0.jpg"
@@ -1787,8 +1774,17 @@
                 controls
                 playsinline
                 preload="metadata"
-                poster="context-post-thumbs/0.jpg"
+                hidden
               ></video>
+              <iframe
+                id="context-lb-twitter-embed"
+                class="context-lightbox__embed"
+                title="Embedded post on X"
+                loading="lazy"
+                allowfullscreen
+                referrerpolicy="strict-origin-when-cross-origin"
+                hidden
+              ></iframe>
             </div>
             <div class="context-lightbox__links" id="context-lb-links">
               <a
@@ -1837,6 +1833,6 @@
       </div>
     </div>
 
-    <script src="script.js?v=105"></script>
+    <script src="script.js?v=106"></script>
   </body>
 </html>
