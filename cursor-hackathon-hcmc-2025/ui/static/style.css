@@ -2901,21 +2901,18 @@ html {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 18px;
-  justify-content: center;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 768px) {
   .judge-grid {
-    grid-template-columns: repeat(2, minmax(0, 220px));
-    justify-content: center;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (min-width: 1000px) {
+@media (min-width: 1024px) {
   .judge-grid {
-    grid-template-columns: repeat(4, minmax(0, 220px));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: var(--space-4);
-    justify-content: center;
   }
 }
 
