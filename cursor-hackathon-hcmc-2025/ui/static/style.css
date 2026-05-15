@@ -2763,28 +2763,6 @@ html {
   gap: 16px;
 }
 
-.judge-grid > li.judge-grid-group {
-  grid-column: 1 / -1;
-  display: block;
-  margin: 4px 0 0;
-}
-
-.judge-grid > li.judge-grid-group:first-child {
-  margin-top: 0;
-}
-
-.judge-group-label {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--primary-600) 92%, var(--muted));
-  padding-bottom: 4px;
-  border-bottom: 1px solid color-mix(in srgb, var(--border) 88%, transparent);
-}
-
 .judge-card {
   display: flex;
   gap: 14px;
