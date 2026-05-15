@@ -1,6 +1,6 @@
 /* ================================================================
-   Cursor × Thrads · London 2026
-   Dark theme — Thrad orange brand on Briefcase gray surface architecture
+   Build Finance Agents · London 2026
+   Dark theme — Briefcase app palette (gray-900 surfaces, teal brand)
    ---------------------------------------------------------------- */
 
 :root {
@@ -18,24 +18,24 @@
   --border: #374151; /* gray-700  standard borders */
   --border-subtle: #1f2937; /* gray-800  sub-borders between surfaces */
 
-  /* Brand — Thrad orange ramp; lightest shades repurposed as dark tints */
-  --primary-50: #2a160b; /* (dark tint role) */
-  --primary-100: #3a1d10; /* (dark tint, slightly brighter — borders/hover) */
-  --primary-200: #4a2515; /* (dark tint, brighter still — emphasis borders) */
-  --primary-300: #ffb997;
-  --primary-400: #ff9b73;
-  --primary-500: #f26b3d; /* Thrad signature orange */
-  --primary-600: #e85a2c;
-  --primary-700: #cc4a1e;
-  --primary-800: #a13917;
-  --primary-900: #6e2810;
+  /* Brand — Briefcase teal ramp; lightest shades repurposed as dark tints */
+  --primary-50: #142b34; /* (dark tint role) */
+  --primary-100: #1d3a47; /* (dark tint, slightly brighter — borders/hover) */
+  --primary-200: #234a58; /* (dark tint, brighter still — emphasis borders) */
+  --primary-300: #a0dce7;
+  --primary-400: #87d3e1;
+  --primary-500: #6dc9db;
+  --primary-600: #53c0d4;
+  --primary-700: #429aaa;
+  --primary-800: #32737f;
+  --primary-900: #214d55;
 
-  /* Semantic accents — warm glow on dark */
-  --accent: var(--primary-500);
-  --accent-deep: var(--primary-700);
-  --accent-glow: rgba(242, 107, 61, 0.2);
-  --accent-subtle: rgba(242, 107, 61, 0.1);
-  --accent-ring: rgba(242, 107, 61, 0.34);
+  /* Semantic accents — brighter glow on dark */
+  --accent: var(--primary-700);
+  --accent-deep: var(--primary-800);
+  --accent-glow: rgba(109, 201, 219, 0.18);
+  --accent-subtle: rgba(109, 201, 219, 0.1);
+  --accent-ring: rgba(109, 201, 219, 0.32);
 
   --danger: #f87171;
   --danger-subtle: rgba(127, 29, 29, 0.3);
@@ -95,37 +95,25 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Thrad-style backdrop — warm orange wash + crosshair plus-sign survey grid.
-   Plus signs sit at the centre of each 220px tile, joined by a faint white
-   ruling line. Mirrors the surveyor / "frontier" motif on thrad.ai while
-   staying dark-mode friendly. */
+/* Soft dark backdrop — subtle teal washes + faint grid */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
-  background-color: var(--bg);
-  background-image:
-    radial-gradient(
+  background: radial-gradient(
       1200px 500px at 90% -10%,
-      rgba(242, 107, 61, 0.12),
+      rgba(109, 201, 219, 0.1),
       transparent 60%
     ),
     radial-gradient(
       900px 400px at 0% 0%,
-      rgba(242, 107, 61, 0.05),
+      rgba(66, 154, 170, 0.06),
       transparent 60%
     ),
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'><g fill='none' stroke-linecap='round'><line x1='0' y1='110' x2='220' y2='110' stroke='%23ffffff' stroke-opacity='0.045' stroke-width='1'/><line x1='110' y1='0' x2='110' y2='220' stroke='%23ffffff' stroke-opacity='0.045' stroke-width='1'/><line x1='101' y1='110' x2='119' y2='110' stroke='%23ff9b73' stroke-opacity='0.36' stroke-width='1.4'/><line x1='110' y1='101' x2='110' y2='119' stroke='%23ff9b73' stroke-opacity='0.36' stroke-width='1.4'/></g></svg>");
-  background-repeat: no-repeat, no-repeat, repeat;
-  background-size:
-    auto,
-    auto,
-    220px 220px;
-  background-position:
-    0 0,
-    0 0,
-    0 0;
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: auto, auto, 44px 44px, 44px 44px;
   pointer-events: none;
 }
 
@@ -183,12 +171,12 @@ header {
   outline-offset: 3px;
   border-radius: 6px;
 }
-/* Static cube fallback (poster / img) — Thrad warm orange glow */
+/* Static cube fallback (poster / img) — same luminous teal as accents */
 .brand-mark > img {
   display: block;
   max-height: 100%;
   width: auto;
-  filter: drop-shadow(0 0 4px rgba(255, 155, 115, 0.55)) brightness(1.05) saturate(1.15);
+  filter: drop-shadow(0 0 4px rgba(160, 220, 231, 0.5)) brightness(1.08) saturate(1.2);
 }
 
 .brand-cursor-video-tint {
@@ -205,8 +193,8 @@ header {
   max-width: min(112px, 32vw);
   object-fit: contain;
   opacity: 1;
-  filter: sepia(0.85) saturate(3.2) hue-rotate(-15deg) brightness(1.05)
-    drop-shadow(0 0 5px rgba(242, 107, 61, 0.55));
+  filter: sepia(0.75) saturate(2.2) hue-rotate(145deg) brightness(0.9)
+    drop-shadow(0 0 4px rgba(160, 220, 231, 0.45));
 }
 .brand-mark.brand-mark--video.brand-mark--footer .brand-cursor-video-tint {
   height: 14px;
@@ -232,25 +220,6 @@ header {
   font-size: 1.05rem;
   letter-spacing: -0.01em;
   color: var(--text-strong);
-  white-space: nowrap;
-}
-
-.brand-thrads-link {
-  color: var(--primary-500);
-  text-decoration: none;
-  border-radius: 4px;
-  transition:
-    color 0.15s ease,
-    text-shadow 0.2s ease;
-}
-.brand-thrads-link:hover,
-.brand-thrads-link:focus-visible {
-  color: var(--primary-400);
-  text-shadow: 0 0 12px rgba(242, 107, 61, 0.5);
-}
-.brand-thrads-link:focus-visible {
-  outline: 2px solid var(--accent-ring);
-  outline-offset: 2px;
 }
 
 .brand-subtitle {
@@ -3120,8 +3089,8 @@ html {
   backdrop-filter: blur(10px);
 }
 .judge-nav-btn:hover {
-  border-color: rgba(242, 107, 61, 0.38);
-  background: rgba(242, 107, 61, 0.1);
+  border-color: rgba(109, 201, 219, 0.38);
+  background: rgba(109, 201, 219, 0.1);
   color: #fff;
   transform: none;
 }
@@ -3138,9 +3107,9 @@ html {
   flex-direction: column;
   gap: 6px;
   padding: 10px 12px;
-  border: 1px solid rgba(242, 107, 61, 0.35);
+  border: 1px solid rgba(109, 201, 219, 0.35);
   border-radius: 10px;
-  background: rgba(242, 107, 61, 0.06);
+  background: rgba(109, 201, 219, 0.06);
 }
 .judge-coverage-label {
   margin: 0;
@@ -3222,7 +3191,7 @@ html {
 .judge-mine-toggle input[type="checkbox"] {
   width: 16px;
   height: 16px;
-  accent-color: #f26b3d;
+  accent-color: #6dc9db;
   cursor: pointer;
 }
 .judge-queue-stats {
@@ -3232,8 +3201,8 @@ html {
 }
 .judge-nav-btn--refresh.is-loading {
   animation: judge-refresh-spin 0.8s linear infinite;
-  color: rgba(242, 107, 61, 0.95);
-  border-color: rgba(242, 107, 61, 0.55);
+  color: rgba(109, 201, 219, 0.95);
+  border-color: rgba(109, 201, 219, 0.55);
 }
 @keyframes judge-refresh-spin {
   to { transform: rotate(360deg); }
@@ -3271,9 +3240,9 @@ html {
   min-height: 100%;
   height: 100%;
   border-radius: var(--r-2xl);
-  border: 1px solid rgba(242, 107, 61, 0.58);
+  border: 1px solid rgba(109, 201, 219, 0.58);
   background:
-    radial-gradient(circle at 20% 0%, rgba(242, 107, 61, 0.15), transparent 32%),
+    radial-gradient(circle at 20% 0%, rgba(109, 201, 219, 0.15), transparent 32%),
     linear-gradient(145deg, #06131f 0%, #0b1724 55%, #111827 100%);
   box-shadow:
     0 0 0 1px rgba(56, 189, 248, 0.2),
@@ -3311,7 +3280,7 @@ html {
   z-index: 7;
   width: 30px;
   height: 52px;
-  border: 1px solid rgba(242, 107, 61, 0.34);
+  border: 1px solid rgba(109, 201, 219, 0.34);
   border-radius: 999px;
   transform: translateY(-50%);
   background: rgba(8, 17, 28, 0.58);
@@ -3328,8 +3297,8 @@ html {
   backdrop-filter: blur(10px);
 }
 .judge-panel-toggle:hover {
-  background: rgba(242, 107, 61, 0.18);
-  border-color: rgba(242, 107, 61, 0.74);
+  background: rgba(109, 201, 219, 0.18);
+  border-color: rgba(109, 201, 219, 0.74);
   transform: translateY(-50%) scale(1.04);
 }
 .judge-info-toggle {
@@ -3718,7 +3687,7 @@ html {
   border: 1px solid var(--border);
   border-radius: var(--r-xl);
   background: rgba(255, 255, 255, 0.025);
-  box-shadow: inset 0 0 0 1px rgba(242, 107, 61, 0.04);
+  box-shadow: inset 0 0 0 1px rgba(109, 201, 219, 0.04);
 }
 .judge-side-section-h {
   margin: 12px 0 4px;
@@ -4689,7 +4658,7 @@ html {
 .judge-sub-pill-you.is-on {
   color: var(--primary-800);
   border-color: var(--primary-200);
-  background: rgba(242, 107, 61, 0.08);
+  background: rgba(109, 201, 219, 0.08);
 }
 .judge-sub-pill-others.is-on {
   color: var(--text-strong);
