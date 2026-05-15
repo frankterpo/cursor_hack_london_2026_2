@@ -773,6 +773,8 @@ header {
   width: 100%;
   max-height: min(90vh, 900px);
   pointer-events: none;
+  /* Keeps side nav from painting above the media column if layouts overlap. */
+  isolation: isolate;
 }
 
 .context-lightbox__shell > * {
@@ -780,6 +782,8 @@ header {
 }
 
 .context-lightbox__nav {
+  position: relative;
+  z-index: 0;
   flex: 0 0 auto;
   display: flex;
   align-items: center;
@@ -814,6 +818,8 @@ header {
 }
 
 .context-lightbox__column {
+  position: relative;
+  z-index: 1;
   flex: 1 1 auto;
   min-width: 0;
   display: flex;
@@ -832,6 +838,7 @@ header {
 }
 
 .context-lightbox__media-slot {
+  pointer-events: auto;
   width: 100%;
   aspect-ratio: 16 / 9;
   max-height: min(46vh, 480px);
@@ -844,6 +851,7 @@ header {
 }
 
 .context-lightbox__video {
+  pointer-events: auto;
   display: block;
   width: 100%;
   height: 100%;

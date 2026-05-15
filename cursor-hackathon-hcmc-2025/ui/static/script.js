@@ -3802,6 +3802,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearLightboxTwitterEmbed();
         mediaSlot.removeAttribute("hidden");
         lbVideo.removeAttribute("hidden");
+        lbVideo.preload = "auto";
         lbVideo.src = v.src;
         lbVideo.poster = v.poster || "";
         lbVideo.load();
@@ -3834,6 +3835,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function step(d) {
       renderAt(currentIndex + d);
+    }
+
+    /** Native <video> controls live in a UA shadow tree; closest() from the inner target may not reach the host. */
+    function shouldKeepLightboxOpenOnShellPointer(e) {
+      const t = e.target;
+      if (t && typeof t.closest === "function") {
+        if (
+          t.closest(".context-lightbox__nav") ||
+          t.closest("a") ||
+          t.closest(".context-lightbox-preview-card") ||
+          t.closest(".context-lightbox__desc") ||
+          t.closest(".context-lightbox__media-slot") ||
+          t.closest("#context-lb-video") ||
+          t.closest("#context-lb-twitter-embed")
+        ) {
+          return true;
+        }
+      }
+      if (typeof e.composedPath === "function") {
+        const path = e.composedPath();
+        if (lbVideo && path.includes(lbVideo)) return true;
+        if (mediaSlot && path.includes(mediaSlot)) return true;
+        if (lbTwitterEmbed && path.includes(lbTwitterEmbed)) return true;
+      }
+      return false;
     }
 
     function onDocKey(e) {
@@ -3874,17 +3900,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     shell.addEventListener("click", (e) => {
-      if (
-        e.target.closest(".context-lightbox__nav") ||
-        e.target.closest("a") ||
-        e.target.closest(".context-lightbox-preview-card") ||
-        e.target.closest(".context-lightbox__desc") ||
-        e.target.closest(".context-lightbox__media-slot") ||
-        e.target.closest("#context-lb-video") ||
-        e.target.closest("#context-lb-twitter-embed")
-      ) {
-        return;
-      }
+      if (shouldKeepLightboxOpenOnShellPointer(e)) return;
       close();
     });
 
