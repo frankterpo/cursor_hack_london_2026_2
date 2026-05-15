@@ -971,6 +971,14 @@ header {
   margin-bottom: 12px;
 }
 
+.subtracks-intro {
+  margin: -4px 0 14px;
+  max-width: 42rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
 .subtracks-grid {
   list-style: none;
   margin: 0;
@@ -1043,6 +1051,41 @@ header {
   height: 32px;
   max-width: 32px;
   max-height: 32px;
+}
+
+.subtrack-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-md);
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  flex-shrink: 0;
+  border: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, #fff 5%, transparent) inset;
+}
+
+.subtrack-mark--tavily {
+  color: #e8f4fc;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, #0ea5e9 35%, #0f172a),
+    #0b1224
+  );
+}
+
+.subtrack-mark--overmind {
+  color: #f4faf7;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, #22c55e 28%, #0f172a),
+    #0b1224
+  );
 }
 
 /* Specter mark — square logo */
@@ -1160,8 +1203,7 @@ header {
 }
 
 /* Tooltip card must stack above sibling bonus tiles (later columns paint on top). */
-/* Fallback when :has() is missing or unreliable: first bonus tile is Cursor + SDK. */
-.subtracks-grid > li:first-child.subtrack-card--with-sub {
+.subtracks-grid > li.subtrack-card--popover-host.subtrack-card--with-sub {
   position: relative;
   z-index: 50;
 }
@@ -2905,6 +2947,29 @@ html {
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 16px;
 }
+
+.judge-grid > li.judge-grid-group {
+  grid-column: 1 / -1;
+  display: block;
+  margin: 4px 0 0;
+}
+
+.judge-grid > li.judge-grid-group:first-child {
+  margin-top: 0;
+}
+
+.judge-group-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--primary-600) 92%, var(--muted));
+  padding-bottom: 4px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 88%, transparent);
+}
+
 .judge-card {
   display: flex;
   gap: 14px;

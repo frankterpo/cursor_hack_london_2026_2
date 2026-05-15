@@ -1416,7 +1416,7 @@ function renderJudges() {
       if (j.linkedin) {
         return `<li><a class="judge-card judge-card--link" href="${escapeAttr(
           j.linkedin
-        )}" target="_blank" rel="noreferrer noopener" aria-label="${escapeAttr(
+        )}" target="_blank" rel="noopener noreferrer" aria-label="${escapeAttr(
           j.name
         )} on LinkedIn">${inner}</a></li>`;
       }
@@ -3332,7 +3332,7 @@ function spawnConfettiBurst(root, originX, originY, count, velocityScale, delayB
     p.style.height = `${h}px`;
     p.style.left = `${originX}px`;
     p.style.top = `${originY}px`;
-    p.style.borderRadius = Math.random() > 0.55 ? "50%" : "2px";
+    p.style.borderRadius = Math.random() > 0.55 ? "9999px" : "2px";
     p.style.setProperty("--dx", `${dx}px`);
     p.style.setProperty("--dy", `${dy}px`);
     p.style.setProperty("--rot", `${rot}deg`);

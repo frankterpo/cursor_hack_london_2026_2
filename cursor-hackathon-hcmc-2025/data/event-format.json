@@ -81,22 +81,22 @@
   },
   "side_quests": [
     {
-      "id": "best_use_cursor",
+      "id": "best_use_tavily",
+      "name": "Best use of Tavily",
+      "points": 1,
+      "blurb": "Standout use of Tavily for agent-grade search, retrieval, or live research in the product."
+    },
+    {
+      "id": "best_use_overmind",
+      "name": "Best use of Overmind",
+      "points": 1,
+      "blurb": "Clearest integration or workflow where Overmind does real work — not a surface-level mention."
+    },
+    {
+      "id": "best_use_cursor_sdk",
       "name": "Best use of Cursor",
       "points": 1,
-      "blurb": "How effectively the build used Cursor — editor, agents, and workflow — end to end."
-    },
-    {
-      "id": "best_use_specter",
-      "name": "Best use of Specter",
-      "points": 1,
-      "blurb": "Standout use of Specter's API, MCP, or data for market intelligence in the product."
-    },
-    {
-      "id": "best_use_llm_models",
-      "name": "Best use of LLM models",
-      "points": 1,
-      "blurb": "Smart or effective use of models — APIs, routing, evals, or multi-model design."
+      "blurb": "Strong use of the Cursor SDK — programmatic agents, tools, and patterns judges can reproduce from docs or the examples repo."
     }
   ],
   "prizes": [
@@ -121,49 +121,36 @@
   ],
   "judges": [
     {
-      "name": "Ján Stehlík",
-      "title": "Co-Founder & CTO",
-      "role": "Briefcase",
-      "focus": "AI accounting automation",
-      "linkedin": "https://www.linkedin.com/in/jan-stehlik-5855aa123/",
-      "photo_url": "/judges/jan.jpg",
-      "avatar_color": "#429aaa"
+      "name": "Pritam Soni",
+      "title": "",
+      "role": "Overmind",
+      "focus": "",
+      "linkedin": "https://www.linkedin.com/in/pritamsoni-hsr",
+      "avatar_color": "#3d8fa3"
     },
     {
-      "name": "Alec Barber",
-      "title": "Member of Technical Staff",
-      "role": "OpenAI",
-      "focus": "LLM evals · agents",
-      "linkedin": "https://www.linkedin.com/in/alec-barber/",
-      "photo_url": "/judges/alec.jpg",
+      "name": "Rohit Gupta",
+      "title": "",
+      "role": "Overmind",
+      "focus": "",
+      "linkedin": "https://www.linkedin.com/in/rohitgr7",
       "avatar_color": "#32737f"
     },
     {
-      "name": "Umberto Belluzzo",
-      "title": "Investor",
-      "role": "Earlybird Venture Capital",
-      "focus": "AI compute · deeptech VC",
-      "linkedin": "https://www.linkedin.com/in/umberto-belluzzo/",
-      "photo_url": "/judges/umberto.png",
-      "avatar_color": "#6dc9db"
+      "name": "Giorgio Toledo",
+      "title": "",
+      "role": "Thrads",
+      "focus": "",
+      "linkedin": "https://www.linkedin.com/in/giorgio-toledo",
+      "avatar_color": "#6b9aa5"
     },
     {
       "name": "David Gelberg",
-      "title": "No10 Innovation Fellow",
+      "title": "",
       "role": "10 Downing Street",
-      "focus": "Gov AI deployment",
+      "focus": "",
       "linkedin": "https://www.linkedin.com/in/davidgelberg/",
-      "photo_url": "/judges/david.jpg",
       "avatar_color": "#214d55"
-    },
-    {
-      "name": "Jamesin Seidel",
-      "title": "General Partner",
-      "role": "Chapter One",
-      "focus": "Pre-seed AI · infra",
-      "linkedin": "https://www.linkedin.com/in/jamesin-seidel-5325b147/",
-      "photo_url": "/judges/jamesin.png",
-      "avatar_color": "#53c0d4"
     }
   ],
   "sponsors": [
