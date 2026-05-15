@@ -10,7 +10,7 @@
       name="description"
       content="Cursor × Thrads London 2026 — agentic builds on conversational ad infrastructure: buy-side, sell-side, and measurement inside LLM-native channels."
     />
-    <link rel="stylesheet" href="style.css?v=108" />
+    <link rel="stylesheet" href="style.css?v=109" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -215,6 +215,29 @@
                 aria-label="@sualehasif996 — Scaling Shopify, turbopuffer, and databases. Open expanded signal."
               >
                 <div class="context-post-card__media" aria-hidden="true">
+                  <!-- Remote MP4 from video.twimg.com (tag query may expire); replace with context-videos/shopify-sirupsen.mp4 if needed -->
+                  <video
+                    class="context-post-card__media-video"
+                    controls
+                    playsinline
+                    muted
+                    preload="metadata"
+                    poster="context-post-thumbs/0.jpg"
+                  >
+                    <source
+                      type="video/mp4"
+                      src="https://video.twimg.com/amplify_video/2054991214714277888/vid/avc1/1366x720/kdy550GL5fSNwmpm.mp4?tag=27"
+                    />
+                  </video>
+                  <img
+                    class="context-post-card__media-img"
+                    src="context-post-thumbs/0.jpg"
+                    alt=""
+                    width="1200"
+                    height="633"
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <div class="context-post-card__media-fallback">
                     <span class="context-post-card__media-fallback-handle">@sualehasif996</span>
                     <img
@@ -1712,6 +1735,16 @@
         </button>
         <div class="context-lightbox__column">
           <div class="context-lightbox__imgrow">
+            <div class="context-lightbox__media-slot" id="context-lb-media-slot" hidden>
+              <video
+                id="context-lb-video"
+                class="context-lightbox__video"
+                controls
+                playsinline
+                preload="metadata"
+                poster="context-post-thumbs/sirupsen-shopify-thumb.jpg"
+              ></video>
+            </div>
             <div class="context-lightbox__links" id="context-lb-links">
               <a
                 id="context-lb-href"
@@ -1759,6 +1792,6 @@
       </div>
     </div>
 
-    <script src="script.js?v=104"></script>
+    <script src="script.js?v=105"></script>
   </body>
 </html>

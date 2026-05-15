@@ -3609,6 +3609,11 @@ document.addEventListener("DOMContentLoaded", () => {
         linkLabel: "Open post on X",
         href2: null,
         link2Label: null,
+        video: {
+          src:
+            "https://video.twimg.com/amplify_video/2054991214714277888/vid/avc1/1366x720/kdy550GL5fSNwmpm.mp4?tag=27",
+          poster: "context-post-thumbs/sirupsen-shopify-thumb.jpg",
+        },
       },
       {
         handle: "@kamil_sattar",
@@ -3683,6 +3688,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const handleEl = document.getElementById("context-lb-handle");
     const titleEl = document.getElementById("context-lb-preview-title");
     const leadEl = document.getElementById("context-lb-preview-lead");
+    const mediaSlot = document.getElementById("context-lb-media-slot");
+    const lbVideo = document.getElementById("context-lb-video");
     if (
       !lightbox ||
       !backdrop ||
@@ -3704,11 +3711,17 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentIndex = 0;
     let openFromEl = null;
 
+    function pauseLightboxVideo() {
+      if (!lbVideo) return;
+      lbVideo.pause();
+    }
+
     function renderAt(i) {
       const m = GALLERY.length;
       const idx = ((i % m) + m) % m;
       const item = GALLERY[idx];
       currentIndex = idx;
+      pauseLightboxVideo();
       handleEl.textContent = item.handle;
       titleEl.textContent = item.headline;
       leadEl.textContent = item.lead;
@@ -3741,6 +3754,21 @@ document.addEventListener("DOMContentLoaded", () => {
         href2El.setAttribute("hidden", "");
         href2El.classList.add("hidden");
       }
+
+      if (mediaSlot && lbVideo) {
+        const v = item.video;
+        if (v && v.src) {
+          mediaSlot.removeAttribute("hidden");
+          lbVideo.src = v.src;
+          lbVideo.poster = v.poster || "";
+          lbVideo.load();
+        } else {
+          pauseLightboxVideo();
+          lbVideo.removeAttribute("src");
+          lbVideo.removeAttribute("poster");
+          mediaSlot.setAttribute("hidden", "");
+        }
+      }
     }
 
     function openAt(i, fromEl) {
@@ -3752,6 +3780,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function close() {
+      pauseLightboxVideo();
       lightbox.setAttribute("hidden", "");
       document.body.style.overflow = "";
       if (openFromEl) {
@@ -3785,6 +3814,7 @@ document.addEventListener("DOMContentLoaded", () => {
     strip.querySelectorAll(".context-post-card[data-idx]").forEach((card) => {
       card.addEventListener("click", (e) => {
         if (e.target.closest("a[href]")) return;
+        if (e.target.closest("video")) return;
         const raw = parseInt(card.getAttribute("data-idx") || "0", 10);
         const i = Number.isNaN(raw) ? 0 : raw;
         openAt(i, card);
@@ -3792,6 +3822,7 @@ document.addEventListener("DOMContentLoaded", () => {
       card.addEventListener("keydown", (e) => {
         if (e.key !== "Enter" && e.key !== " ") return;
         if (e.target.closest("a[href]")) return;
+        if (e.target.closest("video")) return;
         e.preventDefault();
         const raw = parseInt(card.getAttribute("data-idx") || "0", 10);
         const i = Number.isNaN(raw) ? 0 : raw;
@@ -3808,7 +3839,9 @@ document.addEventListener("DOMContentLoaded", () => {
         e.target.closest(".context-lightbox__nav") ||
         e.target.closest("a") ||
         e.target.closest(".context-lightbox-preview-card") ||
-        e.target.closest(".context-lightbox__desc")
+        e.target.closest(".context-lightbox__desc") ||
+        e.target.closest(".context-lightbox__media-slot") ||
+        e.target.closest("#context-lb-video")
       ) {
         return;
       }
