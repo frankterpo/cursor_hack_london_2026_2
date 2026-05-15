@@ -1383,9 +1383,10 @@ function renderJudges() {
         .join("")
         .toUpperCase();
       const color = j.avatar_color || "#429aaa";
-      const avatar = j.photo_url
+      const photoSrc = j.photo_url || j.photo;
+      const avatar = photoSrc
         ? `<img class="judge-avatar judge-avatar--img" src="${escapeAttr(
-            j.photo_url
+            photoSrc
           )}" alt="" loading="lazy" onerror="this.outerHTML='<span class=&quot;judge-avatar&quot; style=&quot;background:${escapeAttr(
             color
           )}&quot;>${escapeHtml(initials)}</span>'">`
