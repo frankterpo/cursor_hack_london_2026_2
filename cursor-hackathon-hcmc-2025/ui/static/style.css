@@ -2808,19 +2808,23 @@ html {
 .judge-grid {
   list-style: none;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 18px;
+  justify-content: center;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .judge-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 220px));
+    justify-content: center;
   }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1000px) {
   .judge-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 220px));
+    gap: var(--space-4);
+    justify-content: center;
   }
 }
 
