@@ -3599,8 +3599,10 @@ document.addEventListener("DOMContentLoaded", () => {
   (function initContextLightbox() {
     const GALLERY = [
       {
-        kind: "twitter_embed",
-        tweetId: "2054992106196787686",
+        video: {
+          src: "context-videos/shopify-sirupsen.mp4",
+          poster: "context-post-thumbs/0.jpg",
+        },
         handle: "@sualehasif996",
         headline: "Scaling Shopify, turbopuffer, and databases",
         lead:
@@ -3712,6 +3714,11 @@ document.addEventListener("DOMContentLoaded", () => {
     function pauseLightboxVideo() {
       if (!lbVideo) return;
       lbVideo.pause();
+      try {
+        lbVideo.currentTime = 0;
+      } catch (e) {
+        /* ignore */
+      }
     }
 
     function clearLightboxTwitterEmbed() {

@@ -601,6 +601,21 @@ header {
   filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.45));
 }
 
+.context-post-card__media--playable .context-post-card__play-badge {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.context-post-card__media--playable .context-post-card__play-icon {
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.55));
+}
+
+
 .context-post-card__top {
   display: flex;
   align-items: center;
