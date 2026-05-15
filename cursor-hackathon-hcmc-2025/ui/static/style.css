@@ -139,12 +139,13 @@ header {
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid var(--border);
-  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  background-color: var(--bg);
   backdrop-filter: saturate(140%) blur(14px);
   -webkit-backdrop-filter: saturate(140%) blur(14px);
   position: sticky;
   top: 0;
   z-index: 100;
+  isolation: isolate;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
