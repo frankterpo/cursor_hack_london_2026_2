@@ -1078,6 +1078,27 @@ header {
     0 1px 0 color-mix(in srgb, #fff 5%, transparent) inset;
 }
 
+/* Tavily wordmark (wide asset) — light chip so dark logo reads on panels */
+.partner-logo--tavily {
+  width: auto;
+  height: 22px;
+  max-width: 108px;
+  max-height: 28px;
+  object-fit: contain;
+  object-position: center;
+  flex-shrink: 0;
+  border-radius: var(--r-md);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #f8fafc 92%, #e2e8f0),
+    color-mix(in srgb, #f1f5f9 88%, #cbd5e1)
+  );
+  padding: 6px 9px;
+  box-sizing: content-box;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--border) 80%, transparent),
+    0 1px 0 color-mix(in srgb, #fff 5%, transparent) inset;
+}
+
 .subtrack-mark {
   display: inline-flex;
   align-items: center;
@@ -1093,15 +1114,6 @@ header {
   flex-shrink: 0;
   border: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
   box-shadow: 0 1px 0 color-mix(in srgb, #fff 5%, transparent) inset;
-}
-
-.subtrack-mark--tavily {
-  color: #e8f4fc;
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, #0ea5e9 35%, #0f172a),
-    #0b1224
-  );
 }
 
 /* Specter mark — square logo */
