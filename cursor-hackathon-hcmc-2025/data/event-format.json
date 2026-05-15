@@ -90,7 +90,8 @@
       "id": "best_use_overmind",
       "name": "Best use of Overmind",
       "points": 1,
-      "blurb": "Clearest integration or workflow where Overmind does real work — not a surface-level mention."
+      "blurb": "Clearest integration or workflow where Overmind does real work — not a surface-level mention.",
+      "logo_path": "partners/overmind-logo.png"
     },
     {
       "id": "best_use_cursor_sdk",
