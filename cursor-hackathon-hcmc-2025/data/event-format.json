@@ -123,26 +123,24 @@
   "judges": [
     {
       "name": "Pritam Soni",
-      "title": "",
+      "title": "Founding Engineer",
       "role": "Overmind",
       "focus": "",
       "linkedin": "https://www.linkedin.com/in/pritamsoni-hsr",
       "avatar_color": "#3d8fa3",
-      "photo_url": "judges/pritam-soni.png"
-    },
-    {
-      "name": "Rohit Gupta",
-      "title": "",
-      "role": "Overmind",
-      "focus": "",
-      "linkedin": "https://www.linkedin.com/in/rohitgr7/",
-      "photo": "judges/rohit-gupta.png",
-      "avatar_color": "#32737f"
+      "photo_url": "judges/pritam-soni.png",
+      "cohost": {
+        "name": "Rohit Gupta",
+        "title": "Founding Engineer",
+        "linkedin": "https://www.linkedin.com/in/rohitgr7/",
+        "photo_url": "judges/rohit-gupta.png",
+        "avatar_color": "#32737f"
+      }
     },
     {
       "name": "Giorgio Toledo",
       "title": "",
-      "role": "Thrads",
+      "role": "Thrad",
       "focus": "",
       "linkedin": "https://www.linkedin.com/in/giorgio-toledo/",
       "avatar_color": "#6b9aa5",
@@ -156,6 +154,24 @@
       "linkedin": "https://www.linkedin.com/in/davidgelberg/",
       "avatar_color": "#214d55",
       "photo_url": "judges/david-gelberg.png"
+    },
+    {
+      "name": "John Sergeant",
+      "title": "",
+      "role": "Strand Ventures",
+      "focus": "",
+      "linkedin": "https://www.linkedin.com/in/john-sergeant-2327841a3/",
+      "avatar_color": "#3a4a55",
+      "photo_url": "judges/john-sergeant.png"
+    },
+    {
+      "name": "Umberto Belluzzo",
+      "title": "",
+      "role": "Earlybird Ventures",
+      "focus": "",
+      "linkedin": "https://www.linkedin.com/in/umberto-belluzzo/",
+      "avatar_color": "#2f5d6a",
+      "photo_url": "judges/umberto-belluzzo.png"
     }
   ],
   "sponsors": [

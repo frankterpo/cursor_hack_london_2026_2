@@ -142,7 +142,16 @@ function judgeMatchesPool(typedName, poolName) {
 
 function getJudgePool() {
   const list = eventFormat && Array.isArray(eventFormat.judges) ? eventFormat.judges : [];
-  return list.filter((j) => j && j.name);
+  const out = [];
+  for (const j of list) {
+    if (!j || !j.name) continue;
+    out.push(j);
+    const co = j.cohost;
+    if (co && co.name) {
+      out.push({ ...co, role: j.role || co.role || "" });
+    }
+  }
+  return out;
 }
 
 /** -1 if the typed name doesn't match any configured judge. */
@@ -1369,12 +1378,79 @@ function renderPrizes() {
     .join("");
 }
 
+function judgeCardAvatarMarkup(j) {
+  const initials = (j.name || "?")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((p) => p[0])
+    .join("")
+    .toUpperCase();
+  const color = j.avatar_color || "#429aaa";
+  const photoSrc = j.photo_url || j.photo;
+  if (photoSrc) {
+    return `<span class="judge-avatar judge-avatar--img"><img src="${escapeAttr(
+      photoSrc
+    )}" alt="" loading="lazy" decoding="async" onerror="this.parentElement.outerHTML='<span class=&quot;judge-avatar&quot; style=&quot;background:${escapeAttr(
+      color
+    )}&quot;>${escapeHtml(initials)}</span>'"></span>`;
+  }
+  return `<span class="judge-avatar" style="background:${escapeAttr(color)}">${escapeHtml(
+    initials
+  )}</span>`;
+}
+
+function renderJudgeDualCard(primary, secondary) {
+  const col = (person) => {
+    const avatar = judgeCardAvatarMarkup(person);
+    const nameOnly = `<span class="judge-name">${escapeHtml(person.name)}</span>`;
+    const titleHtml = person.title
+      ? `<span class="judge-dual-title">${escapeHtml(person.title)}</span>`
+      : "";
+    const companyHtml = person.role
+      ? `<span class="judge-role">${escapeHtml(person.role)}</span>`
+      : "";
+    const focusHtml = person.focus
+      ? `<span class="judge-focus">${escapeHtml(person.focus)}</span>`
+      : "";
+    const dualBody = `<div class="judge-body">${nameOnly}${titleHtml}${companyHtml}${focusHtml}</div>`;
+    const inBadge = person.linkedin
+      ? '<span class="judge-linkedin" aria-hidden="true">in →</span>'
+      : "";
+    const linkInner = `${avatar}${dualBody}${inBadge}`;
+    if (person.linkedin) {
+      return `<a class="judge-dual-col judge-card--link" href="${escapeAttr(
+        person.linkedin
+      )}" target="_blank" rel="noopener noreferrer" aria-label="${escapeAttr(
+        person.name
+      )} on LinkedIn">${linkInner}</a>`;
+    }
+    return `<div class="judge-dual-col judge-card">${linkInner}</div>`;
+  };
+  return `<li class="judge-grid__cell--dual">
+    <div class="judge-card judge-card--dual">
+      <div class="judge-dual-cols">
+        ${col(primary)}
+        ${col(secondary)}
+      </div>
+    </div>
+  </li>`;
+}
+
 function renderJudges() {
   const ul = document.getElementById("judge-grid");
   if (!ul) return;
   const judges = eventFormat?.judges || [];
+  // Static index ships judge cards in HTML; only replace when we have config
+  // (e.g. opening file:// or failed fetch would clear the grid otherwise).
+  if (!judges.length) return;
   ul.innerHTML = judges
     .map((j) => {
+      if (!j || !j.name) return "";
+      if (j.cohost && j.cohost.name) {
+        const secondary = { ...j.cohost, role: j.role || j.cohost.role || "" };
+        return renderJudgeDualCard(j, secondary);
+      }
       const initials = (j.name || "?")
         .split(/\s+/)
         .filter(Boolean)
@@ -3615,6 +3691,10 @@ document.addEventListener("DOMContentLoaded", () => {
         link2Label: null,
       },
       {
+        video: {
+          src: "context-videos/kamil-ai-toolkit.mp4",
+          poster: "context-post-thumbs/1.jpg",
+        },
         handle: "@kamil_sattar",
         headline: "Shopify AI Toolkit for your favorite coding agent",
         lead:
@@ -3627,6 +3707,10 @@ document.addEventListener("DOMContentLoaded", () => {
         link2Label: null,
       },
       {
+        video: {
+          src: "context-videos/shopify-ai-toolkit-announce.mp4",
+          poster: "context-post-thumbs/2.jpg",
+        },
         handle: "@Shopify",
         headline: "The Shopify AI Toolkit is here",
         lead:
@@ -3639,6 +3723,10 @@ document.addEventListener("DOMContentLoaded", () => {
         link2Label: null,
       },
       {
+        video: {
+          src: "context-videos/glenngabe-openai-ads.mp4",
+          poster: "context-post-thumbs/3.jpg",
+        },
         handle: "@glenngabe",
         headline: "OpenAI launches an ads signup landing page",
         lead:
@@ -3651,6 +3739,10 @@ document.addEventListener("DOMContentLoaded", () => {
         link2Label: null,
       },
       {
+        video: {
+          src: "context-videos/samboboev-agentic-commerce.mp4",
+          poster: "context-post-thumbs/4.jpg",
+        },
         handle: "@samboboev",
         headline: "Agentic commerce may start with builders, not baskets",
         lead:
@@ -3663,6 +3755,10 @@ document.addEventListener("DOMContentLoaded", () => {
         link2Label: null,
       },
       {
+        image: {
+          src: "context-post-thumbs/5.jpg",
+          alt: "Agentic Commerce: buyers messaging merchants in-thread",
+        },
         handle: "@JeremyMearsX",
         headline: "Buyers can DM merchants inside Agentic Commerce chats",
         lead:
@@ -3688,7 +3784,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const titleEl = document.getElementById("context-lb-preview-title");
     const leadEl = document.getElementById("context-lb-preview-lead");
     const mediaSlot = document.getElementById("context-lb-media-slot");
+    const imgRow = lightbox.querySelector(".context-lightbox__imgrow");
     const lbVideo = document.getElementById("context-lb-video");
+    const lbStill = document.getElementById("context-lb-still");
     const lbTwitterEmbed = document.getElementById("context-lb-twitter-embed");
     if (
       !lightbox ||
@@ -3727,6 +3825,13 @@ document.addEventListener("DOMContentLoaded", () => {
       lbTwitterEmbed.setAttribute("hidden", "");
     }
 
+    function hideLightboxStill() {
+      if (!lbStill) return;
+      lbStill.removeAttribute("src");
+      lbStill.alt = "";
+      lbStill.setAttribute("hidden", "");
+    }
+
     function hideLightboxMedia() {
       pauseLightboxVideo();
       if (lbVideo) {
@@ -3735,6 +3840,7 @@ document.addEventListener("DOMContentLoaded", () => {
         lbVideo.setAttribute("hidden", "");
       }
       clearLightboxTwitterEmbed();
+      hideLightboxStill();
       if (mediaSlot) mediaSlot.setAttribute("hidden", "");
     }
 
@@ -3782,12 +3888,15 @@ document.addEventListener("DOMContentLoaded", () => {
         typeof item.tweetId === "string" &&
         item.tweetId.length > 0;
       const v = item.video;
+      const still = item.image;
       const hasVideo = !!(v && v.src);
+      const hasStill = !!(still && still.src);
 
-      if (!mediaSlot || (!tw && !hasVideo)) {
+      if (!mediaSlot || (!tw && !hasVideo && !hasStill)) {
         hideLightboxMedia();
       } else if (tw && lbTwitterEmbed) {
         pauseLightboxVideo();
+        hideLightboxStill();
         if (lbVideo) {
           lbVideo.removeAttribute("src");
           lbVideo.removeAttribute("poster");
@@ -3800,12 +3909,25 @@ document.addEventListener("DOMContentLoaded", () => {
         )}&theme=dark`;
       } else if (hasVideo && lbVideo) {
         clearLightboxTwitterEmbed();
+        hideLightboxStill();
         mediaSlot.removeAttribute("hidden");
         lbVideo.removeAttribute("hidden");
         lbVideo.preload = "auto";
         lbVideo.src = v.src;
         lbVideo.poster = v.poster || "";
         lbVideo.load();
+      } else if (hasStill && lbStill) {
+        pauseLightboxVideo();
+        clearLightboxTwitterEmbed();
+        if (lbVideo) {
+          lbVideo.removeAttribute("src");
+          lbVideo.removeAttribute("poster");
+          lbVideo.setAttribute("hidden", "");
+        }
+        mediaSlot.removeAttribute("hidden");
+        lbStill.removeAttribute("hidden");
+        lbStill.src = still.src;
+        lbStill.alt = typeof still.alt === "string" ? still.alt : "";
       } else {
         hideLightboxMedia();
       }
@@ -3844,10 +3966,16 @@ document.addEventListener("DOMContentLoaded", () => {
         if (
           t.closest(".context-lightbox__nav") ||
           t.closest("a") ||
+          t.closest("button") ||
+          t.closest("video") ||
+          t.closest("input[type=range]") ||
+          t.closest("[role=slider]") ||
           t.closest(".context-lightbox-preview-card") ||
           t.closest(".context-lightbox__desc") ||
+          t.closest(".context-lightbox__imgrow") ||
           t.closest(".context-lightbox__media-slot") ||
           t.closest("#context-lb-video") ||
+          t.closest("#context-lb-still") ||
           t.closest("#context-lb-twitter-embed")
         ) {
           return true;
@@ -3856,7 +3984,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (typeof e.composedPath === "function") {
         const path = e.composedPath();
         if (lbVideo && path.includes(lbVideo)) return true;
+        if (lbStill && path.includes(lbStill)) return true;
         if (mediaSlot && path.includes(mediaSlot)) return true;
+        if (imgRow && path.includes(imgRow)) return true;
         if (lbTwitterEmbed && path.includes(lbTwitterEmbed)) return true;
       }
       return false;
@@ -3903,6 +4033,37 @@ document.addEventListener("DOMContentLoaded", () => {
       if (shouldKeepLightboxOpenOnShellPointer(e)) return;
       close();
     });
+
+    if (mediaSlot) {
+      /*
+       * Quarantine ALL pointer/mouse/touch interactions inside the media slot so the
+       * native <video> scrubber drag cannot bubble up to shell-level swipe/close handlers
+       * (current or future). Listeners run in the bubble phase, so the UA shadow DOM
+       * controls have already received the event by the time we stop propagation here —
+       * this only blocks ancestors, not the native scrubber.
+       */
+      const SLOT_QUARANTINE_EVENTS = [
+        "click",
+        "dblclick",
+        "pointerdown",
+        "pointerup",
+        "pointermove",
+        "pointercancel",
+        "mousedown",
+        "mouseup",
+        "mousemove",
+        "touchstart",
+        "touchend",
+        "touchmove",
+        "touchcancel",
+        "dragstart",
+      ];
+      SLOT_QUARANTINE_EVENTS.forEach((evt) => {
+        mediaSlot.addEventListener(evt, (e) => {
+          e.stopPropagation();
+        });
+      });
+    }
 
     prevBtn.addEventListener("click", (e) => {
       e.stopPropagation();

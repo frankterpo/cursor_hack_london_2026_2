@@ -26,16 +26,16 @@
       "location": "London",
       "dates": "2026-09 (TBA)",
       "status": "ended",
-      "description": "Q3 London cohort. Archived once Cursor x Thrads kicked off."
+      "description": "Q3 London cohort. Archived once Cursor x Thrad kicked off."
     },
     {
       "id": "cursor-thrads-london-2026",
-      "name": "Cursor x Thrads London hackathon",
-      "short_name": "Thrads · London · 2026",
+      "name": "Cursor x Thrad London hackathon",
+      "short_name": "Thrad · London · 2026",
       "location": "London",
       "dates": "2026 (TBA)",
       "status": "active",
-      "description": "Two-track ad-tech hackathon co-hosted by Cursor and Thrads. Track 01: Buy-Side Agents (advertiser side). Track 02: Sell-Side & Measurement (publisher / attribution side)."
+      "description": "Two-track ad-tech hackathon co-hosted by Cursor and Thrad. Track 01: Buy-Side Agents (advertiser side). Track 02: Sell-Side & Measurement (publisher / attribution side)."
     }
   ]
 }

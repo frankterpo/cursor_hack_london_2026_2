@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark" />
     <meta name="theme-color" content="#0e0e12" />
-    <title>Cursor × Thrads · London 2026</title>
+    <title>Cursor × Thrad · London 2026</title>
     <meta
       name="description"
-      content="Cursor × Thrads London 2026 — agentic builds on conversational ad infrastructure: buy-side, sell-side, and measurement inside LLM-native channels."
+      content="Cursor × Thrad London 2026 — agentic builds on conversational ad infrastructure: buy-side, sell-side, and measurement inside LLM-native channels."
     />
-    <link rel="stylesheet" href="style.css?v=110" />
+    <link rel="stylesheet" href="style.css?v=133" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -38,6 +38,7 @@
               preload="auto"
               aria-hidden="true"
             >
+              <source type="video/mp4" src="brand/logo-dark-theme.mp4" />
               <source type="video/webm" src="https://cursor.com/marketing-static/logo/logo-dark-theme.webm" />
               <source type="video/mp4" src="https://cursor.com/marketing-static/logo/logo-dark-theme.mp4" />
               <source type="video/quicktime" src="https://cursor.com/marketing-static/logo/logo-dark-theme.mov" />
@@ -45,24 +46,33 @@
           </div>
         </span>
         <div class="brand-text">
-          <div class="brand-title">Cursor × Thrads</div>
+          <div class="brand-title">Cursor × Thrad</div>
           <div class="brand-subtitle">
-            <span class="brand-location">London · 2026 · </span>
-            <a
+            <span class="brand-location">London</span
+            ><span class="brand-subtitle-sep" aria-hidden="true">·</span
+            ><span class="brand-location">2026</span
+            ><span class="brand-subtitle-sep" aria-hidden="true">·</span
+            ><a
               class="brand-halkin"
               href="https://www.thrad.ai/"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Thrads — 28 May at Halkin office, visit thrad.ai"
+              aria-label="Thrad — 28 May at Halkin office, visit thrad.ai"
+              ><span class="brand-halkin-inner" aria-hidden="true"
+                ><span class="brand-halkin-place">Halkin office</span
+                ><span class="brand-subtitle-sep" aria-hidden="true">·</span
+                ><span class="brand-halkin-when">28 May</span></span
+              ></a
             >
-              <span class="brand-halkin-inner" aria-hidden="true">Halkin office · 28 May</span>
-            </a>
           </div>
         </div>
       </div>
       <nav class="site-nav" aria-label="Primary">
-        <a href="#context">Context</a>
-        <a href="#tracks">Tracks</a>
+        <a href="#why">Why</a>
+        <a href="#tracks-detail">Tracks</a>
+        <a href="#bonus-buckets" title="Bonus buckets">Bonus</a>
+        <a href="#judges">Judges</a>
+        <a href="#prizes">Prizes</a>
       </nav>
       <div class="header-right">
         <button
@@ -92,9 +102,9 @@
 
     <main id="site-content" tabindex="-1">
     <section id="tracks" class="tracks">
-      <div class="tracks-hero-row">
+      <div id="tracks-hero" class="tracks-hero-row">
         <div class="tracks-header">
-          <span class="eyebrow">London · 2026 · Date TBA</span>
+          <span class="eyebrow">London · 2026 · 28 May</span>
           <h1 class="tracks-title">
             Two tracks.
             <span class="tracks-title-accent">One conversational stack.</span>
@@ -119,11 +129,15 @@
               ><span class="tstat-lbl">max score</span>
             </div>
             <div class="tstat">
+              <span class="tstat-num">5</span
+              ><span class="tstat-lbl">Top scored<br />live demos</span>
+            </div>
+            <div class="tstat">
               <span class="tstat-num">3</span
               ><span class="tstat-lbl">podium places</span>
             </div>
             <div class="tstat">
-              <span class="tstat-num">4</span
+              <span class="tstat-num">6</span
               ><span class="tstat-lbl">judges</span>
             </div>
           </div>
@@ -133,7 +147,6 @@
           class="site-qr-card"
           aria-label="QR code and link to the live event site"
         >
-          <span class="site-qr-eyebrow">Live site</span>
           <a
             class="site-qr-link"
             href="https://cusor-hack-london-2026-1.vercel.app"
@@ -155,6 +168,7 @@
 
       <div id="context" class="context context--in-tracks" aria-labelledby="context-title">
         <div class="context-inner">
+          <div id="why">
           <span class="eyebrow">Why this moment</span>
           <h2 id="context-title" class="context-title">Ads moved into the chat box. Agents move the infrastructure.</h2>
           <p class="context-lead">
@@ -192,7 +206,7 @@
               rel="noopener noreferrer"
               >“ads are coming to AI, but not to Claude.”</a
             >
-            Thrads co-hosts — same real-time bidding layer powering paid ads in
+            Thrad co-hosts — same real-time bidding layer powering paid ads in
             LLMs, used by Fortune 500 brands and case-studied by AWS and BCG. You
             are building in Cursor — the strongest agentic IDE
             available — and the ask is concrete: ship agents that
@@ -200,6 +214,7 @@
             <strong>measure</strong> attention inside conversations, and make
             it obvious what they will and will not do.
           </p>
+          </div>
 
           <div
             class="context-strip-wrap"
@@ -269,7 +284,7 @@
                 data-idx="1"
                 aria-label="@kamil_sattar — Shopify AI Toolkit for your favorite coding agent. Open expanded signal."
               >
-                <div class="context-post-card__media" aria-hidden="true">
+                <div class="context-post-card__media context-post-card__media--playable" aria-hidden="true">
                   <img
                     class="context-post-card__media-img"
                     src="context-post-thumbs/1.jpg"
@@ -279,6 +294,12 @@
                     loading="lazy"
                     decoding="async"
                   />
+                  <span class="context-post-card__play-badge" aria-hidden="true">
+                    <svg class="context-post-card__play-icon" viewBox="0 0 24 24" width="44" height="44" role="presentation" focusable="false">
+                      <circle cx="12" cy="12" r="11" fill="rgba(0,0,0,0.45)" />
+                      <polygon points="10,8 10,16 17,12" fill="rgba(255,255,255,0.92)" />
+                    </svg>
+                  </span>
                   <div class="context-post-card__media-fallback">
                     <span class="context-post-card__media-fallback-handle">@kamil_sattar</span>
                     <img
@@ -318,7 +339,7 @@
                 data-idx="2"
                 aria-label="@Shopify — The Shopify AI Toolkit is here. Open expanded signal."
               >
-                <div class="context-post-card__media" aria-hidden="true">
+                <div class="context-post-card__media context-post-card__media--playable" aria-hidden="true">
                   <img
                     class="context-post-card__media-img"
                     src="context-post-thumbs/2.jpg"
@@ -328,6 +349,12 @@
                     loading="lazy"
                     decoding="async"
                   />
+                  <span class="context-post-card__play-badge" aria-hidden="true">
+                    <svg class="context-post-card__play-icon" viewBox="0 0 24 24" width="44" height="44" role="presentation" focusable="false">
+                      <circle cx="12" cy="12" r="11" fill="rgba(0,0,0,0.45)" />
+                      <polygon points="10,8 10,16 17,12" fill="rgba(255,255,255,0.92)" />
+                    </svg>
+                  </span>
                   <div class="context-post-card__media-fallback">
                     <span class="context-post-card__media-fallback-handle">@Shopify</span>
                     <img
@@ -367,7 +394,7 @@
                 data-idx="3"
                 aria-label="@glenngabe — OpenAI launches an ads signup landing page. Open expanded signal."
               >
-                <div class="context-post-card__media" aria-hidden="true">
+                <div class="context-post-card__media context-post-card__media--playable" aria-hidden="true">
                   <img
                     class="context-post-card__media-img"
                     src="context-post-thumbs/3.jpg"
@@ -377,6 +404,12 @@
                     loading="lazy"
                     decoding="async"
                   />
+                  <span class="context-post-card__play-badge" aria-hidden="true">
+                    <svg class="context-post-card__play-icon" viewBox="0 0 24 24" width="44" height="44" role="presentation" focusable="false">
+                      <circle cx="12" cy="12" r="11" fill="rgba(0,0,0,0.45)" />
+                      <polygon points="10,8 10,16 17,12" fill="rgba(255,255,255,0.92)" />
+                    </svg>
+                  </span>
                   <div class="context-post-card__media-fallback">
                     <span class="context-post-card__media-fallback-handle">@glenngabe</span>
                     <img
@@ -416,7 +449,7 @@
                 data-idx="4"
                 aria-label="@samboboev — Agentic commerce may start with builders, not baskets. Open expanded signal."
               >
-                <div class="context-post-card__media" aria-hidden="true">
+                <div class="context-post-card__media context-post-card__media--playable" aria-hidden="true">
                   <img
                     class="context-post-card__media-img"
                     src="context-post-thumbs/4.jpg"
@@ -426,6 +459,12 @@
                     loading="lazy"
                     decoding="async"
                   />
+                  <span class="context-post-card__play-badge" aria-hidden="true">
+                    <svg class="context-post-card__play-icon" viewBox="0 0 24 24" width="44" height="44" role="presentation" focusable="false">
+                      <circle cx="12" cy="12" r="11" fill="rgba(0,0,0,0.45)" />
+                      <polygon points="10,8 10,16 17,12" fill="rgba(255,255,255,0.92)" />
+                    </svg>
+                  </span>
                   <div class="context-post-card__media-fallback">
                     <span class="context-post-card__media-fallback-handle">@samboboev</span>
                     <img
@@ -468,7 +507,7 @@
                 <div class="context-post-card__media" aria-hidden="true">
                   <img
                     class="context-post-card__media-img"
-                    src="context-post-thumbs/5.png"
+                    src="context-post-thumbs/5.jpg"
                     alt=""
                     width="777"
                     height="519"
@@ -512,7 +551,7 @@
         </div>
       </div>
 
-      <div class="tracks-grid" role="group" aria-label="Hackathon tracks">
+      <div id="tracks-detail" class="tracks-grid" role="group" aria-label="Hackathon tracks">
         <article class="track-card">
           <div class="track-card-head">
             <span class="track-card-eyebrow">Track 01 · Advertiser side</span>
@@ -565,7 +604,7 @@
           </p>
         </article>
       </div>
-      <div class="subtracks" aria-labelledby="subtracks-heading">
+      <div id="bonus-buckets" class="subtracks" aria-labelledby="subtracks-heading">
         <p class="subtracks-eyebrow" id="subtracks-heading">Bonus prizes</p>
         <p class="subtracks-intro">
           Three sponsor-aligned buckets — judges award up to one point each (see rubric).
@@ -576,7 +615,7 @@
               <div class="subtrack-logo-wrap">
                 <img
                   class="subtrack-img partner-logo--tavily"
-                  src="partners/tavily-logo.png"
+                  src="https://cdn.cookielaw.org/logos/f511015a-a7df-4ef8-b5f1-b3097a2e8b5a/019a509d-3ef2-7496-b855-4b8618e86334/8eed9f5a-5e6b-45e6-9868-0af340d198d0/Dark_Tavily_Symbol.png"
                   width="36"
                   height="36"
                   alt="Tavily"
@@ -591,12 +630,20 @@
                 Search and research API built for agents — grounding, retrieval, and live data in
                 your hack workflow.
               </p>
-              <a
-                class="btn btn-ghost btn-small subtrack-sub-cta"
-                href="https://tavily.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                >Tavily →</a>
+              <div class="subtrack-sub-ctas">
+                <a
+                  class="btn btn-ghost btn-small subtrack-sub-cta"
+                  href="https://tavily.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Tavily →</a>
+                <a
+                  class="btn btn-ghost btn-small subtrack-sub-cta"
+                  href="https://docs.tavily.com/welcome"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Docs →</a>
+              </div>
             </div>
           </li>
           <li class="subtrack-card subtrack-card--with-sub">
@@ -619,12 +666,20 @@
                 Ship the clearest integration or workflow that shows Overmind doing real work in
                 the product — not a throwaway badge.
               </p>
-              <a
-                class="btn btn-ghost btn-small subtrack-sub-cta"
-                href="https://overmind.tech/"
-                target="_blank"
-                rel="noopener noreferrer"
-                >Overmind →</a>
+              <div class="subtrack-sub-ctas">
+                <a
+                  class="btn btn-ghost btn-small subtrack-sub-cta"
+                  href="https://overmindlab.ai/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Overmind →</a>
+                <a
+                  class="btn btn-ghost btn-small subtrack-sub-cta"
+                  href="https://docs.overmindlab.ai/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Docs →</a>
+              </div>
             </div>
           </li>
           <li class="subtrack-card subtrack-card--with-sub subtrack-card--popover-host">
@@ -687,12 +742,20 @@
                   </p>
                 </div>
               </div>
-              <a
-                class="btn btn-ghost btn-small subtrack-sub-cta"
-                href="https://cursor.com/docs"
-                target="_blank"
-                rel="noopener noreferrer"
-                >SDK docs →</a>
+              <div class="subtrack-sub-ctas">
+                <a
+                  class="btn btn-ghost btn-small subtrack-sub-cta"
+          href="https://cursor.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Cursor →</a>
+                <a
+                  class="btn btn-ghost btn-small subtrack-sub-cta"
+                  href="https://cursor.com/docs"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >SDK docs →</a>
+              </div>
             </div>
           </li>
         </ul>
@@ -703,58 +766,64 @@
       <div class="section-header">
         <span class="eyebrow">Panel</span>
         <h2 id="judges-title" class="section-title">Judges</h2>
-        <p class="section-sub">Connect on LinkedIn — bios on profile.</p>
+        <p class="section-sub">
+          Get to know them and what they like. They are calling the shots on winners this evening.
+        </p>
       </div>
-      <ul class="judge-grid" role="list">
-        <li>
-          <a
-            class="judge-card judge-card--link"
-            href="https://www.linkedin.com/in/pritamsoni-hsr"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Pritam Soni on LinkedIn"
-          >
-            <span class="judge-avatar judge-avatar--img">
-              <img
-                src="judges/pritam-soni.png"
-                alt="Pritam Soni"
-                width="200"
-                height="200"
-                loading="lazy"
-                decoding="async"
-              />
-            </span>
-            <div class="judge-body">
-              <span class="judge-name">Pritam Soni</span>
-              <span class="judge-role">Overmind</span>
+      <ul id="judge-grid" class="judge-grid" role="list">
+        <li class="judge-grid__cell--dual">
+          <div class="judge-card judge-card--dual">
+            <div class="judge-dual-cols">
+              <a
+                class="judge-dual-col judge-card--link"
+                href="https://www.linkedin.com/in/pritamsoni-hsr"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Pritam Soni on LinkedIn"
+              >
+                <span class="judge-avatar judge-avatar--img">
+                  <img
+                    src="judges/pritam-soni.png"
+                    alt="Pritam Soni"
+                    width="200"
+                    height="200"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </span>
+                <div class="judge-body">
+                  <span class="judge-name">Pritam Soni</span>
+                  <span class="judge-dual-title">Founding Engineer</span>
+                  <span class="judge-role">Overmind</span>
+                </div>
+                <span class="judge-linkedin" aria-hidden="true">in →</span>
+              </a>
+              <a
+                class="judge-dual-col judge-card--link"
+                href="https://www.linkedin.com/in/rohitgr7/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Rohit Gupta on LinkedIn"
+              >
+                <span class="judge-avatar judge-avatar--img">
+                  <img
+                    src="judges/rohit-gupta.png"
+                    alt="Rohit Gupta"
+                    width="200"
+                    height="200"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </span>
+                <div class="judge-body">
+                  <span class="judge-name">Rohit Gupta</span>
+                  <span class="judge-dual-title">Founding Engineer</span>
+                  <span class="judge-role">Overmind</span>
+                </div>
+                <span class="judge-linkedin" aria-hidden="true">in →</span>
+              </a>
             </div>
-            <span class="judge-linkedin" aria-hidden="true">in →</span>
-          </a>
-        </li>
-        <li>
-          <a
-            class="judge-card judge-card--link"
-            href="https://www.linkedin.com/in/rohitgr7/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Rohit Gupta on LinkedIn"
-          >
-            <span class="judge-avatar judge-avatar--img">
-              <img
-                src="judges/rohit-gupta.png"
-                alt="Rohit Gupta"
-                width="200"
-                height="200"
-                loading="lazy"
-                decoding="async"
-              />
-            </span>
-            <div class="judge-body">
-              <span class="judge-name">Rohit Gupta</span>
-              <span class="judge-role">Overmind</span>
-            </div>
-            <span class="judge-linkedin" aria-hidden="true">in →</span>
-          </a>
+          </div>
         </li>
         <li>
           <a
@@ -776,7 +845,7 @@
             </span>
             <div class="judge-body">
               <span class="judge-name">Giorgio Toledo</span>
-              <span class="judge-role">Thrads</span>
+              <span class="judge-role">Thrad</span>
             </div>
             <span class="judge-linkedin" aria-hidden="true">in →</span>
           </a>
@@ -806,6 +875,129 @@
             <span class="judge-linkedin" aria-hidden="true">in →</span>
           </a>
         </li>
+        <li>
+          <a
+            class="judge-card judge-card--link"
+            href="https://www.linkedin.com/in/john-sergeant-2327841a3/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="John Sergeant on LinkedIn"
+          >
+            <span class="judge-avatar judge-avatar--img">
+              <img
+                src="judges/john-sergeant.png"
+                alt="John Sergeant"
+                width="200"
+                height="200"
+                loading="lazy"
+                decoding="async"
+              />
+            </span>
+            <div class="judge-body">
+              <span class="judge-name">John Sergeant</span>
+              <span class="judge-role">Strand Ventures</span>
+            </div>
+            <span class="judge-linkedin" aria-hidden="true">in →</span>
+          </a>
+        </li>
+        <li>
+          <a
+            class="judge-card judge-card--link"
+            href="https://www.linkedin.com/in/umberto-belluzzo/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Umberto Belluzzo on LinkedIn"
+          >
+            <span class="judge-avatar judge-avatar--img">
+              <img
+                src="judges/umberto-belluzzo.png"
+                alt="Umberto Belluzzo"
+                width="200"
+                height="200"
+                loading="lazy"
+                decoding="async"
+              />
+            </span>
+            <div class="judge-body">
+              <span class="judge-name">Umberto Belluzzo</span>
+              <span class="judge-role">Earlybird Ventures</span>
+            </div>
+            <span class="judge-linkedin" aria-hidden="true">in →</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section id="prizes" class="prizes-section" aria-labelledby="prizes-title">
+      <div class="section-header">
+        <span class="eyebrow">Awards</span>
+        <h2 id="prizes-title" class="section-title">Prizes</h2>
+        <p class="section-sub">
+          Five tiers. Top three walk out with Cursor Ultra, Thrad credits, and swag — fourth and fifth take home Thrad credits.
+        </p>
+      </div>
+      <ul class="prizes-grid" role="list">
+        <li class="prize-card prize-card--featured prize-card--first">
+          <header class="prize-card-head">
+            <span class="prize-rank" aria-label="First place">
+              <span class="prize-rank-num">1</span><span class="prize-rank-ord">st</span>
+            </span>
+            <span class="prize-place">Place</span>
+          </header>
+          <ul class="prize-perks" role="list">
+            <li><strong>6 months</strong> Cursor Ultra</li>
+            <li><strong>$7,000</strong> Thrad credits</li>
+            <li>Thrad hoodie &amp; cap</li>
+          </ul>
+        </li>
+        <li class="prize-card prize-card--featured prize-card--second">
+          <header class="prize-card-head">
+            <span class="prize-rank" aria-label="Second place">
+              <span class="prize-rank-num">2</span><span class="prize-rank-ord">nd</span>
+            </span>
+            <span class="prize-place">Place</span>
+          </header>
+          <ul class="prize-perks" role="list">
+            <li><strong>4 months</strong> Cursor Ultra</li>
+            <li><strong>$3,000</strong> Thrad credits</li>
+            <li>Thrad hoodie &amp; cap</li>
+          </ul>
+        </li>
+        <li class="prize-card prize-card--featured prize-card--third">
+          <header class="prize-card-head">
+            <span class="prize-rank" aria-label="Third place">
+              <span class="prize-rank-num">3</span><span class="prize-rank-ord">rd</span>
+            </span>
+            <span class="prize-place">Place</span>
+          </header>
+          <ul class="prize-perks" role="list">
+            <li><strong>2 months</strong> Cursor Ultra</li>
+            <li><strong>$1,000</strong> Thrad credits</li>
+            <li>Thrad hoodie &amp; cap</li>
+          </ul>
+        </li>
+        <li class="prize-card prize-card--slim">
+          <header class="prize-card-head">
+            <span class="prize-rank" aria-label="Fourth place">
+              <span class="prize-rank-num">4</span><span class="prize-rank-ord">th</span>
+            </span>
+            <span class="prize-place">Place</span>
+          </header>
+          <ul class="prize-perks" role="list">
+            <li><strong>$750</strong> Thrad credits</li>
+          </ul>
+        </li>
+        <li class="prize-card prize-card--slim">
+          <header class="prize-card-head">
+            <span class="prize-rank" aria-label="Fifth place">
+              <span class="prize-rank-num">5</span><span class="prize-rank-ord">th</span>
+            </span>
+            <span class="prize-place">Place</span>
+          </header>
+          <ul class="prize-perks" role="list">
+            <li><strong>$500</strong> Thrad credits</li>
+          </ul>
+        </li>
       </ul>
     </section>
 
@@ -825,6 +1017,7 @@
               preload="auto"
               aria-hidden="true"
             >
+              <source type="video/mp4" src="brand/logo-dark-theme.mp4" />
               <source type="video/webm" src="https://cursor.com/marketing-static/logo/logo-dark-theme.webm" />
               <source type="video/mp4" src="https://cursor.com/marketing-static/logo/logo-dark-theme.mp4" />
               <source type="video/quicktime" src="https://cursor.com/marketing-static/logo/logo-dark-theme.mov" />
@@ -832,13 +1025,13 @@
         </div>
         </span>
         <span>
-          Cursor × Thrads ·
+          Cursor × Thrad ·
           <a
             class="footer-halkin"
             href="https://www.thrad.ai/"
             target="_blank"
             rel="noopener noreferrer"
-            >Thrads</a>
+            >Thrad</a>
           · London 2026
         </span>
       </div>
@@ -1781,6 +1974,16 @@
                 preload="auto"
                 hidden
               ></video>
+              <img
+                id="context-lb-still"
+                class="context-lightbox__still"
+                alt=""
+                width="1200"
+                height="675"
+                decoding="async"
+                loading="eager"
+                hidden
+              />
               <iframe
                 id="context-lb-twitter-embed"
                 class="context-lightbox__embed"
@@ -1838,6 +2041,6 @@
       </div>
     </div>
 
-    <script src="script.js?v=106"></script>
+    <script src="script.js?v=125"></script>
   </body>
 </html>
