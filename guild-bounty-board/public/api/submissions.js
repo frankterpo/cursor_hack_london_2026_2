@@ -11,7 +11,12 @@ const {
   generateAiSummary,
 } = require("./_lib/ai-analysis");
 const { verifyAuth } = require("./_lib/auth");
-const { getSubmissions, upsertSubmission, upsertAnalysis } = require("./_lib/db");
+const {
+  getSubmissions,
+  upsertSubmission,
+  upsertAnalysis,
+  setSubmissionTechnologies,
+} = require("./_lib/db");
 
 const TEMPLATE_REPO_KEY = "https://github.com/example/example-project";
 
@@ -60,8 +65,20 @@ module.exports = async (req, res) => {
       return sendJson(res, 405, { error: "Method not allowed" });
     }
 
-    const body = parseRequestBody(req);
-    const submission = normalizeSubmission(body || {});
+    const body = parseRequestBody(req) || {};
+    const submission = normalizeSubmission(body);
+    const technologyIds = Array.from(
+      new Set(
+        (Array.isArray(body.technology_ids) ? body.technology_ids : [])
+          .map((id) => String(id || "").trim())
+          .filter(Boolean)
+      )
+    );
+    if (technologyIds.length === 0) {
+      return sendJson(res, 400, {
+        error: "Pick at least one technology you used (Overmind, Tavily, or Cursor SDK).",
+      });
+    }
     if (!submission.repo_url || !submission.repo_key) {
       return sendJson(res, 400, { error: "Missing Github URL" });
     }
@@ -162,6 +179,9 @@ module.exports = async (req, res) => {
     // Save analysis after submission exists (FK constraint)
     if (nextSubmission._analysisData) {
       try { await upsertAnalysis(submission.repo_key, nextSubmission._analysisData); } catch (_) {}
+    }
+    if (saved && saved.id) {
+      try { await setSubmissionTechnologies(saved.id, technologyIds); } catch (_) {}
     }
     const submissions = await getSubmissions();
     return sendJson(res, 200, { ok: true, submission: saved, submissions });

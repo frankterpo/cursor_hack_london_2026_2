@@ -4387,6 +4387,53 @@ img.judge-avatar {
   box-shadow: 0 0 0 3px var(--accent-ring);
 }
 
+/* Technologies-used picker (multi-select checkbox chips) */
+.tech-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tech-picker-empty {
+  color: var(--muted);
+  font-size: 0.82rem;
+  padding: 4px 2px;
+}
+.tech-pick {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--panel);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tech-pick input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.tech-pick:hover {
+  border-color: var(--primary-300);
+  color: var(--primary-800);
+  background: var(--primary-50);
+}
+.tech-pick:has(input:checked) {
+  border-color: var(--primary-700);
+  background: var(--primary-50);
+  color: var(--primary-800);
+  box-shadow: 0 0 0 3px var(--accent-ring);
+}
+.tech-pick:focus-within {
+  outline: 2px solid var(--primary-700);
+  outline-offset: 2px;
+}
+
 /* Scoring inputs */
 .score-group {
   border: 1px solid var(--border);

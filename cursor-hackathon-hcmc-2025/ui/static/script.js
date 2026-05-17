@@ -830,7 +830,7 @@ async function renderSummaryTable(rows) {
 }
 
 async function loadSummary() {
-  await Promise.all([loadHacks(), loadEventFormat()]);
+  await Promise.all([loadHacks(), loadEventFormat(), loadTechnologies()]);
   const [summaryData] = await Promise.all([
     fetchJSON("/api/summary").catch(() => ({ rows: [] })),
     loadJudgeData(),
@@ -1318,6 +1318,70 @@ async function loadEventFormat() {
   renderPrizes();
   renderJudges();
   buildJudgeFormSkeleton();
+}
+
+let technologiesCatalog = [];
+
+async function loadTechnologies() {
+  technologiesCatalog = [];
+  try {
+    const res = await fetch("/api/technologies");
+    const bodyText = await res.text();
+    if (!res.ok) {
+      console.error(
+        `[technologies] /api/technologies failed: HTTP ${res.status}`,
+        bodyText
+      );
+    } else {
+      let payload = null;
+      try {
+        payload = JSON.parse(bodyText);
+      } catch (parseErr) {
+        console.error(
+          "[technologies] non-JSON response from /api/technologies",
+          { body: bodyText, error: parseErr }
+        );
+      }
+      const list = Array.isArray(payload?.technologies)
+        ? payload.technologies
+        : [];
+      technologiesCatalog = list;
+      if (list.length === 0) {
+        console.warn(
+          "[technologies] /api/technologies returned 200 with empty list",
+          payload
+        );
+      }
+    }
+  } catch (e) {
+    console.error("[technologies] network error fetching /api/technologies", e);
+  }
+  renderTechnologyPicker();
+}
+
+function renderTechnologyPicker() {
+  const picker = document.querySelector("[data-tech-picker]");
+  if (!picker) return;
+  if (!technologiesCatalog.length) {
+    picker.innerHTML =
+      '<span class="tech-picker-empty" data-tech-picker-empty>No technologies configured.</span>';
+    return;
+  }
+  picker.innerHTML = technologiesCatalog
+    .map(
+      (t) => `
+        <label class="tech-pick">
+          <input
+            type="checkbox"
+            name="technology_ids"
+            value="${escapeAttr(t.id)}"
+            data-tech-slug="${escapeAttr(t.slug || "")}"
+          />
+          <span>${escapeHtml(t.name || t.slug || "")}</span>
+        </label>
+      `
+    )
+    .join("");
 }
 
 function renderRubric() {
@@ -1825,7 +1889,12 @@ function setSubmitFormLoading(form, loading) {
 async function handleSubmitForm(e) {
   e.preventDefault();
   const form = e.target;
-  const data = Object.fromEntries(new FormData(form).entries());
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+  const technologyIds = formData
+    .getAll("technology_ids")
+    .map((v) => String(v || "").trim())
+    .filter(Boolean);
   const demoUrl = String(data.demo_url || "").trim();
   const focusDemo = () => {
     const demoInput = form.querySelector('input[name="demo_url"]');
@@ -1844,6 +1913,14 @@ async function handleSubmitForm(e) {
     focusDemo();
     return;
   }
+  if (technologyIds.length === 0) {
+    toast("Pick at least one technology you used (Overmind, Tavily, or Cursor SDK).");
+    const firstTech = form.querySelector(
+      '[data-tech-picker] input[type="checkbox"]'
+    );
+    if (firstTech) firstTech.focus();
+    return;
+  }
   const entry = {
     submitted_at: new Date().toISOString(),
     hack_id: getActiveHackId(),
@@ -1855,6 +1932,7 @@ async function handleSubmitForm(e) {
     team_members: data.team_members || "",
     description: data.description || "",
     notes: data.notes || "",
+    technology_ids: technologyIds,
   };
   setSubmitFormLoading(form, true);
   try {

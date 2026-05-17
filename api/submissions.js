@@ -14,6 +14,7 @@ const {
   getSubmissions,
   upsertSubmission,
   upsertAnalysis,
+  setSubmissionTechnologies,
 } = require("../guild-bounty-board/public/api/_lib/db");
 
 const TEMPLATE_REPO_KEY = "https://github.com/example/example-project";
@@ -59,8 +60,20 @@ module.exports = async (req, res) => {
       return sendJson(res, 405, { error: "Method not allowed" });
     }
 
-    const body = parseRequestBody(req);
-    const submission = normalizeSubmission(body || {});
+    const body = parseRequestBody(req) || {};
+    const submission = normalizeSubmission(body);
+    const technologyIds = Array.from(
+      new Set(
+        (Array.isArray(body.technology_ids) ? body.technology_ids : [])
+          .map((id) => String(id || "").trim())
+          .filter(Boolean)
+      )
+    );
+    if (technologyIds.length === 0) {
+      return sendJson(res, 400, {
+        error: "Pick at least one technology you used (Overmind, Tavily, or Cursor SDK).",
+      });
+    }
     if (!submission.repo_url || !submission.repo_key) {
       return sendJson(res, 400, { error: "Missing Github URL" });
     }
@@ -163,6 +176,11 @@ module.exports = async (req, res) => {
     if (nextSubmission._analysisData) {
       try {
         await upsertAnalysis(submission.repo_key, nextSubmission._analysisData);
+      } catch (_error) {}
+    }
+    if (saved && saved.id) {
+      try {
+        await setSubmissionTechnologies(saved.id, technologyIds);
       } catch (_error) {}
     }
     const submissions = await getSubmissions();

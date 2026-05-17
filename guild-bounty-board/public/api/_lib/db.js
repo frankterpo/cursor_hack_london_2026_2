@@ -4,7 +4,10 @@ function getEnv(name) {
   return value;
 }
 
-/** Default hackathon row from migration `20260427150000_hackathons_multitenant.sql` */
+/**
+ * Legacy fallback hackathon id (pre-multitenant rows). Used only when slug
+ * lookup against `hackathons` returns nothing, so old data stays readable.
+ */
 const DEFAULT_HACKATHON_ID =
   process.env.DEFAULT_HACKATHON_ID ||
   "a0000001-0000-4000-8000-000000000001";
@@ -12,6 +15,35 @@ const DEFAULT_HACKATHON_ID =
 /** Slug matching `hacks.json` `active_hack_id` (UI filters on this, not the UUID). */
 const ACTIVE_HACK_SLUG =
   process.env.ACTIVE_HACK_SLUG || "cursor-live-london-q3-2026";
+
+/**
+ * Resolve the active hackathon UUID by slug, with a process-level cache so
+ * a cold function instance does the lookup once. Falling back to
+ * DEFAULT_HACKATHON_ID keeps legacy rows reachable if the slug isn't in
+ * `hackathons` yet.
+ */
+let _activeHackathonIdPromise = null;
+async function getActiveHackathonUuid() {
+  if (_activeHackathonIdPromise) return _activeHackathonIdPromise;
+  _activeHackathonIdPromise = (async () => {
+    try {
+      const slug = encodeURIComponent(ACTIVE_HACK_SLUG);
+      const rows = await supabaseRest(
+        `/hackathons?slug=eq.${slug}&select=id&limit=1`
+      );
+      const id = rows && rows[0] && rows[0].id;
+      return id || DEFAULT_HACKATHON_ID;
+    } catch (_error) {
+      return DEFAULT_HACKATHON_ID;
+    }
+  })();
+  try {
+    return await _activeHackathonIdPromise;
+  } catch (_error) {
+    _activeHackathonIdPromise = null;
+    return DEFAULT_HACKATHON_ID;
+  }
+}
 
 /**
  * Cutoff: only consider submissions received on/after the event start.
@@ -51,15 +83,28 @@ async function supabaseRest(path, options = {}) {
 // --- Submissions ---
 
 async function getSubmissions() {
-  const hid = encodeURIComponent(DEFAULT_HACKATHON_ID);
+  const hackathonId = await getActiveHackathonUuid();
+  const hid = encodeURIComponent(hackathonId);
   const cutoff = encodeURIComponent(EVENT_CUTOFF_AT);
   const rows = await supabaseRest(
     `/submissions?hackathon_id=eq.${hid}&submitted_at=gte.${cutoff}&order=submitted_at.desc.nullsfirst`
   );
-  return (rows || []).map((r) => withClientHackFields(r));
+  const submissions = (rows || []).map((r) => withClientHackFields(r));
+  try {
+    const techByRow = await getSubmissionTechnologiesMap(hackathonId);
+    for (const sub of submissions) {
+      sub.technologies = (sub.id && techByRow.get(sub.id)) || [];
+    }
+  } catch (_error) {
+    for (const sub of submissions) {
+      if (!sub.technologies) sub.technologies = [];
+    }
+  }
+  return submissions;
 }
 
 async function upsertSubmission(row) {
+  const activeHackathonId = await getActiveHackathonUuid();
   const payload = {
     repo_key: row.repo_key,
     repo_url: row.repo_url,
@@ -91,7 +136,7 @@ async function upsertSubmission(row) {
     has_merge_commits: row.has_merge_commits || 0,
     default_branch: row.default_branch || "",
     uses_white_circle: row.uses_white_circle === true,
-    hackathon_id: row.hackathon_id || DEFAULT_HACKATHON_ID,
+    hackathon_id: row.hackathon_id || activeHackathonId,
   };
   const result = await supabaseRest(
     "/submissions?on_conflict=hackathon_id,repo_key",
@@ -107,13 +152,15 @@ async function upsertSubmission(row) {
 // --- Judge Responses ---
 
 async function getJudgeResponses(repoKey) {
-  const hid = `&hackathon_id=eq.${encodeURIComponent(DEFAULT_HACKATHON_ID)}`;
+  const hackathonId = await getActiveHackathonUuid();
+  const hid = `&hackathon_id=eq.${encodeURIComponent(hackathonId)}`;
   const filter = repoKey ? `&repo_key=eq.${encodeURIComponent(repoKey)}` : "";
   const rows = await supabaseRest(`/judge_responses?order=submitted_at.desc${hid}${filter}`);
   return (rows || []).map(r => ({ ...r, timestamp: r.submitted_at }));
 }
 
 async function upsertJudgeResponse(row) {
+  const activeHackathonId = await getActiveHackathonUuid();
   const payload = {
     judge_name: row.judge_name,
     repo_key: row.repo_key,
@@ -129,7 +176,7 @@ async function upsertJudgeResponse(row) {
     bonus_total_raw: row.bonus_total_raw || 0,
     bonus_total_capped: row.bonus_total_capped || 0,
     total_score: row.total_score || 0,
-    hackathon_id: row.hackathon_id || DEFAULT_HACKATHON_ID,
+    hackathon_id: row.hackathon_id || activeHackathonId,
   };
   const result = await supabaseRest(
     "/judge_responses?on_conflict=judge_name,repo_key,hackathon_id",
@@ -145,7 +192,8 @@ async function upsertJudgeResponse(row) {
 // --- Analyses ---
 
 async function getAnalysis(repoKey) {
-  const hid = encodeURIComponent(DEFAULT_HACKATHON_ID);
+  const hackathonId = await getActiveHackathonUuid();
+  const hid = encodeURIComponent(hackathonId);
   const rows = await supabaseRest(
     `/analyses?repo_key=eq.${encodeURIComponent(repoKey)}&hackathon_id=eq.${hid}&limit=1`
   );
@@ -153,12 +201,13 @@ async function getAnalysis(repoKey) {
 }
 
 async function upsertAnalysis(repoKey, analysisData) {
+  const hackathonId = await getActiveHackathonUuid();
   await supabaseRest("/analyses?on_conflict=hackathon_id,repo_key", {
     method: "POST",
     headers: { Prefer: "return=minimal,resolution=merge-duplicates" },
     body: JSON.stringify({
       repo_key: repoKey,
-      hackathon_id: DEFAULT_HACKATHON_ID,
+      hackathon_id: hackathonId,
       analysis_data: analysisData,
       analyzed_at: new Date().toISOString(),
     }),
@@ -168,7 +217,7 @@ async function upsertAnalysis(repoKey, analysisData) {
 // --- Settings ---
 
 async function getAnalysisSettings() {
-  const hid = DEFAULT_HACKATHON_ID;
+  const hid = await getActiveHackathonUuid();
   const rows = await supabaseRest(
     `/analysis_settings?hackathon_id=eq.${encodeURIComponent(hid)}&limit=1`
   );
@@ -184,7 +233,8 @@ async function getAnalysisSettings() {
 }
 
 async function upsertAnalysisSettings(settings) {
-  const hid = settings.hackathon_id || DEFAULT_HACKATHON_ID;
+  const activeHackathonId = await getActiveHackathonUuid();
+  const hid = settings.hackathon_id || activeHackathonId;
   const result = await supabaseRest("/analysis_settings?on_conflict=hackathon_id", {
     method: "POST",
     headers: { Prefer: "return=representation,resolution=merge-duplicates" },
@@ -207,6 +257,67 @@ async function getHackathons() {
   );
 }
 
+// --- Technologies ---
+
+/** Sponsor technology catalog for the active hack. */
+async function getTechnologies(hackathonId) {
+  const resolved = hackathonId || (await getActiveHackathonUuid());
+  const hid = encodeURIComponent(resolved);
+  const rows = await supabaseRest(
+    `/technologies?hackathon_id=eq.${hid}&select=id,slug,name,sort_order&order=sort_order.asc`
+  );
+  return rows || [];
+}
+
+/**
+ * Replace the set of technologies linked to a submission.
+ * Empty `technologyIds` clears the link rows.
+ */
+async function setSubmissionTechnologies(submissionId, technologyIds) {
+  if (!submissionId) return;
+  const sid = encodeURIComponent(submissionId);
+  await supabaseRest(`/submission_technologies?submission_id=eq.${sid}`, {
+    method: "DELETE",
+    headers: { Prefer: "return=minimal" },
+  });
+  const ids = Array.from(new Set((technologyIds || []).filter(Boolean)));
+  if (ids.length === 0) return;
+  const payload = ids.map((technology_id) => ({
+    submission_id: submissionId,
+    technology_id,
+  }));
+  await supabaseRest("/submission_technologies", {
+    method: "POST",
+    headers: { Prefer: "return=minimal" },
+    body: JSON.stringify(payload),
+  });
+}
+
+/**
+ * Map of `submission_id -> [{slug,name}]` for every submission in the hack.
+ * Pulled with a single embedded query so we avoid N-per-submission fetches.
+ */
+async function getSubmissionTechnologiesMap(hackathonId) {
+  const resolved = hackathonId || (await getActiveHackathonUuid());
+  const hid = encodeURIComponent(resolved);
+  const rows = await supabaseRest(
+    `/submission_technologies?select=submission_id,technologies!inner(slug,name,sort_order,hackathon_id)&technologies.hackathon_id=eq.${hid}`
+  );
+  const out = new Map();
+  for (const row of rows || []) {
+    if (!row || !row.submission_id || !row.technologies) continue;
+    const t = row.technologies;
+    const list = out.get(row.submission_id) || [];
+    list.push({ slug: t.slug, name: t.name, sort_order: t.sort_order || 0 });
+    out.set(row.submission_id, list);
+  }
+  for (const list of out.values()) {
+    list.sort((a, b) => a.sort_order - b.sort_order);
+    for (const item of list) delete item.sort_order;
+  }
+  return out;
+}
+
 module.exports = {
   getSubmissions,
   upsertSubmission,
@@ -217,4 +328,10 @@ module.exports = {
   getAnalysisSettings,
   upsertAnalysisSettings,
   getHackathons,
+  getTechnologies,
+  setSubmissionTechnologies,
+  getSubmissionTechnologiesMap,
+  getActiveHackathonUuid,
+  DEFAULT_HACKATHON_ID,
+  ACTIVE_HACK_SLUG,
 };
