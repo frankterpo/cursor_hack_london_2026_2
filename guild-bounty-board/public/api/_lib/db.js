@@ -55,6 +55,21 @@ async function getActiveHackathonUuid() {
 const EVENT_CUTOFF_AT =
   process.env.EVENT_CUTOFF_AT || "2026-04-30T00:00:00+00:00";
 
+/** DB `submissions.title` is NOT NULL on some deployments; keep in sync with `project_name` when unset. */
+function submissionTitleForRow(row) {
+  const t =
+    String(row.title || "").trim() ||
+    String(row.project_name || "").trim() ||
+    String(row.team_name || "").trim();
+  if (t) return t;
+  const rid = String(row.repo_id || "").trim();
+  if (rid) return rid;
+  const key = String(row.repo_key || "").trim();
+  if (key)
+    return key.replace(/^https?:\/\//i, "").slice(0, 200) || "Untitled submission";
+  return "Untitled submission";
+}
+
 function withClientHackFields(row) {
   if (!row) return row;
   const usesSpecter =
@@ -109,10 +124,12 @@ async function getSubmissions() {
 
 async function upsertSubmission(row) {
   const activeHackathonId = await getActiveHackathonUuid();
+  const title = submissionTitleForRow(row);
   const payload = {
     repo_key: row.repo_key,
     repo_url: row.repo_url,
     repo_id: row.repo_id || "",
+    title,
     team_name: row.team_name || "",
     project_name: row.project_name || "",
     chosen_track: row.chosen_track || "",

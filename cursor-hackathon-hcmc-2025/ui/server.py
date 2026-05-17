@@ -236,12 +236,20 @@ def upsert_supabase_submission(payload):
     repo_key = normalize_repo_url(repo_url)
     if not repo_key:
         raise ValueError("repo_url is required")
+    project_name = str(payload.get("project_name") or "").strip()
+    team_name = str(payload.get("team_name") or "").strip()
+    title_in = str(payload.get("title") or "").strip()
+    title = title_in or project_name or team_name
+    if not title:
+        rid = repo_id_from_url(repo_url)
+        title = (rid or repo_key or "Untitled submission").strip() or "Untitled submission"
     row = {
         "repo_key": repo_key,
         "repo_url": repo_url,
         "repo_id": repo_id_from_url(repo_url),
-        "team_name": str(payload.get("team_name") or "").strip(),
-        "project_name": str(payload.get("project_name") or "").strip(),
+        "title": title,
+        "team_name": team_name,
+        "project_name": project_name,
         "chosen_track": str(payload.get("chosen_track") or "").strip(),
         "demo_url": str(payload.get("demo_url") or "").strip(),
         "description": str(payload.get("description") or "").strip(),
