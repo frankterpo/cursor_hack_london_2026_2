@@ -135,7 +135,38 @@ function normalizeJudgeResponse(input) {
     bonusRaw += score;
   }
 
-  const bonusCapped = Math.min(bonusRaw, JUDGE_CONFIG.judge_bonus_bucket.max_points);
+  let bonusCapped = Math.min(bonusRaw, JUDGE_CONFIG.judge_bonus_bucket.max_points);
+
+  // Single-slider clients (hackathon viewer) send core_total + bonus_total_capped with
+  // bonus_bucket_scores all zero; honor explicit bonus when buckets did not contribute.
+  if (bonusRaw === 0) {
+    const explicitBonus =
+      input.bonus_total_capped !== undefined &&
+      input.bonus_total_capped !== null &&
+      input.bonus_total_capped !== ""
+        ? input.bonus_total_capped
+        : input.bonus_total;
+    if (explicitBonus !== undefined && explicitBonus !== null && explicitBonus !== "") {
+      bonusCapped = clampInteger(explicitBonus, 0, JUDGE_CONFIG.judge_bonus_bucket.max_points);
+    } else if (
+      input.total_score !== undefined &&
+      input.total_score !== null &&
+      input.total_score !== ""
+    ) {
+      const want = Number(input.total_score);
+      if (Number.isFinite(want)) {
+        const cap =
+          JUDGE_CONFIG.rubric.core_max_points + JUDGE_CONFIG.judge_bonus_bucket.max_points;
+        const clamped = Math.max(0, Math.min(want, cap));
+        bonusCapped = Math.min(
+          Math.max(clamped - coreTotal, 0),
+          JUDGE_CONFIG.judge_bonus_bucket.max_points,
+        );
+      }
+    }
+  }
+
+  const total_score = coreTotal + bonusCapped;
 
   return {
     judge_name: String(input.judge_name || "").trim(),
@@ -151,7 +182,7 @@ function normalizeJudgeResponse(input) {
     core_total: coreTotal,
     bonus_total_raw: bonusRaw,
     bonus_total_capped: bonusCapped,
-    total_score: coreTotal + bonusCapped,
+    total_score,
   };
 }
 

@@ -57,7 +57,11 @@ const EVENT_CUTOFF_AT =
 
 function withClientHackFields(row) {
   if (!row) return row;
-  return { ...row, hack_id: ACTIVE_HACK_SLUG, timestamp: row.submitted_at };
+  const usesSpecter =
+    row.uses_specter === true ||
+    row.uses_white_circle === true ||
+    row.uses_white_circle === 1;
+  return { ...row, hack_id: ACTIVE_HACK_SLUG, timestamp: row.submitted_at, uses_specter: usesSpecter };
 }
 
 async function supabaseRest(path, options = {}) {
@@ -135,7 +139,11 @@ async function upsertSubmission(row) {
     has_large_initial_commit_after_t0: row.has_large_initial_commit_after_t0 || 0,
     has_merge_commits: row.has_merge_commits || 0,
     default_branch: row.default_branch || "",
-    uses_white_circle: row.uses_white_circle === true,
+    uses_white_circle: !!(
+      row.uses_white_circle ||
+      row.uses_specter === true ||
+      row.uses_specter === 1
+    ),
     hackathon_id: row.hackathon_id || activeHackathonId,
   };
   const result = await supabaseRest(

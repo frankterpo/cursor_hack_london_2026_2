@@ -390,6 +390,18 @@ class UiHandler(SimpleHTTPRequestHandler):
             return self.handle_judge_post()
         return self._send_json({"error": "unknown endpoint"}, status=404)
 
+    def do_OPTIONS(self):
+        path = unquote(self.path.split("?", 1)[0])
+        if not path.startswith("/api/"):
+            self.send_error(501, "Unsupported method")
+            return
+        self.send_response(204)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Max-Age", "86400")
+        self.end_headers()
+
     def _read_json_body(self):
         length = int(self.headers.get("Content-Length", "0") or "0")
         raw = self.rfile.read(length) if length else b"{}"

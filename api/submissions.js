@@ -20,7 +20,13 @@ const {
 const TEMPLATE_REPO_KEY = "https://github.com/example/example-project";
 
 function normalizeSubmission(input) {
-  const repoUrl = String(input.repo_url || input["Github URL"] || input["GitHub URL"] || "").trim();
+  const repoUrl = String(
+    input.repo_url ||
+      input.github_url ||
+      input["Github URL"] ||
+      input["GitHub URL"] ||
+      "",
+  ).trim();
   const repoKey = normalizeRepoUrl(repoUrl);
   let repoId = "";
   if (repoKey) {
