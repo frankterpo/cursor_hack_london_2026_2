@@ -10,7 +10,7 @@
       name="description"
       content="Cursor × Thrad London 2026 — agentic builds on conversational ad infrastructure: buy-side, sell-side, and measurement inside LLM-native channels."
     />
-    <link rel="stylesheet" href="style.css?v=134" />
+    <link rel="stylesheet" href="style.css?v=136" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -1190,108 +1190,262 @@
       aria-labelledby="judge-modal-title"
     >
       <div class="modal-backdrop" data-close-modal></div>
-      <div class="judge-modal-shell">
-      <div class="modal-card modal-card--judge" role="document">
-        <form id="judge-form" class="modal-body judge-review" novalidate>
-          <input name="submission_id" id="judge-submission-hidden" type="hidden" required />
-          <select
-            id="judge-submission-select"
-            class="judge-submission-select judge-submission-select--hidden"
-            hidden
-            aria-hidden="true"
-            tabindex="-1"
-          ></select>
-
-          <section class="judge-video-column" aria-label="Submission demo review">
-            <article class="judge-demo-card">
-              <div class="judge-video-top">
-                <button type="button" class="judge-nav-btn" id="judge-prev-submission" aria-label="Previous submission">&larr;</button>
-                <div class="judge-video-title-wrap">
-                  <p class="judge-video-count" id="judge-video-count">0 / 0</p>
-                  <h3 class="judge-video-title" id="judge-video-title">Pick a submission</h3>
-                  <p class="judge-video-meta" id="judge-video-meta"></p>
-                </div>
-                <button type="button" class="judge-nav-btn judge-nav-btn--refresh" id="judge-refresh-submissions" aria-label="Refresh submissions list" title="Refresh submissions list">↻</button>
-                <button type="button" class="judge-nav-btn" id="judge-next-submission" aria-label="Next submission">&rarr;</button>
+      <div class="judge-workbench" role="document">
+        <!-- Primary column: submission stage -->
+        <section
+          class="judge-workbench__primary"
+          aria-label="Submission detail"
+        >
+          <header class="judge-stage-head">
+            <div class="judge-stage-head__row">
+              <div class="judge-stage-head__nav">
+                <button
+                  type="button"
+                  class="judge-stage-nav"
+                  id="judge-prev-submission"
+                  aria-label="Previous submission"
+                  title="Previous (← or [)"
+                >
+                  &larr;
+                </button>
+                <span class="judge-stage-count" id="judge-video-count">0 / 0</span>
+                <button
+                  type="button"
+                  class="judge-stage-nav"
+                  id="judge-next-submission"
+                  aria-label="Next submission"
+                  title="Next (→ or ])"
+                >
+                  &rarr;
+                </button>
+                <button
+                  type="button"
+                  class="judge-stage-nav judge-stage-nav--refresh"
+                  id="judge-refresh-submissions"
+                  aria-label="Refresh submissions list"
+                  title="Refresh queue"
+                >
+                  ↻
+                </button>
               </div>
-              <div id="judge-demo-stage" class="judge-demo-stage" aria-live="polite"></div>
+              <div class="judge-stage-head__title-block">
+                <p
+                  class="judge-stage-meta-row"
+                  id="judge-stage-chips"
+                  aria-live="polite"
+                ></p>
+                <h2 class="judge-stage-title" id="judge-video-title">
+                  Pick a submission
+                </h2>
+                <p class="judge-stage-meta" id="judge-video-meta"></p>
+              </div>
+            </div>
+          </header>
+
+          <nav class="judge-stage-tabs" role="tablist" aria-label="Stage view">
+            <button
+              type="button"
+              class="judge-stage-tab is-active"
+              id="judge-tab-overview"
+              role="tab"
+              aria-selected="true"
+              aria-controls="judge-stage-overview"
+              data-judge-stage-tab="overview"
+            >
+              Overview
+            </button>
+            <button
+              type="button"
+              class="judge-stage-tab"
+              id="judge-tab-code"
+              role="tab"
+              aria-selected="false"
+              aria-controls="judge-stage-code"
+              tabindex="-1"
+              data-judge-stage-tab="code"
+            >
+              Code signal
+            </button>
+            <button
+              type="button"
+              class="judge-stage-tab"
+              id="judge-tab-ai"
+              role="tab"
+              aria-selected="false"
+              aria-controls="judge-stage-ai"
+              tabindex="-1"
+              data-judge-stage-tab="ai"
+            >
+              AI summary
+            </button>
+          </nav>
+
+          <div class="judge-stage-body" id="judge-stage-body">
+            <section
+              id="judge-stage-overview"
+              class="judge-stage-pane is-active"
+              role="tabpanel"
+              aria-labelledby="judge-tab-overview"
+            >
+              <p
+                class="judge-side-repo-pill"
+                id="judge-side-detail-title"
+                hidden
+              ></p>
               <div
-                class="judge-card-swipe-layer"
-                id="judge-card-swipe-layer"
-                aria-hidden="true"
+                class="judge-overview-block"
+                id="judge-side-submission-output"
               ></div>
-              <button
-                type="button"
-                class="judge-panel-toggle"
-                id="judge-panel-toggle"
-                aria-controls="judge-side-panel"
-                aria-label="Toggle judge panel"
-              >
-                <span aria-hidden="true">›</span>
-              </button>
-            </article>
+              <div
+                class="judge-overview-extras"
+                id="judge-side-detail-extras"
+              ></div>
+            </section>
 
-            <div
-              id="judge-submission-summary"
-              class="judge-submission-summary judge-submission-summary--compact"
-              aria-live="polite"
-            ></div>
-            <div
-              id="judge-submission-toolbar"
-              class="judge-submission-toolbar"
-              aria-live="polite"
-            ></div>
-            <p
-              id="judge-quick-recap"
-              class="judge-quick-recap"
+            <section
+              id="judge-stage-code"
+              class="judge-stage-pane"
+              role="tabpanel"
+              aria-labelledby="judge-tab-code"
               hidden
-              aria-live="polite"
-            ></p>
-          </section>
+            >
+              <div id="judge-code-signal" class="judge-code-signal"></div>
+              <details class="judge-code-raw">
+                <summary class="judge-code-raw__summary">Raw metrics</summary>
+                <div class="judge-code-raw__grid">
+                  <div>
+                    <h4 class="judge-side-section-h">Summary</h4>
+                    <pre
+                      class="judge-side-metric-pre"
+                      id="judge-side-metrics-summary"
+                    ></pre>
+                  </div>
+                  <div>
+                    <h4 class="judge-side-section-h">Flags</h4>
+                    <pre
+                      class="judge-side-metric-pre"
+                      id="judge-side-metrics-flags"
+                    ></pre>
+                  </div>
+                  <div>
+                    <h4 class="judge-side-section-h">Time distribution</h4>
+                    <pre
+                      class="judge-side-metric-pre"
+                      id="judge-side-metrics-time"
+                    ></pre>
+                  </div>
+                </div>
+              </details>
+              <h4 class="judge-side-section-h">
+                Commits
+                <span
+                  class="judge-side-commit-count"
+                  id="judge-side-commit-count"
+                  >(0)</span
+                >
+              </h4>
+              <div class="judge-side-commits-wrap">
+                <table
+                  class="commits-table judge-side-commits"
+                  id="judge-side-commits-table"
+                >
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Time</th>
+                      <th>+</th>
+                      <th>−</th>
+                      <th>Files</th>
+                      <th>Bulk</th>
+                      <th>Pre T₀</th>
+                      <th>After T₁</th>
+                      <th>Subject</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </section>
 
-        </form>
-      </div>
-      <aside
-        id="judge-side-panel"
-        class="judge-side-panel"
-        role="complementary"
-        aria-label="Full submission and scores"
-        hidden
-        aria-hidden="true"
-      >
-        <header class="judge-side-compact-head">
-          <span id="judge-modal-title" class="eyebrow judge-side-compact-title">Judge panel</span>
-          <button
-            type="button"
-            class="close-btn judge-side-close"
-            data-close-modal
-            aria-label="Close judge modal"
-          >
-            &times;
-          </button>
-        </header>
-        <details class="judge-rubric-card judge-rubric-card--side">
-          <summary class="judge-rubric-summary">Rubric reminder</summary>
-          <div id="judge-rubric-reminder-side" class="judge-rubric-reminder"></div>
-        </details>
-        <section class="judge-score-rail judge-score-rail--side" aria-label="Judge scoring controls">
-          <label class="field">
-            <span class="field-label">Submission</span>
-            <select id="judge-submission-picker" class="judge-submission-picker"></select>
-          </label>
-          <div
-            id="judge-coverage-wrap"
-            class="judge-coverage-wrap"
-            aria-live="polite"
-          >
-            <p class="judge-coverage-label">Judge coverage</p>
-            <div id="judge-coverage-chips" class="judge-coverage-chips"></div>
-            <p
-              id="judge-queue-stats"
-              class="judge-queue-stats"
-              aria-live="polite"
-            ></p>
+            <section
+              id="judge-stage-ai"
+              class="judge-stage-pane"
+              role="tabpanel"
+              aria-labelledby="judge-tab-ai"
+              hidden
+            >
+              <div
+                class="judge-side-block judge-side-block--ai"
+                id="judge-side-ai-output"
+              ></div>
+              <h4 class="judge-side-section-h">Judge responses (aggregate)</h4>
+              <div
+                class="judge-side-block"
+                id="judge-side-judge-output"
+              ></div>
+              <div
+                class="judge-side-block judge-side-block--scores"
+                id="judge-side-scores-aggregate"
+              ></div>
+              <h4 class="judge-side-section-h">All scores (merged)</h4>
+              <div class="judge-prior-scroll">
+                <table
+                  class="judge-prior-table"
+                  id="judge-side-merged-scores"
+                >
+                  <thead>
+                    <tr>
+                      <th scope="col">Judge</th>
+                      <th scope="col">When</th>
+                      <th scope="col">Total</th>
+                      <th scope="col">Breakdown</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </section>
           </div>
+
+          <footer class="judge-stage-foot" aria-hidden="true">
+            <span><kbd>←</kbd> / <kbd>→</kbd> prev · next</span>
+            <span><kbd>[</kbd> / <kbd>]</kbd> prev · next</span>
+            <span><kbd>⌘</kbd> + <kbd>↵</kbd> save</span>
+            <span><kbd>Esc</kbd> close</span>
+          </footer>
+        </section>
+
+        <!-- Right column: sticky scoring rail -->
+        <aside
+          class="judge-workbench__rail"
+          id="judge-rail"
+          aria-label="Scoring rail"
+        >
+          <header class="judge-rail-head">
+            <span id="judge-modal-title" class="judge-rail-eyebrow"
+              >Judge panel</span
+            >
+            <button
+              type="button"
+              class="close-btn judge-rail-close"
+              data-close-modal
+              aria-label="Close judge modal"
+            >
+              &times;
+            </button>
+          </header>
+
+          <div class="judge-rail-identity" aria-live="polite">
+            <span class="judge-rail-mini-label">Judging as</span>
+            <div class="judge-rail-identity__row">
+              <p id="judge-display-name" class="judge-rail-identity__name">—</p>
+              <span
+                id="judge-queue-stats"
+                class="judge-rail-identity__chip"
+              ></span>
+            </div>
+          </div>
+
           <details
             id="judge-mine-toggle-wrap"
             class="judge-mine-toggle-wrap"
@@ -1299,189 +1453,136 @@
             aria-hidden="true"
           >
             <summary class="judge-mine-toggle-summary">
-              Filter to my assigned slice (advanced)
+              Filter to my assigned slice
             </summary>
             <label class="judge-mine-toggle">
               <input type="checkbox" id="judge-mine-only" />
               <span>Show only my assigned 12</span>
             </label>
           </details>
-          <div class="field judge-session-field">
-            <span class="field-label">Judging as</span>
-            <p
-              id="judge-display-name"
-              class="judge-session-banner"
-              aria-live="polite"
-            >
-              —
-            </p>
-            <input
-              type="hidden"
-              name="judge_name"
-              id="judge-name-hidden"
-              form="judge-form"
-              value=""
-            />
-          </div>
 
-          <section class="judge-score-card">
-            <div class="judge-score-card-main">
-              <label class="field">
-                <span class="field-label">Score out of 10 <em>*</em></span>
-                <div class="judge-score-card-queue">
-                  <p class="judge-rubric-kicker">Scoring queue</p>
-                  <div id="judge-score-queue" class="judge-score-queue"></div>
-                </div>
+          <details class="judge-rubric-card judge-rubric-card--side">
+            <summary class="judge-rubric-summary">
+              <span>Rubric</span>
+              <span class="judge-rubric-summary__hint">7 core + 3 bonus = 10</span>
+            </summary>
+            <div
+              id="judge-rubric-reminder-side"
+              class="judge-rubric-reminder"
+            ></div>
+          </details>
+
+          <form id="judge-form" class="judge-rail-form" novalidate>
+            <input
+              name="submission_id"
+              id="judge-submission-hidden"
+              type="hidden"
+              required
+            />
+            <select
+              id="judge-submission-select"
+              class="judge-submission-select--hidden"
+              hidden
+              aria-hidden="true"
+              tabindex="-1"
+            ></select>
+
+            <div class="judge-rail-score-row">
+              <label class="judge-rail-score-input">
+                <span class="judge-rail-mini-label">Score · 0–10</span>
                 <input
                   type="number"
                   name="judge_score"
                   id="judge-score-input"
-                  form="judge-form"
                   min="0"
                   max="10"
                   step="0.1"
                   inputmode="decimal"
                   required
-                  placeholder="e.g. 8.4"
+                  placeholder="8.4"
                 />
               </label>
-              <button type="submit" form="judge-form" class="btn btn-primary judge-save-btn">
-                Save score
+              <button
+                type="submit"
+                class="btn btn-primary judge-save-btn"
+                id="judge-save-btn"
+              >
+                <span class="judge-save-btn__label">Save</span>
               </button>
             </div>
-          </section>
-          <label class="field">
-            <span class="field-label">Notes for the record</span>
-            <textarea
-              name="thoughts"
-              form="judge-form"
-              rows="3"
-              placeholder="What did this submission nail? Where did it cut corners?"
-            ></textarea>
-          </label>
-          <span id="judge-running-total" class="score-running-num judge-running-total-hidden">0</span>
+            <p
+              class="judge-save-status"
+              id="judge-save-status"
+              aria-live="polite"
+            ></p>
 
-        </section>
-        <div class="judge-side-panel-head">
-          <h3 class="judge-side-panel-title">Full view</h3>
-        </div>
-        <div
-          class="judge-side-tabs"
-          role="tablist"
-          aria-label="Full view"
-        >
-          <button
-            type="button"
-            class="judge-side-tab is-active"
-            id="judge-tab-submission"
-            role="tab"
-            aria-selected="true"
-            aria-controls="judge-panel-submission"
-            data-judge-side-tab="submission"
-          >
-            Full submission
-          </button>
-          <button
-            type="button"
-            class="judge-side-tab"
-            id="judge-tab-scores"
-            role="tab"
-            aria-selected="false"
-            aria-controls="judge-panel-scores"
-            tabindex="-1"
-            data-judge-side-tab="scores"
-          >
-            Scores
-          </button>
-        </div>
-        <div
-          id="judge-panel-submission"
-          class="judge-side-panel-body is-active"
-          role="tabpanel"
-          aria-labelledby="judge-tab-submission"
-        >
-          <div class="judge-side-scroll">
-            <p class="judge-side-repo-pill" id="judge-side-detail-title" hidden></p>
-            <h4 class="judge-side-section-h">Project</h4>
-            <div
-              class="judge-side-block"
-              id="judge-side-submission-output"
-            ></div>
-            <h4 class="judge-side-section-h">AI analysis</h4>
-            <div
-              class="judge-side-block judge-side-block--ai"
-              id="judge-side-ai-output"
-            ></div>
-            <h4 class="judge-side-section-h">Judge responses (aggregate)</h4>
-            <div
-              class="judge-side-block"
-              id="judge-side-judge-output"
-            ></div>
-            <h4 class="judge-side-section-h">Metrics — summary</h4>
-            <pre
-              class="judge-side-metric-pre"
-              id="judge-side-metrics-summary"
-            ></pre>
-            <h4 class="judge-side-section-h">Metrics — flags</h4>
-            <pre
-              class="judge-side-metric-pre"
-              id="judge-side-metrics-flags"
-            ></pre>
-            <h4 class="judge-side-section-h">Metrics — time</h4>
-            <pre
-              class="judge-side-metric-pre"
-              id="judge-side-metrics-time"
-            ></pre>
-            <h4 class="judge-side-section-h">Commits <span class="judge-side-commit-count" id="judge-side-commit-count">(0)</span></h4>
-            <div class="judge-side-commits-wrap">
-              <table class="commits-table judge-side-commits" id="judge-side-commits-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Time</th>
-                    <th>+</th>
-                    <th>−</th>
-                    <th>Files</th>
-                    <th>Bulk</th>
-                    <th>Pre T₀</th>
-                    <th>After T₁</th>
-                    <th>Subject</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
+            <label class="field judge-rail-notes">
+              <span class="field-label judge-rail-mini-label">Notes</span>
+              <textarea
+                name="thoughts"
+                rows="3"
+                placeholder="What did this submission nail? Where did it cut corners?"
+              ></textarea>
+            </label>
+
+            <input
+              type="hidden"
+              name="judge_name"
+              id="judge-name-hidden"
+              value=""
+            />
+          </form>
+
+          <details class="judge-rail-coverage" id="judge-coverage-wrap">
+            <summary class="judge-rail-mini-label">
+              Judge coverage <span aria-hidden="true">▾</span>
+            </summary>
+            <div id="judge-coverage-chips" class="judge-coverage-chips"></div>
+          </details>
+
+          <section class="judge-rail-queue" aria-label="Submission queue">
+            <div class="judge-rail-queue__head">
+              <span class="judge-rail-mini-label">Queue</span>
+              <span
+                class="judge-rail-queue__count"
+                id="judge-rail-queue-count"
+              ></span>
             </div>
-          </div>
-        </div>
-        <div
-          id="judge-panel-scores"
-          class="judge-side-panel-body"
-          role="tabpanel"
-          aria-labelledby="judge-tab-scores"
-        >
-          <div class="judge-side-scroll">
-            <div
-              class="judge-side-block"
-              id="judge-side-scores-aggregate"
-            ></div>
-            <h4 class="judge-side-section-h">All scores (merged)</h4>
-            <div class="judge-prior-scroll">
-              <table class="judge-prior-table" id="judge-side-merged-scores">
-                <thead>
-                  <tr>
-                    <th scope="col">Judge</th>
-                    <th scope="col">When</th>
-                    <th scope="col">Total</th>
-                    <th scope="col">Breakdown</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </aside>
-    </div>
+            <select
+              id="judge-submission-picker"
+              class="judge-submission-select--hidden"
+              hidden
+              aria-hidden="true"
+              tabindex="-1"
+            ></select>
+            <div id="judge-score-queue" class="judge-rail-queue__list"></div>
+          </section>
+
+          <!-- Preserved but visually hidden — kept so existing renderers stay wired -->
+          <div
+            id="judge-submission-summary"
+            class="judge-submission-summary judge-submission-summary--compact"
+            aria-hidden="true"
+          ></div>
+          <div
+            id="judge-submission-toolbar"
+            class="judge-submission-toolbar"
+            aria-hidden="true"
+          ></div>
+          <p
+            id="judge-quick-recap"
+            class="judge-quick-recap"
+            hidden
+            aria-hidden="true"
+          ></p>
+          <span
+            id="judge-running-total"
+            class="score-running-num judge-running-total-hidden"
+            aria-hidden="true"
+            >0</span
+          >
+        </aside>
+      </div>
     </div>
 
     <!-- Manager modal -->
@@ -2054,6 +2155,32 @@
       </div>
     </div>
 
-    <script src="script.js?v=126"></script>
+    <!-- Fallback when /api/event-format and /api/technologies are unavailable (e.g. raw static server). Keep in sync with data/event-format.json technology_partners. -->
+    <script type="application/json" id="technology-partners-bootstrap">
+      {
+        "technologies": [
+          {
+            "id": "eb339a65-4ec8-4892-9198-fe8ede04233a",
+            "slug": "overmind",
+            "name": "Overmind",
+            "sort_order": 10
+          },
+          {
+            "id": "ab056b78-61f0-489e-9816-37bc53181c4e",
+            "slug": "tavily",
+            "name": "Tavily",
+            "sort_order": 20
+          },
+          {
+            "id": "2916c0f2-b0a9-4b59-a3bc-6182e100d45d",
+            "slug": "cursor-sdk",
+            "name": "Cursor SDK",
+            "sort_order": 30
+          }
+        ]
+      }
+    </script>
+
+    <script src="script.js?v=129"></script>
   </body>
 </html>

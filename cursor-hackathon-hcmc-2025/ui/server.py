@@ -1,12 +1,22 @@
 #!/usr/bin/env python3
 """
-Minimal local web UI server to browse hackathon analysis outputs.
-Serves static files from ui/static and JSON/text APIs backed by work/* artifacts.
-Usage: python3 ui/server.py --work-dir work --port 8000
+Minimal local web UI to browse hackathon analysis outputs.
+
+Serves static files from ui/static and JSON APIs backed by work/* artifacts.
+
+**Live submissions:** POST /api/submissions and POST /api/judges are implemented
+only by this server.
+
+**Do not** use ``python -m http.server`` for this site — it only supports GET/HEAD
+and returns **501 Unsupported method ('POST')** for POST. Run instead::
+
+    python3 cursor-hackathon-hcmc-2025/ui/server.py --work-dir work --port 8765
+
+Set ``SUPABASE_PROJECT_URL`` and ``SUPABASE_SERVICE_ROLE_SECRET`` (and optionally
+``DEFAULT_HACKATHON_ID``) for Supabase-backed submits, matching production.
 """
 
 import argparse
-from urllib.parse import unquote
 import csv
 import json
 import os
@@ -15,9 +25,67 @@ import subprocess
 import sys
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
-from urllib.error import HTTPError
-from urllib.parse import quote
+from urllib.error import HTTPError, URLError
+from urllib.parse import quote, unquote, urlparse
 from urllib.request import Request, urlopen
+
+
+class SupabaseNetworkError(RuntimeError):
+    """Raised when Supabase REST calls fail due to low-level network/DNS/connectivity."""
+
+    detail = "supabase_network"
+
+
+def _exception_errno(exc: BaseException) -> int | None:
+    n = getattr(exc, "errno", None)
+    if isinstance(n, int):
+        return n
+    reason = getattr(exc, "reason", None)
+    if isinstance(reason, BaseException):
+        rn = getattr(reason, "errno", None)
+        if isinstance(rn, int):
+            return rn
+    return None
+
+
+def supabase_project_url_parsed_host() -> str | None:
+    raw = (os.environ.get("SUPABASE_PROJECT_URL") or "").strip()
+    if not raw:
+        return None
+    try:
+        parsed = urlparse(raw)
+    except Exception:
+        return None
+    host = (parsed.hostname or "").strip()
+    return host or None
+
+
+def supabase_project_url_host_hint() -> str:
+    h = supabase_project_url_parsed_host()
+    if h:
+        return h
+    return "SUPABASE_PROJECT_URL missing or invalid (no host)"
+
+
+def log_supabase_error(operation: str, exc: BaseException, *, url_hint: str | None = None) -> None:
+    parts = [
+        f"[hackathon-ui] {operation}",
+        f"type={type(exc).__name__}",
+        f"msg={exc!s}",
+    ]
+    errno_val = _exception_errno(exc)
+    if errno_val is not None:
+        parts.append(f"errno={errno_val}")
+    cause = exc.__cause__
+    if cause is not None:
+        c_errno = getattr(cause, "errno", None)
+        extra = f"cause_type={type(cause).__name__} cause_msg={cause!s}"
+        if isinstance(c_errno, int):
+            extra += f" cause_errno={c_errno}"
+        parts.append(extra)
+    if url_hint:
+        parts.append(f"url_hint={url_hint!s}")
+    print(": ".join(parts), file=sys.stderr, flush=True)
 
 # Resolve relative to project root (parent of ui/)
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -83,12 +151,24 @@ def supabase_rest(path, method="GET", body=None, prefer="return=representation")
             "Prefer": prefer,
         },
     )
+    op = f"supabase_rest {method} {path}"
+    hint = supabase_project_url_host_hint()
     try:
         with urlopen(req, timeout=20) as res:
             text = res.read().decode("utf-8")
     except HTTPError as exc:
         detail = exc.read().decode("utf-8", errors="replace")
         raise RuntimeError(f"Supabase {exc.code}: {detail}") from exc
+    except URLError as exc:
+        log_supabase_error(op, exc, url_hint=hint)
+        raise SupabaseNetworkError(
+            "Unable to reach Supabase (network/DNS). Check SUPABASE_PROJECT_URL, connectivity, and DNS."
+        ) from exc
+    except OSError as exc:
+        log_supabase_error(op, exc, url_hint=hint)
+        raise SupabaseNetworkError(
+            "Unable to reach Supabase (network/DNS). Check SUPABASE_PROJECT_URL, connectivity, and DNS."
+        ) from exc
     return json.loads(text) if text else None
 
 
@@ -111,6 +191,44 @@ def get_supabase_submissions():
     hid = quote(DEFAULT_HACKATHON_ID, safe="")
     rows = supabase_rest(f"/submissions?hackathon_id=eq.{hid}&order=submitted_at.desc.nullsfirst") or []
     return [supabase_submission_to_client(row) for row in rows]
+
+
+def parse_technology_ids(payload):
+    raw = payload.get("technology_ids")
+    if not isinstance(raw, list):
+        return []
+    out = []
+    for x in raw:
+        s = str(x or "").strip()
+        if s:
+            out.append(s)
+    # dedupe, preserve order
+    return list(dict.fromkeys(out))
+
+
+def set_submission_technologies(submission_id_a, technology_ids):
+    """Replace join rows in submission_technologies (matches Node db.js)."""
+    submission_id_a = str(submission_id_a or "").strip()
+    if not submission_id_a:
+        return
+    sid = quote(submission_id_a, safe="")
+    supabase_rest(
+        f"/submission_technologies?submission_id=eq.{sid}",
+        method="DELETE",
+        prefer="return=minimal",
+    )
+    if not technology_ids:
+        return
+    rows = [
+        {"submission_id": submission_id_a, "technology_id": tid}
+        for tid in technology_ids
+    ]
+    supabase_rest(
+        "/submission_technologies",
+        method="POST",
+        body=rows,
+        prefer="return=minimal",
+    )
 
 
 def upsert_supabase_submission(payload):
@@ -258,6 +376,8 @@ class UiHandler(SimpleHTTPRequestHandler):
             return self.handle_event_format()
         if path == "/api/hacks":
             return self.handle_hacks()
+        if path == "/api/technologies":
+            return self.handle_technologies()
         if path.startswith("/api/repo/"):
             return self.handle_repo(path)
         return super().do_GET()
@@ -293,6 +413,8 @@ class UiHandler(SimpleHTTPRequestHandler):
         if supabase_configured():
             try:
                 return self._send_json(get_supabase_judges())
+            except SupabaseNetworkError as exc:
+                return self._send_json({"error": str(exc), "detail": exc.detail}, status=500)
             except Exception as exc:
                 return self._send_json({"error": f"failed to load Supabase judge data: {exc}"}, status=500)
         if not JUDGE_RESPONSES_PATH.exists():
@@ -307,6 +429,8 @@ class UiHandler(SimpleHTTPRequestHandler):
         if supabase_configured():
             try:
                 return self._send_json({"submissions": get_supabase_submissions()})
+            except SupabaseNetworkError as exc:
+                return self._send_json({"error": str(exc), "detail": exc.detail}, status=500)
             except Exception as exc:
                 return self._send_json({"error": f"failed to load Supabase submissions: {exc}"}, status=500)
         if not SUBMISSIONS_PATH.exists():
@@ -317,16 +441,58 @@ class UiHandler(SimpleHTTPRequestHandler):
             return self._send_json({"error": f"failed to load submissions data: {exc}"}, status=500)
         return self._send_json(data)
 
+    def handle_technologies(self):
+        """Sponsor tech catalog for the submit form (mirrors GET /api/technologies on Vercel)."""
+        if not EVENT_FORMAT_PATH.exists():
+            return self._send_json({"technologies": []})
+        try:
+            data = json.loads(EVENT_FORMAT_PATH.read_text(encoding="utf-8"))
+            tech = data.get("technology_partners") or []
+            if not isinstance(tech, list):
+                tech = []
+            return self._send_json({"technologies": tech})
+        except Exception as exc:
+            return self._send_json({"error": f"failed to load technologies: {exc}"}, status=500)
+
     def handle_submission_post(self):
         payload = self._read_json_body()
         if not isinstance(payload, dict):
             return self._send_json({"error": "invalid JSON body"}, status=400)
-        if not str(payload.get("repo_url", "")).strip():
+        repo_in = str(payload.get("repo_url") or payload.get("github_url") or "").strip()
+        if not repo_in:
             return self._send_json({"error": "repo_url is required"}, status=400)
+
+        technology_ids = parse_technology_ids(payload)
+        if supabase_configured() and len(technology_ids) == 0:
+            return self._send_json(
+                {
+                    "error": "Pick at least one technology you used (Overmind, Tavily, or Cursor SDK).",
+                },
+                status=400,
+            )
 
         try:
             if supabase_configured():
                 entry = upsert_supabase_submission(payload)
+                sub_uuid = entry.get("id")
+                if sub_uuid:
+                    try:
+                        set_submission_technologies(sub_uuid, technology_ids)
+                    except SupabaseNetworkError as tech_exc:
+                        return self._send_json(
+                            {
+                                "error": f"Submission saved but failed to link technologies: {tech_exc}",
+                                "detail": tech_exc.detail,
+                            },
+                            status=500,
+                        )
+                    except Exception as tech_exc:
+                        return self._send_json(
+                            {
+                                "error": f"Submission saved but failed to link technologies: {tech_exc}",
+                            },
+                            status=500,
+                        )
                 return self._send_json(
                     {"ok": True, "submission": entry, "submissions": get_supabase_submissions(), "storage": "supabase"},
                     status=201,
@@ -341,6 +507,8 @@ class UiHandler(SimpleHTTPRequestHandler):
             entry = self.persist_submission(payload)
             self.prepare_submissions()
             scan_started = self.start_scan()
+        except SupabaseNetworkError as exc:
+            return self._send_json({"error": str(exc), "detail": exc.detail}, status=500)
         except Exception as exc:
             return self._send_json({"error": f"failed to save submission: {exc}"}, status=500)
 
@@ -360,6 +528,8 @@ class UiHandler(SimpleHTTPRequestHandler):
         try:
             response = upsert_supabase_judge(payload)
             aggregate = get_supabase_judges()
+        except SupabaseNetworkError as exc:
+            return self._send_json({"error": str(exc), "detail": exc.detail}, status=500)
         except Exception as exc:
             return self._send_json({"error": f"failed to save judge score: {exc}"}, status=500)
         return self._send_json({"ok": True, "response": response, **aggregate}, status=201)
@@ -514,9 +684,26 @@ def run_server(work_dir: Path, static_dir: Path, port: int):
     httpd = HTTPServer(("0.0.0.0", port), handler)
     print(f"Serving UI at http://localhost:{port} (work dir: {work_dir})")
     if supabase_configured():
-        print(f"Persistence: Supabase (hackathon_id={DEFAULT_HACKATHON_ID})")
+        print(f"Persistence: Supabase (DEFAULT_HACKATHON_ID={DEFAULT_HACKATHON_ID})")
+        host = supabase_project_url_parsed_host()
+        if host:
+            print(f"Supabase endpoint host: {host}")
+        else:
+            print(
+                "[hackathon-ui] WARNING: SUPABASE_PROJECT_URL missing hostname or invalid; "
+                "REST calls may fail (e.g. DNS errno 8).",
+                file=sys.stderr,
+                flush=True,
+            )
     else:
-        print("Persistence: NOT CONFIGURED. POST /api/submissions and /api/judges will fail closed.")
+        print(
+            "Persistence: NOT CONFIGURED — POST /api/submissions and /api/judges return 503.\n"
+            "  Export credentials in this shell, then restart:\n"
+            f"    export SUPABASE_PROJECT_URL='https://YOUR_PROJECT.supabase.co'\n"
+            f"    export SUPABASE_SERVICE_ROLE_SECRET='your-service-role-key'\n"
+            f"    export DEFAULT_HACKATHON_ID='{DEFAULT_HACKATHON_ID}'  # must match your hackathons.id row\n"
+            "  Offline-only (CSV, no Supabase): export HACKATHON_ALLOW_LOCAL_FALLBACK=1"
+        )
     httpd.serve_forever()
 
 

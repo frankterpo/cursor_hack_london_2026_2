@@ -830,7 +830,8 @@ async function renderSummaryTable(rows) {
 }
 
 async function loadSummary() {
-  await Promise.all([loadHacks(), loadEventFormat(), loadTechnologies()]);
+  await Promise.all([loadHacks(), loadEventFormat()]);
+  await loadTechnologies();
   const [summaryData] = await Promise.all([
     fetchJSON("/api/summary").catch(() => ({ rows: [] })),
     loadJudgeData(),
@@ -1322,17 +1323,39 @@ async function loadEventFormat() {
 
 let technologiesCatalog = [];
 
+/** Load tech chips before submit modal if APIs were unavailable at first paint. */
+async function ensureTechnologiesLoaded() {
+  const picker = document.querySelector("[data-tech-picker]");
+  if (picker && picker.querySelector('input[type="checkbox"][name="technology_ids"]')) {
+    return;
+  }
+  if (!eventFormat) {
+    try {
+      await loadEventFormat();
+    } catch (_e) {
+      /* loadEventFormat catches internally */
+    }
+  }
+  await loadTechnologies();
+}
+
 async function loadTechnologies() {
   technologiesCatalog = [];
   try {
-    const res = await fetch("/api/technologies");
-    const bodyText = await res.text();
-    if (!res.ok) {
-      console.error(
-        `[technologies] /api/technologies failed: HTTP ${res.status}`,
-        bodyText
-      );
+    let res = await fetch("/api/technologies");
+    if (res.status === 404) {
+      res = await fetch("/api/technologies.json").catch(() => null);
+    }
+    if (!res || !res.ok) {
+      if (res && !res.ok) {
+        const errBody = await res.text();
+        console.error(
+          `[technologies] /api/technologies failed: HTTP ${res.status}`,
+          errBody
+        );
+      }
     } else {
+      const bodyText = await res.text();
       let payload = null;
       try {
         payload = JSON.parse(bodyText);
@@ -1355,6 +1378,39 @@ async function loadTechnologies() {
     }
   } catch (e) {
     console.error("[technologies] network error fetching /api/technologies", e);
+  }
+  if (!technologiesCatalog.length && Array.isArray(eventFormat?.technology_partners)) {
+    technologiesCatalog = eventFormat.technology_partners.filter(
+      (t) => t && (t.id || t.slug)
+    );
+    if (technologiesCatalog.length) {
+      console.info(
+        "[technologies] using event-format.technology_partners fallback (%s rows)",
+        technologiesCatalog.length
+      );
+    }
+  }
+  if (!technologiesCatalog.length) {
+    const boot = document.getElementById("technology-partners-bootstrap");
+    if (boot && boot.textContent) {
+      try {
+        const data = JSON.parse(boot.textContent.trim());
+        const list = Array.isArray(data?.technologies)
+          ? data.technologies
+          : Array.isArray(data)
+            ? data
+            : [];
+        technologiesCatalog = list.filter((t) => t && (t.id || t.slug));
+        if (technologiesCatalog.length) {
+          console.info(
+            "[technologies] using inline #technology-partners-bootstrap (%s rows)",
+            technologiesCatalog.length
+          );
+        }
+      } catch (parseErr) {
+        console.error("[technologies] bootstrap JSON parse failed", parseErr);
+      }
+    }
   }
   renderTechnologyPicker();
 }
@@ -1713,6 +1769,9 @@ function openModal(id) {
       ? modal.querySelector("#judge-submission-picker")
       : modal.querySelector("input:not([type=hidden]), select, textarea, button");
   if (firstInput) setTimeout(() => firstInput.focus(), 60);
+  if (id === "submit-modal") {
+    void ensureTechnologiesLoaded();
+  }
   if (id === "manager-modal") {
     ensureManagerSubmissionsPanel();
     setManagerTab("submissions");
@@ -1720,9 +1779,11 @@ function openModal(id) {
     maybeRenderSummaryTable();
   }
   if (id === "judge-modal") {
-    openJudgeSidePanel();
+    setActiveJudgeStageTab("overview");
+    setJudgeSaveStatus("", "");
     refreshJudgeSubmissionSelect();
     refreshJudgeSubmissions({ silent: false });
+    syncJudgeFullViewFromSelection();
   }
 }
 
@@ -1772,66 +1833,50 @@ function getJudgeApiRepoId() {
   return id;
 }
 
+/**
+ * Workbench is always two columns now, so the legacy "side panel open" concept
+ * is folded into a no-op. Kept (as predicates that always say yes) so existing
+ * call sites — e.g. handleJudgeForm — keep loading detail data after save.
+ */
 function isJudgeSidePanelOpen() {
-  const p = document.getElementById("judge-side-panel");
-  const modal = document.getElementById("judge-modal");
-  return !!(p && modal?.classList.contains("judge-side-open") && !p.hidden);
+  return !!document.getElementById("judge-rail");
 }
-
 function closeJudgeSidePanel() {
-  const panel = document.getElementById("judge-side-panel");
-  const modal = document.getElementById("judge-modal");
-  if (panel) {
-    panel.hidden = true;
-    panel.setAttribute("aria-hidden", "true");
-  }
-  if (modal) modal.classList.remove("judge-side-open");
-  syncJudgePanelToggleState();
+  // Workbench has no collapsible side panel — there is nothing to close.
 }
-
 function openJudgeSidePanel() {
-  const panel = document.getElementById("judge-side-panel");
-  const modal = document.getElementById("judge-modal");
-  if (!panel || !modal) return;
-  setActiveJudgeSideTab("submission");
-  panel.hidden = false;
-  panel.setAttribute("aria-hidden", "false");
-  modal.classList.add("judge-side-open");
-  syncJudgePanelToggleState();
   const repoId = getJudgeApiRepoId();
-  if (repoId) {
-    loadDetails(repoId, detailElsForJudgeSidePanel());
-  }
+  if (repoId) loadDetails(repoId, detailElsForJudgeSidePanel());
 }
 
+const JUDGE_STAGE_TABS = ["overview", "code", "ai"];
+function setActiveJudgeStageTab(which) {
+  const target = JUDGE_STAGE_TABS.includes(which) ? which : "overview";
+  document.querySelectorAll("[data-judge-stage-tab]").forEach((btn) => {
+    const isActive = btn.getAttribute("data-judge-stage-tab") === target;
+    btn.classList.toggle("is-active", isActive);
+    btn.setAttribute("aria-selected", isActive ? "true" : "false");
+    btn.tabIndex = isActive ? 0 : -1;
+  });
+  JUDGE_STAGE_TABS.forEach((key) => {
+    const pane = document.getElementById(`judge-stage-${key}`);
+    if (!pane) return;
+    const isActive = key === target;
+    pane.classList.toggle("is-active", isActive);
+    if (isActive) pane.removeAttribute("hidden");
+    else pane.setAttribute("hidden", "");
+  });
+}
+/**
+ * Legacy alias kept so anything still calling the old function (e.g. a fallback
+ * code path or future regression) maps to the new stage tabs without surprise.
+ */
 function setActiveJudgeSideTab(which) {
-  const subP = document.getElementById("judge-panel-submission");
-  const scP = document.getElementById("judge-panel-scores");
-  const tSub = document.getElementById("judge-tab-submission");
-  const tSc = document.getElementById("judge-tab-scores");
-  if (!subP || !scP || !tSub || !tSc) return;
-  if (which === "scores") {
-    subP.classList.remove("is-active");
-    scP.classList.add("is-active");
-    tSub.classList.remove("is-active");
-    tSub.setAttribute("aria-selected", "false");
-    tSub.tabIndex = -1;
-    tSc.classList.add("is-active");
-    tSc.setAttribute("aria-selected", "true");
-    tSc.tabIndex = 0;
-  } else {
-    scP.classList.remove("is-active");
-    subP.classList.add("is-active");
-    tSc.classList.remove("is-active");
-    tSc.setAttribute("aria-selected", "false");
-    tSc.tabIndex = -1;
-    tSub.classList.add("is-active");
-    tSub.setAttribute("aria-selected", "true");
-    tSub.tabIndex = 0;
-  }
+  const map = { submission: "overview", scores: "ai" };
+  setActiveJudgeStageTab(map[which] || "overview");
 }
 
-/** Selected submission ⇒ show enrichment side panel; cleared selection ⇒ hide. */
+/** Selected submission ⇒ load detail + render code signal + overview extras. */
 function syncJudgeFullViewFromSelection() {
   const sel = document.getElementById("judge-submission-select");
   if (!sel) return;
@@ -1840,13 +1885,35 @@ function syncJudgeFullViewFromSelection() {
   if (hidden) hidden.value = id;
   renderJudgeVideoStage();
   renderJudgeScoreQueue();
+  renderJudgeOverviewExtras(id);
+  renderJudgeCodeSignal(id);
   if (!id) {
-    openJudgeSidePanel();
+    const subOut = document.getElementById("judge-side-submission-output");
+    if (subOut) {
+      subOut.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">⌨</div>
+          <div>No submission selected.</div>
+          <div class="empty-state-hint">
+            Use the queue on the right or press <kbd>→</kbd> to jump in.
+          </div>
+        </div>`;
+    }
+    const aiOut = document.getElementById("judge-side-ai-output");
+    if (aiOut) aiOut.innerHTML = "";
+    const repoPill = document.getElementById("judge-side-detail-title");
+    if (repoPill) {
+      repoPill.textContent = "";
+      repoPill.setAttribute("hidden", "");
+    }
     return;
   }
-  if (isJudgeSidePanelOpen()) {
-    const repoId = getJudgeApiRepoId();
-    if (repoId) loadDetails(repoId, detailElsForJudgeSidePanel());
+  const repoId = getJudgeApiRepoId();
+  if (repoId) {
+    loadDetails(repoId, detailElsForJudgeSidePanel());
+    loadStagePayload(repoId).then(() => {
+      renderJudgeCodeSignal(id);
+    });
   }
 }
 
@@ -1855,6 +1922,9 @@ function onJudgeSubmissionSelectChanged() {
   const allEntries = getJudgeReviewEntries();
   const idx = allEntries.findIndex((e) => e.id === selectedId);
   if (idx >= 0) judgeCurrentIndex = idx;
+  if (_judgeSavedTick) clearInterval(_judgeSavedTick);
+  if (_judgeSavedTimer) clearTimeout(_judgeSavedTimer);
+  setJudgeSaveStatus("", "");
   renderJudgeCoverageChips(allEntries);
   renderJudgeSubmissionSummary();
   syncJudgeFullViewFromSelection();
@@ -1981,7 +2051,6 @@ function renderJudgeRubricReminder() {
   const criteria = eventFormat?.rubric?.criteria || [];
   const quests = eventFormat?.side_quests || [];
   const html = `
-    <div class="judge-rubric-total">7 core + 3 bonus = 10</div>
     <div class="judge-rubric-list">
       ${criteria
         .map(
@@ -1991,15 +2060,21 @@ function renderJudgeRubricReminder() {
         )
         .join("")}
     </div>
-    <div class="judge-rubric-list judge-rubric-list--bonus">
-      ${quests
-        .map(
-          (q) => `<div class="judge-rubric-line"><span>${escapeHtml(
-            q.name
-          )}</span><strong>${escapeHtml(String(q.points ?? 1))}</strong></div>`
-        )
-        .join("")}
-    </div>
+    ${
+      quests.length
+        ? `<div class="judge-rubric-list judge-rubric-list--bonus">
+            ${quests
+              .map(
+                (q) => `<div class="judge-rubric-line"><span>${escapeHtml(
+                  q.name
+                )}</span><strong>${escapeHtml(
+                  String(q.points ?? 1)
+                )}</strong></div>`
+              )
+              .join("")}
+          </div>`
+        : ""
+    }
   `;
   targets.forEach((target) => {
     target.innerHTML = html;
@@ -2566,14 +2641,342 @@ function initJudgePanelToggle() {
   syncJudgePanelToggleState();
 }
 
+// ---------- Code signal: tech detection + integrity flags ----------
+
+const JUDGE_TECH_KEYWORDS = [
+  {
+    id: "cursor-sdk",
+    label: "Cursor SDK",
+    patterns: [/cursor[-_\s]?sdk/i, /@cursor\/sdk/i],
+  },
+  { id: "cursor", label: "Cursor", patterns: [/\bcursor\b/i] },
+  { id: "tavily", label: "Tavily", patterns: [/\btavily\b/i, /tavily-python/i] },
+  { id: "overmind", label: "Overmind", patterns: [/\bovermind\b/i] },
+  { id: "openai", label: "OpenAI", patterns: [/\bopen[\s-]?ai\b/i] },
+  {
+    id: "anthropic",
+    label: "Anthropic",
+    patterns: [/\banthropic\b/i, /\bclaude\b/i],
+  },
+  {
+    id: "supabase",
+    label: "Supabase",
+    patterns: [/\bsupabase\b/i, /@supabase\//i],
+  },
+  { id: "vercel", label: "Vercel", patterns: [/\bvercel\b/i] },
+  {
+    id: "postgres",
+    label: "Postgres",
+    patterns: [/\bpostgres(?:ql)?\b/i, /\bpg[-_]/i],
+  },
+  { id: "redis", label: "Redis", patterns: [/\bredis\b/i, /\bupstash\b/i] },
+  { id: "next", label: "Next.js", patterns: [/\bnext(?:\.js)?\b/i] },
+  { id: "react", label: "React", patterns: [/\breact\b/i] },
+];
+
+const JUDGE_FLAG_DEFS = [
+  {
+    key: "has_bulk_commits",
+    label: "Bulk commits",
+    severity: "warn",
+    tooltip:
+      "metrics.flags.has_bulk_commits — one or more commits land an unusually large diff at once.",
+  },
+  {
+    key: "has_commits_before_t0",
+    label: "Pre-T₀ commits",
+    severity: "warn",
+    tooltip:
+      "metrics.flags.has_commits_before_t0 — commits authored before the hackathon start time.",
+  },
+  {
+    key: "has_large_initial_commit_after_t0",
+    label: "Big initial dump",
+    severity: "warn",
+    tooltip:
+      "metrics.flags.has_large_initial_commit_after_t0 — first post-T₀ commit is unusually large; may be paste of pre-work.",
+  },
+  {
+    key: "has_merge_commits",
+    label: "Merge commits",
+    severity: "info",
+    tooltip:
+      "metrics.flags.has_merge_commits — repo contains merge commits; check branch history before trusting churn totals.",
+  },
+];
+
+/**
+ * Derive a small {stack, flags, top_commits} bundle from whatever is present
+ * in the submission + cached analysis. Each detected stack entry carries the
+ * source field it was matched against (so the tooltip can cite it). No
+ * fabricated data — if a field isn't in the payload, it isn't scanned.
+ */
+function summarizeRepoSignals({ submission, row, analysis } = {}) {
+  const sources = [];
+  const push = (text, source) => {
+    if (text == null || text === "") return;
+    sources.push({ text: String(text), source });
+  };
+
+  push(submission?.notes, "submission.notes");
+  push(submission?.description, "submission.description");
+
+  if (Array.isArray(submission?.submission_technologies)) {
+    push(
+      submission.submission_technologies.join(" "),
+      "submission.submission_technologies"
+    );
+  } else if (typeof submission?.submission_technologies === "string") {
+    push(submission.submission_technologies, "submission.submission_technologies");
+  }
+
+  if (Array.isArray(submission?.technology_ids) && technologiesCatalog.length) {
+    const slugs = submission.technology_ids
+      .map((id) => technologiesCatalog.find((t) => t.id === id)?.slug || "")
+      .filter(Boolean)
+      .join(" ");
+    if (slugs) push(slugs, "submission.technology_ids");
+  }
+
+  const meta = submission?.repo_metadata || analysis?.repo_metadata;
+  if (meta) {
+    if (Array.isArray(meta.dependencies)) {
+      push(meta.dependencies.join(" "), "repo_metadata.dependencies");
+    } else if (meta.dependencies && typeof meta.dependencies === "object") {
+      push(Object.keys(meta.dependencies).join(" "), "repo_metadata.dependencies");
+    }
+    if (Array.isArray(meta.top_languages)) {
+      push(meta.top_languages.join(" "), "repo_metadata.top_languages");
+    }
+    if (meta.readme_excerpt) {
+      push(meta.readme_excerpt, "repo_metadata.readme_excerpt");
+    }
+  }
+
+  push(submission?.repo_url || row?.repo, "submission.repo_url");
+
+  const stackMap = new Map();
+  for (const { text, source } of sources) {
+    for (const t of JUDGE_TECH_KEYWORDS) {
+      if (stackMap.has(t.id)) continue;
+      if (t.patterns.some((p) => p.test(text))) {
+        stackMap.set(t.id, { label: t.label, source });
+      }
+    }
+  }
+  const stack = Array.from(stackMap.values());
+
+  const flags = [];
+  const f = analysis?.metrics?.flags || {};
+  for (const def of JUDGE_FLAG_DEFS) {
+    if (f[def.key]) {
+      flags.push({
+        label: def.label,
+        severity: def.severity,
+        tooltip: def.tooltip,
+      });
+    }
+  }
+  const afterT1 = Number(analysis?.metrics?.summary?.total_commits_after_t1 || 0);
+  if (afterT1 > 0) {
+    flags.push({
+      label: `${afterT1} after T₁`,
+      severity: "info",
+      tooltip:
+        "metrics.summary.total_commits_after_t1 — commits authored after the demo deadline.",
+    });
+  }
+
+  const commitRows = Array.isArray(analysis?.commits) ? analysis.commits : [];
+  const top_commits = commitRows.slice(0, 3).map((r) => ({
+    sha: r.commit_sha || r.sha || r.short_sha || "",
+    subject: r.subject || "",
+    when: r.author_time_iso || r.committed_at || r.author_date || "",
+  }));
+
+  return { stack, flags, top_commits };
+}
+
+/** Cache parsed metrics+commits responses so we don't refetch per tab switch. */
+const _stageCache = new Map();
+async function loadStagePayload(repoId) {
+  if (!repoId) return null;
+  if (_stageCache.has(repoId)) return _stageCache.get(repoId);
+  const apiSeg = encodeRepoApiSegment(repoId);
+  try {
+    const [metrics, commitsData] = await Promise.all([
+      fetchJSON(`/api/repo/${apiSeg}/metrics`).catch(() => ({})),
+      fetchJSON(`/api/repo/${apiSeg}/commits`).catch(() => ({ rows: [] })),
+    ]);
+    const payload = { metrics, commits: commitsData.rows || [] };
+    _stageCache.set(repoId, payload);
+    return payload;
+  } catch (err) {
+    const empty = { metrics: {}, commits: [] };
+    _stageCache.set(repoId, empty);
+    return empty;
+  }
+}
+
+function renderJudgeCodeSignal(submissionId) {
+  const host = document.getElementById("judge-code-signal");
+  if (!host) return;
+  if (!submissionId) {
+    host.innerHTML = `<p class="judge-code-empty">Pick a submission to see commit signal &amp; stack chips.</p>`;
+    return;
+  }
+  const found = findSubmissionById(submissionId);
+  const submission = found?.sub || null;
+  const row = found?.row || null;
+  const repoId = row?.repo_id || extractRepoName(row?.repo) || submissionId;
+  const analysis = _stageCache.get(repoId) || null;
+  const { stack, flags, top_commits } = summarizeRepoSignals({
+    submission,
+    row,
+    analysis,
+  });
+  const summary = analysis?.metrics?.summary || {};
+  const totalCommits = Number(summary.total_commits ?? row?.total_commits ?? 0);
+  const locAdd = Number(summary.total_loc_added ?? row?.total_loc_added ?? 0);
+  const locDel = Number(summary.total_loc_deleted ?? row?.total_loc_deleted ?? 0);
+
+  const statBlock = `
+    <div class="judge-code-stats">
+      <div class="judge-code-stat"><span>commits</span><strong>${totalCommits.toLocaleString()}</strong></div>
+      <div class="judge-code-stat"><span>+ loc</span><strong>${locAdd.toLocaleString()}</strong></div>
+      <div class="judge-code-stat"><span>− loc</span><strong>${locDel.toLocaleString()}</strong></div>
+    </div>`;
+
+  const stackBlock = stack.length
+    ? `<div class="judge-code-group"><span class="judge-rail-mini-label">Tech / SDK signal</span>
+        <div class="judge-code-chip-row">${stack
+          .map(
+            (s) =>
+              `<span class="judge-code-chip judge-code-chip--tech" title="${escapeAttr(
+                `Matched in ${s.source}`
+              )}">${escapeHtml(s.label)}<em>${escapeHtml(
+                shortSourceLabel(s.source)
+              )}</em></span>`
+          )
+          .join("")}</div></div>`
+    : `<div class="judge-code-group judge-code-group--empty"><span class="judge-rail-mini-label">Tech / SDK signal</span>
+        <p class="judge-code-empty">No tech mentions detected${
+          analysis ? "" : " yet (analysis not loaded)"
+        }. Scanned: submission.notes, description, technology_ids, repo URL.</p></div>`;
+
+  const flagBlock = flags.length
+    ? `<div class="judge-code-group"><span class="judge-rail-mini-label">Integrity flags</span>
+        <div class="judge-code-chip-row">${flags
+          .map(
+            (f) =>
+              `<span class="judge-code-chip judge-code-chip--flag judge-code-chip--${escapeAttr(
+                f.severity
+              )}" title="${escapeAttr(f.tooltip)}">${escapeHtml(f.label)}</span>`
+          )
+          .join("")}</div></div>`
+    : `<div class="judge-code-group"><span class="judge-rail-mini-label">Integrity flags</span>
+        <p class="judge-code-empty">${
+          analysis ? "Clean — no integrity flags raised." : "Loading analysis…"
+        }</p></div>`;
+
+  const commitsBlock = top_commits.length
+    ? `<div class="judge-code-group"><span class="judge-rail-mini-label">Top commits</span>
+        <ol class="judge-code-commits">${top_commits
+          .map(
+            (c) => `<li>
+              ${
+                c.sha
+                  ? `<code>${escapeHtml(String(c.sha).slice(0, 7))}</code>`
+                  : ""
+              }
+              <span>${escapeHtml(c.subject || "(no subject)")}</span>
+              ${
+                c.when
+                  ? `<span class="judge-code-commit-when">${escapeHtml(
+                      formatJudgeTime(c.when)
+                    )}</span>`
+                  : ""
+              }
+            </li>`
+          )
+          .join("")}</ol></div>`
+    : "";
+
+  host.innerHTML = statBlock + stackBlock + flagBlock + commitsBlock;
+}
+function shortSourceLabel(source) {
+  if (!source) return "";
+  const tail = source.split(".").slice(-1)[0];
+  if (!tail) return ` · ${source}`;
+  return ` · ${tail}`;
+}
+
+function renderJudgeOverviewExtras(submissionId) {
+  const host = document.getElementById("judge-side-detail-extras");
+  if (!host) return;
+  if (!submissionId) {
+    host.innerHTML = "";
+    return;
+  }
+  const found = findSubmissionById(submissionId);
+  const sub = found?.sub || null;
+  const row = found?.row || null;
+  const description = (sub?.description || "").trim();
+  const members = (sub?.team_members || "").trim();
+  const notes = (sub?.notes || "").trim();
+  const repoUrl = (sub?.repo_url || row?.repo || "").trim();
+  const demoUrl = (sub?.demo_url || "").trim();
+  const blocks = [];
+  if (description) {
+    blocks.push(
+      `<div class="judge-overview-extra"><span class="judge-rail-mini-label">Description</span><p>${escapeHtml(
+        description
+      )}</p></div>`
+    );
+  }
+  if (members) {
+    blocks.push(
+      `<div class="judge-overview-extra"><span class="judge-rail-mini-label">Members</span><p>${escapeHtml(
+        members
+      )}</p></div>`
+    );
+  }
+  if (notes) {
+    blocks.push(
+      `<div class="judge-overview-extra"><span class="judge-rail-mini-label">Notes</span><p>${escapeHtml(
+        notes
+      )}</p></div>`
+    );
+  }
+  const actions = [];
+  if (repoUrl) {
+    actions.push(
+      `<a class="btn btn-ghost btn-small" href="${escapeAttr(
+        repoUrl
+      )}" target="_blank" rel="noopener noreferrer">Open repo ↗</a>`
+    );
+  }
+  if (demoUrl) {
+    actions.push(
+      `<a class="btn btn-primary btn-small" href="${escapeAttr(
+        demoUrl
+      )}" target="_blank" rel="noopener noreferrer">Open demo ↗</a>`
+    );
+  }
+  const actionsHtml = actions.length
+    ? `<div class="judge-overview-actions">${actions.join("")}</div>`
+    : "";
+  const empty = blocks.length
+    ? blocks.join("")
+    : `<p class="judge-overview-empty">No description, notes, or members on file.</p>`;
+  host.innerHTML = empty + actionsHtml;
+}
+
 function renderJudgeVideoStage() {
   const title = document.getElementById("judge-video-title");
   const meta = document.getElementById("judge-video-meta");
   const count = document.getElementById("judge-video-count");
-  const stage = document.getElementById("judge-demo-stage");
-  const card = document.querySelector("#judge-modal .judge-demo-card");
-  if (card) card.dataset.demoPlaying = "false";
-  if (!stage) return;
+  const chips = document.getElementById("judge-stage-chips");
   const entries = getJudgeReviewEntries();
   const selectedId = document.getElementById("judge-submission-select")?.value || "";
   const index = Math.max(0, entries.findIndex((e) => e.id === selectedId));
@@ -2581,74 +2984,116 @@ function renderJudgeVideoStage() {
   const current = entries[judgeCurrentIndex];
 
   if (!current) {
-    if (title) title.textContent = "";
-    if (meta) meta.textContent = "";
+    if (title) title.textContent = "No submissions yet";
+    if (meta) meta.textContent = "Click ↻ to refresh the queue.";
     if (count) count.textContent = "0 / 0";
-    stage.innerHTML = "";
+    if (chips) chips.innerHTML = "";
     renderJudgeScoreQueue();
     return;
   }
 
   const sub = current.sub || {};
-  const demoUrl = sub.demo_url || "";
-  const repoUrl = sub.repo_url || current.row?.repo || "";
-  const embed = demoEmbedUrl(demoUrl);
   if (title) title.textContent = current.name || "Untitled project";
-  if (meta) {
-    meta.textContent = `${current.trackLabel || "unscored"} · ${
-      current.scored ? "already scored" : "needs score"
-    }`;
-  }
   if (count) count.textContent = `${judgeCurrentIndex + 1} / ${entries.length}`;
-
-  const links = [
-    repoUrl
-      ? `<a href="${escapeAttr(repoUrl)}" target="_blank" rel="noopener noreferrer">Repo</a>`
-      : "",
-    demoUrl
-      ? `<a href="${escapeAttr(demoUrl)}" target="_blank" rel="noopener noreferrer">Open demo</a>`
-      : "",
-  ]
-    .filter(Boolean)
-    .join("");
-
-  stage.innerHTML = embed
-    ? `<iframe class="judge-demo-frame" src="${escapeAttr(
-        embed
-      )}" title="${escapeAttr(current.name)} demo video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><div class="judge-demo-links">${links}</div>`
-    : `<div class="judge-demo-empty"><strong>No embeddable demo video.</strong><span>Use the links below, then score from the rail.</span><div class="judge-demo-links">${links || "No demo link provided"}</div></div>`;
+  const team = (sub.team_name || "").trim();
+  if (meta) {
+    const parts = [];
+    if (team) parts.push(team);
+    parts.push(current.scored ? "already scored" : "needs score");
+    meta.textContent = parts.join(" · ");
+  }
+  if (chips) {
+    const cells = [];
+    if (current.trackLabel && current.trackLabel !== "unscored") {
+      cells.push(
+        `<span class="judge-stage-chip judge-stage-chip--track">${escapeHtml(current.trackLabel)}</span>`
+      );
+    }
+    cells.push(
+      current.scored
+        ? `<span class="judge-stage-chip judge-stage-chip--status-scored">● scored</span>`
+        : `<span class="judge-stage-chip judge-stage-chip--status-current">○ current</span>`
+    );
+    chips.innerHTML = cells.join("");
+  }
 }
 
 function renderJudgeScoreQueue() {
   const target = document.getElementById("judge-score-queue");
+  const countEl = document.getElementById("judge-rail-queue-count");
   if (!target) return;
   const entries = getJudgeReviewEntries();
-  const selectedId = document.getElementById("judge-submission-select")?.value || "";
+  const selectedId =
+    document.getElementById("judge-submission-select")?.value || "";
   const done = entries.filter((e) => e.scored).length;
-  target.innerHTML = `
-    <div class="judge-queue-stats"><strong>${done}</strong> scored · <strong>${
-    entries.length - done
-  }</strong> left</div>
-    <div class="judge-queue-list">
-      ${entries
-        .map(
-          (e, idx) => `<button type="button" class="judge-queue-item ${
-            e.id === selectedId ? "is-active" : ""
-          } ${e.scored ? "is-scored" : ""}" data-judge-queue-id="${escapeAttr(
-            e.id
-          )}" data-judge-queue-index="${idx}">
-            <span>${escapeHtml(e.name)}</span>
-            <small>${escapeHtml(e.scored ? "scored" : "needs score")}</small>
-          </button>`
-        )
-        .join("")}
-    </div>
-  `;
+  if (countEl) {
+    countEl.textContent = entries.length
+      ? `${done} of ${entries.length}`
+      : "";
+  }
+  if (!entries.length) {
+    target.innerHTML = "";
+    return;
+  }
+  const width = String(entries.length).length;
+  target.innerHTML = entries
+    .map((e, idx) => {
+      const isActive = e.id === selectedId;
+      const cls = [
+        "judge-rail-queue__row",
+        isActive ? "is-active" : "",
+        e.scored ? "is-scored" : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
+      const yourScore = yourScoreForEntry(e);
+      const otherCount = otherScoreCountForEntry(e);
+      let scoreLabel = "";
+      if (yourScore != null) {
+        scoreLabel = formatJudgeScore(yourScore);
+      } else if (otherCount > 0) {
+        scoreLabel = `·${otherCount}`;
+      }
+      return `<button type="button" class="${cls}" data-judge-queue-id="${escapeAttr(
+        e.id
+      )}" data-judge-queue-index="${idx}" title="${escapeAttr(
+        `${idx + 1} / ${entries.length} · ${e.name} · ${
+          e.scored ? "scored by you" : "needs your score"
+        }${otherCount ? ` · ${otherCount} other score${otherCount === 1 ? "" : "s"}` : ""}`
+      )}">
+        <span class="judge-rail-queue__idx">${String(idx + 1).padStart(width, "0")}</span>
+        <span class="judge-rail-queue__dot" aria-hidden="true"></span>
+        <span class="judge-rail-queue__name">${escapeHtml(e.name)}</span>
+        <span class="judge-rail-queue__score">${escapeHtml(scoreLabel)}</span>
+      </button>`;
+    })
+    .join("");
   target.querySelectorAll("[data-judge-queue-index]").forEach((btn) => {
     btn.addEventListener("click", () => {
       setJudgeSubmissionByIndex(Number(btn.getAttribute("data-judge-queue-index")));
     });
   });
+}
+
+function yourScoreForEntry(entry) {
+  const judgeName = getJudgeNameForUi();
+  const info = entry?.row ? getJudgeInfoForRow(entry.row) : null;
+  if (!info?.responses?.length || !judgeName) return null;
+  const mine = info.responses.find(
+    (r) => (r.judge_name || r.judge || "").trim().toLowerCase() === judgeName.trim().toLowerCase()
+  );
+  if (!mine) return null;
+  const v = Number(mine.total_score);
+  return Number.isFinite(v) ? v : null;
+}
+function otherScoreCountForEntry(entry) {
+  const judgeName = getJudgeNameForUi();
+  const info = entry?.row ? getJudgeInfoForRow(entry.row) : null;
+  if (!info?.responses?.length) return 0;
+  if (!judgeName) return info.responses.length;
+  return info.responses.filter(
+    (r) => (r.judge_name || r.judge || "").trim().toLowerCase() !== judgeName.trim().toLowerCase()
+  ).length;
 }
 
 function renderJudgeSubmissionToolbar() {
@@ -2776,18 +3221,23 @@ async function handleJudgeForm(e) {
   const data = Object.fromEntries(new FormData(form).entries());
   if (!data.submission_id) {
     toast("Pick a submission first");
+    setJudgeSaveStatus("Pick a submission first", "is-error");
     return;
   }
   if (!data.judge_name) {
     toast("Judge name is required");
+    setJudgeSaveStatus("Judge name is required", "is-error");
     return;
   }
   const enteredScore = clampJudgeScore(data.judge_score);
   if (enteredScore === null) {
     toast("Add a score between 0 and 10");
+    setJudgeSaveStatus("Score must be between 0 and 10", "is-error");
     return;
   }
   writeStoredJudgeName(data.judge_name);
+  setJudgeSaveBusy(true);
+  setJudgeSaveStatus("Saving…", "is-saving");
 
   const coreMax = Number(eventFormat?.rubric?.core_max_points ?? 7);
   const bonusCap = Number(eventFormat?.judge_bonus_bucket?.max_points ?? 3);
@@ -2838,9 +3288,13 @@ async function handleJudgeForm(e) {
     if (!res.ok) throw new Error(payload.error || "Failed to save score");
     await loadJudgeData();
   } catch (err) {
+    setJudgeSaveBusy(false);
+    setJudgeSaveStatus(err.message || "Save failed — try again", "is-error");
     toast(err.message || "Score failed. Supabase did not save it.");
     return;
   }
+  setJudgeSaveBusy(false);
+  startJudgeSavedTimer(`Saved · ${formatJudgeScore(grandTotal)}/10`);
 
   // Reset score only — keep judge name cached for next submission
   const scoredId = entry.submission_id;
@@ -2872,11 +3326,40 @@ async function handleJudgeForm(e) {
       if (r) loadDetails(r, detailElsForJudgeSidePanel());
     }
   }
-  toast(
-    `Score saved — ${formatJudgeScore(
-      grandTotal
-    )}/10. Supabase is now the source of truth.`
-  );
+  toast(`Score saved — ${formatJudgeScore(grandTotal)}/10.`);
+}
+
+let _judgeSavedTimer = null;
+let _judgeSavedAt = null;
+let _judgeSavedTick = null;
+function setJudgeSaveStatus(text, cls) {
+  const el = document.getElementById("judge-save-status");
+  if (!el) return;
+  el.classList.remove("is-saving", "is-saved", "is-error");
+  if (cls) el.classList.add(cls);
+  el.textContent = text || "";
+}
+function setJudgeSaveBusy(isBusy) {
+  const btn = document.getElementById("judge-save-btn");
+  const label = btn?.querySelector(".judge-save-btn__label");
+  if (btn) btn.disabled = isBusy;
+  if (label) label.textContent = isBusy ? "Saving…" : "Save";
+}
+function startJudgeSavedTimer(prefix) {
+  _judgeSavedAt = Date.now();
+  if (_judgeSavedTimer) clearTimeout(_judgeSavedTimer);
+  if (_judgeSavedTick) clearInterval(_judgeSavedTick);
+  const update = () => {
+    const secs = Math.max(0, Math.round((Date.now() - _judgeSavedAt) / 1000));
+    const ago = secs < 2 ? "just now" : secs < 60 ? `${secs}s ago` : `${Math.round(secs / 60)}m ago`;
+    setJudgeSaveStatus(`${prefix} · ${ago}`, "is-saved");
+  };
+  update();
+  _judgeSavedTick = setInterval(update, 1000);
+  _judgeSavedTimer = setTimeout(() => {
+    if (_judgeSavedTick) clearInterval(_judgeSavedTick);
+    _judgeSavedTick = null;
+  }, 60_000);
 }
 
 // ---------- Manager ----------
@@ -3614,11 +4097,29 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   initJudgeSwipeControls();
   initJudgePanelToggle();
-  document.querySelectorAll("[data-judge-side-tab]").forEach((b) => {
+  document.querySelectorAll("[data-judge-stage-tab]").forEach((b) => {
     b.addEventListener("click", () => {
-      setActiveJudgeSideTab(
-        b.getAttribute("data-judge-side-tab") || "submission"
+      setActiveJudgeStageTab(
+        b.getAttribute("data-judge-stage-tab") || "overview"
       );
+    });
+    b.addEventListener("keydown", (e) => {
+      const tabs = [
+        ...document.querySelectorAll("[data-judge-stage-tab]"),
+      ];
+      const i = tabs.indexOf(document.activeElement);
+      if (i < 0) return;
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        const next = tabs[(i + 1) % tabs.length];
+        next.focus();
+        next.click();
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        const prev = tabs[(i - 1 + tabs.length) % tabs.length];
+        prev.focus();
+        prev.click();
+      }
     });
   });
 
@@ -3699,22 +4200,47 @@ document.addEventListener("DOMContentLoaded", () => {
     .getElementById("drawer-overlay")
     .addEventListener("click", closeDrawer);
   document.addEventListener("keydown", (e) => {
+    const judgeOpen = !document
+      .getElementById("judge-modal")
+      ?.classList.contains("hidden");
+    const activeTag = document.activeElement?.tagName || "";
+    const inTextInput =
+      activeTag === "INPUT" || activeTag === "TEXTAREA" || activeTag === "SELECT";
+
     if (e.key === "Escape") {
       closeDrawer();
-      if (isJudgeSidePanelOpen()) {
-        closeJudgeSidePanel();
-        return;
-      }
       document
         .querySelectorAll(".modal:not(.hidden)")
         .forEach((m) => closeModal(m.id));
-    } else if (
-      !document.getElementById("judge-modal")?.classList.contains("hidden") &&
-      (e.key === "ArrowLeft" || e.key === "ArrowRight") &&
-      !["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName)
-    ) {
+      return;
+    }
+
+    // Cmd/Ctrl + Enter ⇒ save score from anywhere inside the judge modal
+    if (judgeOpen && (e.metaKey || e.ctrlKey) && e.key === "Enter") {
       e.preventDefault();
-      moveJudgeSubmission(e.key === "ArrowRight" ? 1 : -1);
+      const judgeForm = document.getElementById("judge-form");
+      if (judgeForm) {
+        if (typeof judgeForm.requestSubmit === "function") {
+          judgeForm.requestSubmit();
+        } else {
+          judgeForm.dispatchEvent(new Event("submit", { cancelable: true }));
+        }
+      }
+      return;
+    }
+
+    // ← / → / [ / ] cycle queue when not typing
+    if (judgeOpen && !inTextInput) {
+      if (e.key === "ArrowRight" || e.key === "]") {
+        e.preventDefault();
+        moveJudgeSubmission(1);
+        return;
+      }
+      if (e.key === "ArrowLeft" || e.key === "[") {
+        e.preventDefault();
+        moveJudgeSubmission(-1);
+        return;
+      }
     }
   });
 

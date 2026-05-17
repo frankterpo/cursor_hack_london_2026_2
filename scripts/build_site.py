@@ -129,10 +129,14 @@ def main() -> None:
     # Also expose the event format so future clients can read tracks directly.
     event_format_path = DATA_DIR / "event-format.json"
     if event_format_path.exists():
-        write_json(
-            DIST / "api" / "event-format",
-            json.loads(event_format_path.read_text(encoding="utf-8")),
-        )
+        event_obj = json.loads(event_format_path.read_text(encoding="utf-8"))
+        write_json(DIST / "api" / "event-format", event_obj)
+        tech = event_obj.get("technology_partners")
+        if isinstance(tech, list) and tech:
+            write_json(
+                DIST / "api" / "technologies",
+                {"technologies": tech},
+            )
     repo_ids = collect_repo_ids()
     for repo_id in sorted(repo_ids):
         build_per_repo(repo_id)
