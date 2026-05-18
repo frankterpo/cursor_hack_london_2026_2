@@ -12,7 +12,8 @@ module.exports = async (req, res) => {
 
   try {
     const submissions = await getSubmissions();
-    // Public-safe fields only — no judge scores, no AI analysis, no flags, no emails.
+    // Public-safe fields only — no judge scores, no emails.
+    // github + ai surfaces are exposed with raw_* blobs stripped.
     const safe = submissions.map((s) => {
       const team = s.team && typeof s.team === "object" ? s.team : null;
       const safeTeam = team
@@ -27,6 +28,35 @@ module.exports = async (req, res) => {
             ),
           }
         : null;
+      const gh =
+        s.github && typeof s.github === "object" ? s.github : null;
+      const safeGithub = gh
+        ? {
+            analysis_status: gh.analysis_status || "",
+            analyzed_at: gh.analyzed_at || null,
+            default_branch: gh.default_branch || "",
+            total_commits: Number(gh.total_commits || 0),
+            total_commits_before_t0: Number(gh.total_commits_before_t0 || 0),
+            total_commits_during_event: Number(gh.total_commits_during_event || 0),
+            total_commits_after_t1: Number(gh.total_commits_after_t1 || 0),
+            total_loc_added: Number(gh.total_loc_added || 0),
+            total_loc_deleted: Number(gh.total_loc_deleted || 0),
+            has_commits_before_t0: Number(gh.has_commits_before_t0 || 0),
+            has_bulk_commits: Number(gh.has_bulk_commits || 0),
+            has_large_initial_commit_after_t0: Number(
+              gh.has_large_initial_commit_after_t0 || 0
+            ),
+            has_merge_commits: Number(gh.has_merge_commits || 0),
+          }
+        : null;
+      const ai =
+        s.ai && typeof s.ai === "object" && (s.ai.ai_text || s.ai.ai_generated_at)
+          ? {
+              ai_text: s.ai.ai_text || "",
+              ai_model: s.ai.ai_model || "",
+              ai_generated_at: s.ai.ai_generated_at || null,
+            }
+          : null;
       return {
         project_name: s.project_name || "",
         team_name: s.team_name || "",
@@ -41,6 +71,8 @@ module.exports = async (req, res) => {
         repo_url: s.repo_url || "",
         demo_url: s.demo_url || "",
         uses_specter: s.uses_specter === true,
+        github: safeGithub,
+        ai,
       };
     });
     return sendJson(res, 200, { submissions: safe });

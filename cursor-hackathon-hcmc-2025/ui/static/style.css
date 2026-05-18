@@ -3170,6 +3170,20 @@ html {
   position: relative;
   box-shadow: none;
 }
+
+/* LinkedIn pill column: fixed track so trailing pills share one x-alignment (2- vs 3-line bodies). */
+.judge-card.judge-card--link,
+.judge-dual-col.judge-card--link {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 3.25rem;
+  align-items: center;
+}
+.judge-card.judge-card--link {
+  gap: var(--space-3);
+}
+.judge-dual-col.judge-card--link {
+  gap: 10px;
+}
 .judge-grid > li {
   display: flex;
   align-items: center;
@@ -3207,7 +3221,7 @@ html {
   transition: opacity 0.18s ease;
   white-space: nowrap;
   flex-shrink: 0;
-  align-self: center;
+  justify-self: end;
 }
 .judge-card--link:hover .judge-linkedin,
 .judge-card--link:focus-visible .judge-linkedin {
@@ -5318,13 +5332,6 @@ details.judge-rail-queue {
 /* Team roster — chip list + add-member drawer (Cursor design-mode inspector vibe) */
 .team-roster {
   gap: 8px;
-}
-.team-roster__hint {
-  margin: -2px 0 2px;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  color: var(--muted);
 }
 .team-roster__chips {
   list-style: none;

@@ -17,6 +17,8 @@ const {
   setSubmissionTechnologies,
   persistTeam,
   normalizeTeamPayload,
+  persistGithubData,
+  persistAiData,
 } = require("../guild-bounty-board/public/api/_lib/db");
 
 const TEMPLATE_REPO_KEY = "https://github.com/example/example-project";
@@ -191,6 +193,25 @@ module.exports = async (req, res) => {
       try {
         await setSubmissionTechnologies(saved.id, technologyIds);
       } catch (_error) {}
+      try {
+        await persistGithubData(saved.id, {
+          ...nextSubmission,
+          raw_repo: nextSubmission._analysisData?.repo_metadata || null,
+        });
+      } catch (ghErr) {
+        console.warn(
+          `[submissions] persistGithubData failed for ${saved.id}:`,
+          ghErr.message || ghErr
+        );
+      }
+      try {
+        await persistAiData(saved.id, nextSubmission);
+      } catch (aiErr) {
+        console.warn(
+          `[submissions] persistAiData failed for ${saved.id}:`,
+          aiErr.message || aiErr
+        );
+      }
       const teamPayload = normalizeTeamPayload(body.team);
       if (teamPayload) {
         try {

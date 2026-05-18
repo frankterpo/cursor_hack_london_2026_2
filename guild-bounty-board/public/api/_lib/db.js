@@ -101,6 +101,38 @@ async function supabaseRest(path, options = {}) {
 
 // --- Submissions ---
 
+/**
+ * Fields persisted to submissions_github (GitHub API derived metrics).
+ * Mirror writes also go to submissions.* until the legacy columns are dropped.
+ */
+const SUBMISSION_GITHUB_FIELDS = [
+  "analysis_status",
+  "analyzed_at",
+  "analysis_error",
+  "default_branch",
+  "total_commits",
+  "total_commits_before_t0",
+  "total_commits_during_event",
+  "total_commits_after_t1",
+  "total_loc_added",
+  "total_loc_deleted",
+  "has_commits_before_t0",
+  "has_bulk_commits",
+  "has_large_initial_commit_after_t0",
+  "has_merge_commits",
+];
+
+/**
+ * Fields persisted to submissions_ai (OpenCode/LLM derived insights).
+ * Mirror writes also go to submissions.* until the legacy columns are dropped.
+ */
+const SUBMISSION_AI_FIELDS = [
+  "ai_text",
+  "ai_model",
+  "ai_generated_at",
+  "ai_error",
+];
+
 async function getSubmissions() {
   const hackathonId = await getActiveHackathonUuid();
   const hid = encodeURIComponent(hackathonId);
@@ -133,6 +165,21 @@ async function getSubmissions() {
       if (sub.team === undefined) sub.team = null;
       sub.team_members_legacy_text = String(sub.team_members || "");
     }
+  }
+  const subIds = submissions.map((s) => s.id).filter(Boolean);
+  const [ghMap, aiMap] = await Promise.all([
+    getGithubBySubmissionMap(subIds).catch((err) => {
+      console.warn("[db] getGithubBySubmissionMap failed:", err.message || err);
+      return new Map();
+    }),
+    getAiBySubmissionMap(subIds).catch((err) => {
+      console.warn("[db] getAiBySubmissionMap failed:", err.message || err);
+      return new Map();
+    }),
+  ]);
+  for (const sub of submissions) {
+    sub.github = (sub.id && ghMap.get(sub.id)) || null;
+    sub.ai = (sub.id && aiMap.get(sub.id)) || null;
   }
   return submissions;
 }
@@ -194,6 +241,145 @@ async function upsertSubmission(row) {
   });
   if (result && result[0]) return withClientHackFields(result[0]);
   return withClientHackFields({ ...payload, submitted_at: payload.submitted_at });
+}
+
+/**
+ * Pick `SUBMISSION_GITHUB_FIELDS` from a combined submission row, normalizing
+ * undefined/null into the same defaults the table column would apply. Returns
+ * null when there's nothing meaningful to persist.
+ */
+function pickGithubPayload(row) {
+  if (!row || typeof row !== "object") return null;
+  const out = {};
+  const numericKeys = new Set([
+    "total_commits",
+    "total_commits_before_t0",
+    "total_commits_during_event",
+    "total_commits_after_t1",
+    "total_loc_added",
+    "total_loc_deleted",
+    "has_commits_before_t0",
+    "has_bulk_commits",
+    "has_large_initial_commit_after_t0",
+    "has_merge_commits",
+  ]);
+  const textKeys = new Set([
+    "analysis_status",
+    "analysis_error",
+    "default_branch",
+  ]);
+  for (const key of SUBMISSION_GITHUB_FIELDS) {
+    const v = row[key];
+    if (numericKeys.has(key)) {
+      out[key] = Number.isFinite(Number(v)) ? Number(v) : 0;
+    } else if (textKeys.has(key)) {
+      out[key] = v == null ? "" : String(v);
+    } else if (key === "analyzed_at") {
+      out[key] = v || null;
+    } else {
+      out[key] = v == null ? null : v;
+    }
+  }
+  if (row.raw_repo !== undefined) out.raw_repo = row.raw_repo || null;
+  return out;
+}
+
+function pickAiPayload(row) {
+  if (!row || typeof row !== "object") return null;
+  const out = {};
+  for (const key of SUBMISSION_AI_FIELDS) {
+    const v = row[key];
+    if (key === "ai_generated_at") {
+      out[key] = v || null;
+    } else {
+      out[key] = v == null ? "" : String(v);
+    }
+  }
+  if (row.code_signal !== undefined) out.code_signal = row.code_signal || null;
+  if (row.raw_opencode !== undefined) out.raw_opencode = row.raw_opencode || null;
+  return out;
+}
+
+/**
+ * Upsert the GitHub-derived satellite row for a submission.
+ * No-op when `submissionId` is falsy.
+ */
+async function persistGithubData(submissionId, payload) {
+  const sid = String(submissionId || "").trim();
+  if (!sid) return null;
+  const body = pickGithubPayload(payload) || {};
+  body.submission_id = sid;
+  body.updated_at = new Date().toISOString();
+  const result = await supabaseRest(
+    "/submissions_github?on_conflict=submission_id",
+    {
+      method: "POST",
+      headers: {
+        Prefer: "return=representation,resolution=merge-duplicates",
+      },
+      body: JSON.stringify(body),
+    }
+  );
+  return result && result[0] ? result[0] : body;
+}
+
+/**
+ * Upsert the AI-derived satellite row for a submission.
+ * No-op when `submissionId` is falsy.
+ */
+async function persistAiData(submissionId, payload) {
+  const sid = String(submissionId || "").trim();
+  if (!sid) return null;
+  const body = pickAiPayload(payload) || {};
+  body.submission_id = sid;
+  body.updated_at = new Date().toISOString();
+  const result = await supabaseRest(
+    "/submissions_ai?on_conflict=submission_id",
+    {
+      method: "POST",
+      headers: {
+        Prefer: "return=representation,resolution=merge-duplicates",
+      },
+      body: JSON.stringify(body),
+    }
+  );
+  return result && result[0] ? result[0] : body;
+}
+
+/** Map of `submission_id -> github row` for the given submission UUIDs. */
+async function getGithubBySubmissionMap(submissionIds) {
+  const out = new Map();
+  const ids = Array.from(
+    new Set((submissionIds || []).map((id) => String(id || "").trim()).filter(Boolean))
+  );
+  if (ids.length === 0) return out;
+  const inFilter = ids.join(",");
+  const rows =
+    (await supabaseRest(
+      `/submissions_github?submission_id=in.(${inFilter})&select=*`
+    )) || [];
+  for (const row of rows) {
+    if (row && row.submission_id) out.set(row.submission_id, row);
+  }
+  return out;
+}
+
+/** Map of `submission_id -> ai row` for the given submission UUIDs. */
+async function getAiBySubmissionMap(submissionIds) {
+  const out = new Map();
+  const ids = Array.from(
+    new Set((submissionIds || []).map((id) => String(id || "").trim()).filter(Boolean))
+  );
+  if (ids.length === 0) return out;
+  const inFilter = ids.join(",");
+  const rows =
+    (await supabaseRest(
+      `/submissions_ai?submission_id=in.(${inFilter})&select=*`
+    )) || [];
+  for (const row of rows) {
+    if (row && row.submission_id) out.set(row.submission_id, row);
+  }
+  return out;
 }
 
 // --- Judge Responses ---
@@ -517,6 +703,12 @@ module.exports = {
   normalizeTeamPayload,
   getTeamsBySubmissionMap,
   deleteTeamMember,
+  persistGithubData,
+  persistAiData,
+  getGithubBySubmissionMap,
+  getAiBySubmissionMap,
+  SUBMISSION_GITHUB_FIELDS,
+  SUBMISSION_AI_FIELDS,
   DEFAULT_HACKATHON_ID,
   ACTIVE_HACK_SLUG,
 };

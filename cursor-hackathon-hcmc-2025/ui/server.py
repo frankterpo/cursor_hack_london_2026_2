@@ -191,11 +191,38 @@ def supabase_submission_to_client(row):
     }
 
 
+SUBMISSION_GITHUB_FIELDS = (
+    "analysis_status",
+    "analyzed_at",
+    "analysis_error",
+    "default_branch",
+    "total_commits",
+    "total_commits_before_t0",
+    "total_commits_during_event",
+    "total_commits_after_t1",
+    "total_loc_added",
+    "total_loc_deleted",
+    "has_commits_before_t0",
+    "has_bulk_commits",
+    "has_large_initial_commit_after_t0",
+    "has_merge_commits",
+)
+
+SUBMISSION_AI_FIELDS = (
+    "ai_text",
+    "ai_model",
+    "ai_generated_at",
+    "ai_error",
+)
+
+
 def get_supabase_submissions():
     hid = quote(DEFAULT_HACKATHON_ID, safe="")
     rows = supabase_rest(f"/submissions?hackathon_id=eq.{hid}&order=submitted_at.desc.nullsfirst") or []
     _attach_technologies_to_submission_rows(rows, hid)
     _attach_team_to_submission_rows(rows)
+    _attach_github_data_to_submission_rows(rows)
+    _attach_ai_data_to_submission_rows(rows)
     return [supabase_submission_to_client(row) for row in rows]
 
 
@@ -309,6 +336,156 @@ def _attach_team_to_submission_rows(rows):
     for row in rows:
         sid = row.get("id")
         row["team"] = teams_by_sub.get(sid)
+
+
+def _attach_github_data_to_submission_rows(rows):
+    """Populate each row's ``github`` from submissions_github (1:1 satellite)."""
+    if not rows or not supabase_configured():
+        for row in rows or []:
+            row["github"] = None
+        return
+    submission_ids = [str(r.get("id") or "").strip() for r in rows if r.get("id")]
+    submission_ids = [s for s in submission_ids if s]
+    if not submission_ids:
+        for row in rows:
+            row["github"] = None
+        return
+    try:
+        in_filter = ",".join(submission_ids)
+        gh_rows = supabase_rest(
+            f"/submissions_github?submission_id=in.({in_filter})&select=*"
+        ) or []
+    except Exception as exc:
+        print(
+            f"[hackathon-ui] _attach_github_data_to_submission_rows fetch failed: {exc}",
+            file=sys.stderr,
+            flush=True,
+        )
+        for row in rows:
+            row["github"] = None
+        return
+    by_sub = {}
+    for gr in gh_rows:
+        sid = gr.get("submission_id")
+        if sid:
+            by_sub[sid] = gr
+    for row in rows:
+        sid = row.get("id")
+        row["github"] = by_sub.get(sid) if sid else None
+
+
+def _attach_ai_data_to_submission_rows(rows):
+    """Populate each row's ``ai`` from submissions_ai (1:1 satellite)."""
+    if not rows or not supabase_configured():
+        for row in rows or []:
+            row["ai"] = None
+        return
+    submission_ids = [str(r.get("id") or "").strip() for r in rows if r.get("id")]
+    submission_ids = [s for s in submission_ids if s]
+    if not submission_ids:
+        for row in rows:
+            row["ai"] = None
+        return
+    try:
+        in_filter = ",".join(submission_ids)
+        ai_rows = supabase_rest(
+            f"/submissions_ai?submission_id=in.({in_filter})&select=*"
+        ) or []
+    except Exception as exc:
+        print(
+            f"[hackathon-ui] _attach_ai_data_to_submission_rows fetch failed: {exc}",
+            file=sys.stderr,
+            flush=True,
+        )
+        for row in rows:
+            row["ai"] = None
+        return
+    by_sub = {}
+    for ar in ai_rows:
+        sid = ar.get("submission_id")
+        if sid:
+            by_sub[sid] = ar
+    for row in rows:
+        sid = row.get("id")
+        row["ai"] = by_sub.get(sid) if sid else None
+
+
+def persist_submission_github(submission_uuid, payload):
+    """Upsert the submissions_github satellite for ``submission_uuid``.
+
+    Mirrors fields from a combined submission/analysis payload. Returns the
+    persisted row or ``None`` if no id was supplied.
+    """
+    sid = str(submission_uuid or "").strip()
+    if not sid:
+        return None
+    if not isinstance(payload, dict):
+        payload = {}
+    numeric_keys = {
+        "total_commits",
+        "total_commits_before_t0",
+        "total_commits_during_event",
+        "total_commits_after_t1",
+        "total_loc_added",
+        "total_loc_deleted",
+        "has_commits_before_t0",
+        "has_bulk_commits",
+        "has_large_initial_commit_after_t0",
+        "has_merge_commits",
+    }
+    text_keys = {"analysis_status", "analysis_error", "default_branch"}
+    body = {"submission_id": sid}
+    for key in SUBMISSION_GITHUB_FIELDS:
+        v = payload.get(key)
+        if key in numeric_keys:
+            try:
+                body[key] = int(v) if v is not None else 0
+            except (TypeError, ValueError):
+                body[key] = 0
+        elif key in text_keys:
+            body[key] = "" if v is None else str(v)
+        elif key == "analyzed_at":
+            body[key] = v or None
+        else:
+            body[key] = v
+    if "raw_repo" in payload:
+        body["raw_repo"] = payload.get("raw_repo") or None
+    from datetime import datetime, timezone
+    body["updated_at"] = datetime.now(timezone.utc).isoformat()
+    return supabase_rest(
+        "/submissions_github?on_conflict=submission_id",
+        method="POST",
+        body=body,
+        prefer="return=representation,resolution=merge-duplicates",
+    )
+
+
+def persist_submission_ai(submission_uuid, payload):
+    """Upsert the submissions_ai satellite for ``submission_uuid``."""
+    sid = str(submission_uuid or "").strip()
+    if not sid:
+        return None
+    if not isinstance(payload, dict):
+        payload = {}
+    body = {"submission_id": sid}
+    for key in SUBMISSION_AI_FIELDS:
+        v = payload.get(key)
+        if key == "ai_generated_at":
+            body[key] = v or None
+        else:
+            body[key] = "" if v is None else str(v)
+    if "code_signal" in payload:
+        body["code_signal"] = payload.get("code_signal") or None
+    if "raw_opencode" in payload:
+        body["raw_opencode"] = payload.get("raw_opencode") or None
+    from datetime import datetime, timezone
+    body["updated_at"] = datetime.now(timezone.utc).isoformat()
+    return supabase_rest(
+        "/submissions_ai?on_conflict=submission_id",
+        method="POST",
+        body=body,
+        prefer="return=representation,resolution=merge-duplicates",
+    )
 
 
 def _normalize_team_payload(payload):
@@ -762,6 +939,34 @@ class UiHandler(SimpleHTTPRequestHandler):
                                 file=sys.stderr,
                                 flush=True,
                             )
+                    try:
+                        persist_submission_github(sub_uuid, payload)
+                    except SupabaseNetworkError as gh_exc:
+                        print(
+                            f"[hackathon-ui] persist_submission_github network error: {gh_exc}",
+                            file=sys.stderr,
+                            flush=True,
+                        )
+                    except Exception as gh_exc:
+                        print(
+                            f"[hackathon-ui] persist_submission_github failed: {gh_exc}",
+                            file=sys.stderr,
+                            flush=True,
+                        )
+                    try:
+                        persist_submission_ai(sub_uuid, payload)
+                    except SupabaseNetworkError as ai_exc:
+                        print(
+                            f"[hackathon-ui] persist_submission_ai network error: {ai_exc}",
+                            file=sys.stderr,
+                            flush=True,
+                        )
+                    except Exception as ai_exc:
+                        print(
+                            f"[hackathon-ui] persist_submission_ai failed: {ai_exc}",
+                            file=sys.stderr,
+                            flush=True,
+                        )
                 return self._send_json(
                     {"ok": True, "submission": entry, "submissions": get_supabase_submissions(), "storage": "supabase"},
                     status=201,
