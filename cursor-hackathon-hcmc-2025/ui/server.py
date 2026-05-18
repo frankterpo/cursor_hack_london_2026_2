@@ -175,6 +175,9 @@ def supabase_rest(path, method="GET", body=None, prefer="return=representation")
 def supabase_submission_to_client(row):
     repo_url = row.get("repo_url") or row.get("repo_key") or ""
     repo_id = row.get("repo_id") or repo_id_from_url(repo_url)
+    legacy_members = str(
+        row.get("team_members_legacy_text") or row.get("team_members") or ""
+    )
     return {
         **row,
         "submission_id": repo_id,
@@ -184,13 +187,219 @@ def supabase_submission_to_client(row):
         "hack_id": active_hack_slug(),
         "submitted_at": row.get("submitted_at") or row.get("timestamp"),
         "timestamp": row.get("submitted_at") or row.get("timestamp"),
+        "team_members_legacy_text": legacy_members,
     }
 
 
 def get_supabase_submissions():
     hid = quote(DEFAULT_HACKATHON_ID, safe="")
     rows = supabase_rest(f"/submissions?hackathon_id=eq.{hid}&order=submitted_at.desc.nullsfirst") or []
+    _attach_technologies_to_submission_rows(rows, hid)
+    _attach_team_to_submission_rows(rows)
     return [supabase_submission_to_client(row) for row in rows]
+
+
+def _attach_technologies_to_submission_rows(rows, hackathon_id_quoted: str):
+    """Populate each row's ``technologies`` like Node ``getSubmissionTechnologiesMap``."""
+    if not rows or not supabase_configured():
+        return
+    try:
+        path = (
+            "/submission_technologies?select=submission_id,technologies"
+            "!inner(slug,name,sort_order,hackathon_id)"
+            f"&technologies.hackathon_id=eq.{hackathon_id_quoted}"
+        )
+        link_rows = supabase_rest(path) or []
+    except Exception:
+        for row in rows:
+            row["technologies"] = []
+        return
+    by_sub = {}
+    for lr in link_rows:
+        sid = lr.get("submission_id")
+        tech = lr.get("technologies")
+        if not sid or not tech:
+            continue
+        by_sub.setdefault(sid, []).append(
+            {
+                "slug": tech.get("slug"),
+                "name": tech.get("name"),
+                "_sort": tech.get("sort_order") or 0,
+            }
+        )
+    for lst in by_sub.values():
+        lst.sort(key=lambda x: x.get("_sort") or 0)
+        for item in lst:
+            item.pop("_sort", None)
+    for row in rows:
+        sid = row.get("id")
+        row["technologies"] = list(by_sub.get(sid, [])) if sid else []
+
+
+def _attach_team_to_submission_rows(rows):
+    """Populate each row's ``team`` (name + members) from teams + team_members tables.
+
+    Failures degrade silently so the submissions list still renders without team data.
+    """
+    if not rows or not supabase_configured():
+        return
+    submission_ids = [str(r.get("id") or "").strip() for r in rows if r.get("id")]
+    submission_ids = [s for s in submission_ids if s]
+    if not submission_ids:
+        for row in rows:
+            row["team"] = None
+        return
+    try:
+        in_filter = ",".join(submission_ids)
+        teams = supabase_rest(
+            f"/teams?submission_id=in.({in_filter})&select=id,submission_id,name"
+        ) or []
+    except Exception as exc:
+        print(
+            f"[hackathon-ui] _attach_team_to_submission_rows teams fetch failed: {exc}",
+            file=sys.stderr,
+            flush=True,
+        )
+        for row in rows:
+            row["team"] = None
+        return
+    teams_by_sub = {}
+    team_ids = []
+    for t in teams:
+        sid = t.get("submission_id")
+        if not sid:
+            continue
+        teams_by_sub[sid] = {
+            "id": t.get("id"),
+            "name": t.get("name") or "",
+            "members": [],
+        }
+        if t.get("id"):
+            team_ids.append(str(t["id"]))
+    if team_ids:
+        try:
+            tin = ",".join(team_ids)
+            members = supabase_rest(
+                f"/team_members?team_id=in.({tin})&select=id,team_id,full_name,luma_profile,cursor_email,social_url,created_at&order=created_at.asc"
+            ) or []
+        except Exception as exc:
+            print(
+                f"[hackathon-ui] _attach_team_to_submission_rows members fetch failed: {exc}",
+                file=sys.stderr,
+                flush=True,
+            )
+            members = []
+        by_team = {}
+        for m in members:
+            tid = m.get("team_id")
+            if not tid:
+                continue
+            by_team.setdefault(tid, []).append(
+                {
+                    "id": m.get("id"),
+                    "full_name": m.get("full_name") or "",
+                    "luma_profile": m.get("luma_profile") or "",
+                    "cursor_email": m.get("cursor_email") or "",
+                    "social_url": m.get("social_url") or "",
+                }
+            )
+        for team in teams_by_sub.values():
+            tid = team.get("id")
+            team["members"] = by_team.get(tid, [])
+    for row in rows:
+        sid = row.get("id")
+        row["team"] = teams_by_sub.get(sid)
+
+
+def _normalize_team_payload(payload):
+    """Pull ``team`` from a submit payload and return a sanitized dict or ``None``."""
+    team_raw = payload.get("team") if isinstance(payload, dict) else None
+    if not isinstance(team_raw, dict):
+        return None
+    members_raw = team_raw.get("members") if isinstance(team_raw.get("members"), list) else []
+    members = []
+    for m in members_raw:
+        if not isinstance(m, dict):
+            continue
+        full_name = str(m.get("full_name") or "").strip()
+        if not full_name:
+            continue
+        members.append(
+            {
+                "full_name": full_name,
+                "cursor_email": str(m.get("cursor_email") or "").strip(),
+                "luma_profile": str(m.get("luma_profile") or "").strip(),
+                "social_url": str(m.get("social_url") or "").strip(),
+            }
+        )
+    name = str(team_raw.get("name") or "").strip()
+    if not name and not members:
+        return None
+    return {"name": name, "members": members}
+
+
+def persist_team(submission_uuid, team, *, fallback_name=""):
+    """Upsert a team row + replace its members. Best-effort: logs and re-raises specific failures."""
+    submission_uuid = str(submission_uuid or "").strip()
+    if not submission_uuid:
+        return None
+    name = (team.get("name") or "").strip() if isinstance(team, dict) else ""
+    if not name:
+        name = (fallback_name or "").strip()
+    members = team.get("members") if isinstance(team, dict) else []
+    if not isinstance(members, list):
+        members = []
+    team_row = supabase_rest(
+        "/teams?on_conflict=submission_id",
+        method="POST",
+        body={"submission_id": submission_uuid, "name": name},
+        prefer="return=representation,resolution=merge-duplicates",
+    )
+    team_id = None
+    if isinstance(team_row, list) and team_row:
+        team_id = team_row[0].get("id")
+    if not team_id:
+        sid_q = quote(submission_uuid, safe="")
+        existing = supabase_rest(f"/teams?submission_id=eq.{sid_q}&select=id") or []
+        if existing:
+            team_id = existing[0].get("id")
+    if not team_id:
+        print(
+            f"[hackathon-ui] persist_team: no team id for submission={submission_uuid}",
+            file=sys.stderr,
+            flush=True,
+        )
+        return None
+    tid_q = quote(str(team_id), safe="")
+    supabase_rest(
+        f"/team_members?team_id=eq.{tid_q}",
+        method="DELETE",
+        prefer="return=minimal",
+    )
+    if members:
+        body = [
+            {
+                "team_id": team_id,
+                "full_name": str(m.get("full_name") or "").strip(),
+                "cursor_email": str(m.get("cursor_email") or "").strip(),
+                "luma_profile": str(m.get("luma_profile") or "").strip(),
+                "social_url": str(m.get("social_url") or "").strip(),
+            }
+            for m in members
+            if isinstance(m, dict) and str(m.get("full_name") or "").strip()
+        ]
+        if body:
+            supabase_rest(
+                "/team_members",
+                method="POST",
+                body=body,
+                prefer="return=minimal",
+            )
+    print(
+        f"[hackathon-ui] persist_team: submission={submission_uuid} team_id={team_id} members={len(members)}",
+        flush=True,
+    )
+    return team_id
 
 
 def parse_technology_ids(payload):
@@ -243,17 +452,29 @@ def upsert_supabase_submission(payload):
     if not title:
         rid = repo_id_from_url(repo_url)
         title = (rid or repo_key or "Untitled submission").strip() or "Untitled submission"
+    # Mirror full_name list into the legacy comma-joined `team_members` text so older readers
+    # (CSV exports, prepare_submissions) keep working until they migrate to `team.members`.
+    structured_team = _normalize_team_payload(payload)
+    derived_legacy_members = ""
+    if structured_team:
+        derived_legacy_members = ", ".join(
+            m["full_name"] for m in structured_team["members"] if m.get("full_name")
+        )
+    team_members_legacy = (
+        derived_legacy_members
+        or str(payload.get("team_members") or "").strip()
+    )
     row = {
         "repo_key": repo_key,
         "repo_url": repo_url,
         "repo_id": repo_id_from_url(repo_url),
         "title": title,
-        "team_name": team_name,
+        "team_name": team_name or (structured_team["name"] if structured_team else ""),
         "project_name": project_name,
         "chosen_track": str(payload.get("chosen_track") or "").strip(),
         "demo_url": str(payload.get("demo_url") or "").strip(),
         "description": str(payload.get("description") or "").strip(),
-        "team_members": str(payload.get("team_members") or "").strip(),
+        "team_members": team_members_legacy,
         "notes": str(payload.get("notes") or "").strip(),
         "submitted_at": payload.get("submitted_at") or payload.get("timestamp") or "",
         "analysis_status": payload.get("analysis_status") or "pending",
@@ -398,6 +619,12 @@ class UiHandler(SimpleHTTPRequestHandler):
             return self.handle_judge_post()
         return self._send_json({"error": "unknown endpoint"}, status=404)
 
+    def do_DELETE(self):
+        path = unquote(self.path.split("?", 1)[0])
+        if path == "/api/team-members" or path.startswith("/api/team-members/"):
+            return self.handle_team_member_delete(path)
+        return self._send_json({"error": "unknown endpoint"}, status=404)
+
     def do_OPTIONS(self):
         path = unquote(self.path.split("?", 1)[0])
         if not path.startswith("/api/"):
@@ -405,7 +632,7 @@ class UiHandler(SimpleHTTPRequestHandler):
             return
         self.send_response(204)
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.send_header("Access-Control-Max-Age", "86400")
         self.end_headers()
@@ -513,6 +740,28 @@ class UiHandler(SimpleHTTPRequestHandler):
                             },
                             status=500,
                         )
+                    team_payload = _normalize_team_payload(payload)
+                    if team_payload:
+                        try:
+                            persist_team(
+                                sub_uuid,
+                                team_payload,
+                                fallback_name=entry.get("project_name")
+                                or entry.get("team_name")
+                                or "",
+                            )
+                        except SupabaseNetworkError as team_exc:
+                            print(
+                                f"[hackathon-ui] persist_team network error (submission saved): {team_exc}",
+                                file=sys.stderr,
+                                flush=True,
+                            )
+                        except Exception as team_exc:
+                            print(
+                                f"[hackathon-ui] persist_team failed (submission saved): {team_exc}",
+                                file=sys.stderr,
+                                flush=True,
+                            )
                 return self._send_json(
                     {"ok": True, "submission": entry, "submissions": get_supabase_submissions(), "storage": "supabase"},
                     status=201,
@@ -553,6 +802,43 @@ class UiHandler(SimpleHTTPRequestHandler):
         except Exception as exc:
             return self._send_json({"error": f"failed to save judge score: {exc}"}, status=500)
         return self._send_json({"ok": True, "response": response, **aggregate}, status=201)
+
+    def handle_team_member_delete(self, path: str):
+        """Admin-only DELETE for a single team_member by id.
+
+        Accepts either ``/api/team-members/<id>`` or ``/api/team-members?id=<id>``.
+        Local dev has no auth gate (matches existing local-dev judge POST flow); the
+        Vercel route handler still enforces ``verifyAuth``.
+        """
+        if not supabase_configured():
+            return self._send_json({"error": "Supabase not configured."}, status=503)
+        member_id = ""
+        if path.startswith("/api/team-members/"):
+            member_id = path[len("/api/team-members/") :].strip("/")
+        if not member_id:
+            try:
+                _, _, query = self.path.partition("?")
+                for part in query.split("&"):
+                    if part.startswith("id="):
+                        member_id = unquote(part[3:]).strip()
+                        break
+            except Exception:
+                member_id = ""
+        if not member_id:
+            return self._send_json({"error": "Missing team member id"}, status=400)
+        try:
+            mid = quote(member_id, safe="")
+            result = supabase_rest(
+                f"/team_members?id=eq.{mid}",
+                method="DELETE",
+                prefer="return=representation",
+            )
+        except SupabaseNetworkError as exc:
+            return self._send_json({"error": str(exc), "detail": exc.detail}, status=500)
+        except Exception as exc:
+            return self._send_json({"error": f"failed to delete team member: {exc}"}, status=500)
+        deleted = len(result) if isinstance(result, list) else 0
+        return self._send_json({"ok": True, "deleted": deleted})
 
     def persist_submission(self, payload):
         RAW_SUBMISSIONS_PATH.parent.mkdir(parents=True, exist_ok=True)

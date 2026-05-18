@@ -16,6 +16,8 @@ const {
   upsertSubmission,
   upsertAnalysis,
   setSubmissionTechnologies,
+  persistTeam,
+  normalizeTeamPayload,
 } = require("./_lib/db");
 
 const TEMPLATE_REPO_KEY = "https://github.com/example/example-project";
@@ -111,6 +113,7 @@ module.exports = async (req, res) => {
 
     let nextSubmission = {
       ...submission,
+      team: body && body.team ? body.team : null,
       analysis_status: "pending",
       analyzed_at: null,
       analysis_error: "",
@@ -188,6 +191,20 @@ module.exports = async (req, res) => {
     }
     if (saved && saved.id) {
       try { await setSubmissionTechnologies(saved.id, technologyIds); } catch (_) {}
+      const teamPayload = normalizeTeamPayload(body.team);
+      if (teamPayload) {
+        try {
+          await persistTeam(saved.id, teamPayload, {
+            fallbackName:
+              saved.project_name || saved.team_name || submission.project_name,
+          });
+        } catch (teamErr) {
+          console.warn(
+            `[submissions] persistTeam failed for ${saved.id}:`,
+            teamErr.message || teamErr
+          );
+        }
+      }
     }
     const submissions = await getSubmissions();
     return sendJson(res, 200, { ok: true, submission: saved, submissions });

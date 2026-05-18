@@ -25,6 +25,200 @@ function hasAnyFlag(row) {
   );
 }
 
+// ============================================================
+// Admin overrides + fork detection (organizer cockpit only)
+// ============================================================
+//
+// `hasAnyFlagWithAdmin` mixes raised integrity flags + any organizer-applied
+// manual flag (set via the Flag button in the submissions table) + fork
+// detection. Storage is browser-local: `__hackAdminFlags` (Set of repo URLs
+// flagged manually) and `__forkStatusCache` (24h cache of GitHub fork lookups).
+//
+// Fork detection hits the public GitHub REST API without auth (60 req/h/IP).
+// Failures degrade gracefully to "unknown" without blocking row render.
+
+const ADMIN_FLAGS_KEY = "hack-admin-flags-v1";
+const ADMIN_HIDDEN_KEY = "hack-admin-hidden-v1";
+const FORK_CACHE_KEY = "hack-fork-status-v1";
+const FORK_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+const FORK_INFLIGHT = new Map();
+let _forkRateLimited = false;
+
+function loadJSONSet(key) {
+  try {
+    const raw = JSON.parse(localStorage.getItem(key) || "[]");
+    return new Set(Array.isArray(raw) ? raw.map(String) : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function saveJSONSet(key, set) {
+  try {
+    localStorage.setItem(key, JSON.stringify([...set]));
+  } catch {}
+}
+
+function adminFlaggedSet() {
+  if (!window.__adminFlagSet) window.__adminFlagSet = loadJSONSet(ADMIN_FLAGS_KEY);
+  return window.__adminFlagSet;
+}
+
+function adminHiddenSet() {
+  if (!window.__adminHiddenSet) window.__adminHiddenSet = loadJSONSet(ADMIN_HIDDEN_KEY);
+  return window.__adminHiddenSet;
+}
+
+function isRowAdminFlagged(row) {
+  const url = normalizeRepoKey(row?.repo || getSubmissionInfoForRow(row)?.repo_url || "");
+  return url ? adminFlaggedSet().has(url) : false;
+}
+
+function toggleAdminFlag(rowOrUrl) {
+  const url = normalizeRepoKey(
+    typeof rowOrUrl === "string"
+      ? rowOrUrl
+      : rowOrUrl?.repo || getSubmissionInfoForRow(rowOrUrl)?.repo_url || ""
+  );
+  if (!url) return false;
+  const set = adminFlaggedSet();
+  const willFlag = !set.has(url);
+  if (willFlag) set.add(url);
+  else set.delete(url);
+  saveJSONSet(ADMIN_FLAGS_KEY, set);
+  return willFlag;
+}
+
+function isRowAdminHidden(row) {
+  const url = normalizeRepoKey(row?.repo || getSubmissionInfoForRow(row)?.repo_url || "");
+  if (!url) return false;
+  return adminHiddenSet().has(url);
+}
+
+function markRowAdminHidden(rowOrUrl) {
+  const url = normalizeRepoKey(
+    typeof rowOrUrl === "string"
+      ? rowOrUrl
+      : rowOrUrl?.repo || getSubmissionInfoForRow(rowOrUrl)?.repo_url || ""
+  );
+  if (!url) return;
+  const set = adminHiddenSet();
+  set.add(url);
+  saveJSONSet(ADMIN_HIDDEN_KEY, set);
+}
+
+function hasAnyFlagWithAdmin(row) {
+  if (hasAnyFlag(row)) return true;
+  if (isRowAdminFlagged(row)) return true;
+  const url = row?.repo || getSubmissionInfoForRow(row)?.repo_url || "";
+  return getCachedForkStatus(url) === "fork";
+}
+
+function parseGithubOwnerRepo(url) {
+  if (!url) return null;
+  const m = String(url).match(/github\.com\/([^\/\s]+)\/([^\/\s?#]+?)(?:\.git)?(?:[\/?#]|$)/i);
+  if (!m) return null;
+  return { owner: m[1], repo: m[2] };
+}
+
+function loadForkCache() {
+  if (window.__forkCache) return window.__forkCache;
+  try {
+    const raw = JSON.parse(localStorage.getItem(FORK_CACHE_KEY) || "{}");
+    const now = Date.now();
+    const out = {};
+    for (const [k, v] of Object.entries(raw)) {
+      if (v && typeof v === "object" && Number(v.at) && now - Number(v.at) < FORK_CACHE_TTL_MS) {
+        out[k] = v;
+      }
+    }
+    window.__forkCache = out;
+  } catch {
+    window.__forkCache = {};
+  }
+  return window.__forkCache;
+}
+
+function persistForkCache() {
+  try {
+    localStorage.setItem(FORK_CACHE_KEY, JSON.stringify(window.__forkCache || {}));
+  } catch {}
+}
+
+function getCachedForkStatus(repoUrl) {
+  const k = normalizeRepoKey(repoUrl);
+  if (!k) return null;
+  const entry = loadForkCache()[k];
+  return entry ? entry.status : null;
+}
+
+/**
+ * Look up fork status for a repo URL. Returns a Promise that resolves to one of:
+ *   "new"     — the repo is not a fork
+ *   "fork"    — GitHub says fork=true (and may have a parent)
+ *   "unknown" — private, deleted, rate-limited, or not a GitHub repo URL
+ *
+ * Results are cached for 24h in localStorage. In-flight lookups are
+ * deduplicated. If we hit the unauthenticated rate limit we stop trying for
+ * the rest of the session.
+ */
+async function fetchForkStatus(repoUrl) {
+  const k = normalizeRepoKey(repoUrl);
+  if (!k) return "unknown";
+  const cache = loadForkCache();
+  if (cache[k]) return cache[k].status;
+  if (FORK_INFLIGHT.has(k)) return FORK_INFLIGHT.get(k);
+  if (_forkRateLimited) return "unknown";
+  const parsed = parseGithubOwnerRepo(repoUrl);
+  if (!parsed) {
+    cache[k] = { status: "unknown", at: Date.now() };
+    persistForkCache();
+    return "unknown";
+  }
+  const promise = (async () => {
+    try {
+      const res = await fetch(
+        `https://api.github.com/repos/${encodeURIComponent(parsed.owner)}/${encodeURIComponent(parsed.repo)}`,
+        { headers: { Accept: "application/vnd.github+json" } }
+      );
+      if (res.status === 403 || res.status === 429) {
+        _forkRateLimited = true;
+        return "unknown";
+      }
+      if (!res.ok) return "unknown";
+      const data = await res.json();
+      const status = data && data.fork === true ? "fork" : "new";
+      cache[k] = {
+        status,
+        at: Date.now(),
+        parent: data?.parent?.full_name || null,
+        created_at: data?.created_at || null,
+      };
+      persistForkCache();
+      return status;
+    } catch (err) {
+      return "unknown";
+    } finally {
+      FORK_INFLIGHT.delete(k);
+    }
+  })();
+  FORK_INFLIGHT.set(k, promise);
+  return promise;
+}
+
+function forkChipHtml(status) {
+  if (status === "fork") {
+    return '<span class="repo-flag-chip repo-flag-chip--fork" title="GitHub reports this repo is a fork">FORK</span>';
+  }
+  if (status === "new") {
+    return '<span class="repo-flag-chip repo-flag-chip--new" title="Not a fork — created from scratch">NEW</span>';
+  }
+  if (status === "loading") {
+    return '<span class="repo-flag-chip repo-flag-chip--loading" title="Checking GitHub…">…</span>';
+  }
+  return '<span class="repo-flag-chip repo-flag-chip--unknown" title="GitHub lookup unavailable (private / rate-limited / non-GitHub URL)">UNKNOWN</span>';
+}
+
 function formatNumber(num) {
   const n = Number(num) || 0;
   if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
@@ -98,7 +292,7 @@ function getActiveHackId() {
   return (
     hacksIndex.active_hack_id ||
     (eventFormat && eventFormat.hack_id) ||
-    "cursor-live-london-q3-2026"
+    "cursor-thrads-london-2026"
   );
 }
 
@@ -453,6 +647,48 @@ function getSubmissionInfoForRow(row) {
   return null;
 }
 
+/**
+ * Partner tech labels (API ``technologies`` or checkbox UUIDs + catalog).
+ * @returns {string[]}
+ */
+function submissionPartnerLabels(submission) {
+  if (!submission) return [];
+  const fromApi = submission.technologies;
+  if (Array.isArray(fromApi) && fromApi.length) {
+    return fromApi
+      .map((t) => (t && (t.name || t.slug)) || "")
+      .map((s) => String(s).trim())
+      .filter(Boolean);
+  }
+  const ids = submission.technology_ids;
+  if (Array.isArray(ids) && ids.length && technologiesCatalog.length) {
+    return ids
+      .map((id) => {
+        const t = technologiesCatalog.find((x) => String(x.id) === String(id));
+        return t ? String(t.name || t.slug || "").trim() : "";
+      })
+      .filter(Boolean);
+  }
+  return [];
+}
+
+/** Partner tech display string for tables and summaries. */
+function submissionTechnologiesDisplay(submission) {
+  const labels = submissionPartnerLabels(submission);
+  return labels.length ? labels.join(", ") : "—";
+}
+
+function summaryPartnersCellHtml(submission) {
+  const labels = submissionPartnerLabels(submission);
+  if (!labels.length) {
+    return '<span class="summary-tech-muted" aria-hidden="true">—</span>';
+  }
+  const plain = labels.join(", ");
+  return `<span class="summary-tech-lines" title="${escapeAttr(
+    plain
+  )}">${escapeHtml(plain)}</span>`;
+}
+
 function analysisStatusChip(row) {
   if (row.analysis_status === "analyzed")
     return '<span class="status-chip status-chip--analyzed">Analyzed</span>';
@@ -693,14 +929,22 @@ async function renderSummaryTable(rows) {
   const filterPre = document.querySelector("#filter-preT0")?.checked ?? false;
   const filterBulk = document.querySelector("#filter-bulk")?.checked ?? false;
   const filterMerge = document.querySelector("#filter-merge")?.checked ?? false;
+  const filterFork = document.querySelector("#filter-fork")?.checked ?? false;
   const sortMode =
     document.querySelector("#sort-select")?.value || "default";
 
   const trackFilter = window.__trackFilter || null;
+  const hidden = adminHiddenSet();
   const filteredRows = rows.filter((r) => {
+    const url = normalizeRepoKey(r.repo || getSubmissionInfoForRow(r)?.repo_url || "");
+    if (url && hidden.has(url)) return false;
     if (filterPre && Number(r.has_commits_before_t0) === 0) return false;
     if (filterBulk && Number(r.has_bulk_commits) === 0) return false;
     if (filterMerge && Number(r.has_merge_commits) === 0) return false;
+    if (filterFork) {
+      const repoUrl = r.repo || getSubmissionInfoForRow(r)?.repo_url || "";
+      if (getCachedForkStatus(repoUrl) !== "fork") return false;
+    }
     if (trackFilter) {
       const sub = getSubmissionInfoForRow(r);
       const track = sub?.chosen_track || r.chosen_track || "";
@@ -741,7 +985,7 @@ async function renderSummaryTable(rows) {
   if (sortedRows.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="13">
+        <td colspan="14">
           <div class="empty-state">
             <div class="empty-state-icon">📭</div>
             <div>No submissions match the current filters</div>
@@ -763,13 +1007,25 @@ async function renderSummaryTable(rows) {
     const teamName = submission?.team_name || "";
     const judgeInfo = getJudgeInfoForRow(row);
 
+    const memberCount = countSubmissionMembers(submission);
+    const teamLabel = submission?.team?.name || teamName;
     tr.innerHTML = `
       <td>
         <div class="repo-cell">
           <span class="repo-name">${escapeHtml(displayName)}</span>
           ${
-            teamName
-              ? `<span class="repo-meta">Team ${escapeHtml(teamName)}</span>`
+            teamLabel
+              ? `<span class="repo-meta">Team ${escapeHtml(teamLabel)}${
+                  memberCount
+                    ? ` <span class="repo-meta-chip">${memberCount} member${
+                        memberCount === 1 ? "" : "s"
+                      }</span>`
+                    : ""
+                }</span>`
+              : memberCount
+              ? `<span class="repo-meta"><span class="repo-meta-chip">${memberCount} member${
+                  memberCount === 1 ? "" : "s"
+                }</span></span>`
               : ""
           }
           <span class="repo-url">${escapeHtml(
@@ -781,6 +1037,7 @@ async function renderSummaryTable(rows) {
         </div>
       </td>
       <td>${trackChip(submission?.chosen_track || row.chosen_track || "")}</td>
+      <td class="summary-tech-cell">${summaryPartnersCellHtml(submission)}</td>
       <td>${analysisStatusChip(row)}</td>
       <td><div class="judge-cell">${renderJudgeCell(judgeInfo)}</div></td>
       <td><span class="num-cell">${row.total_commits}</span></td>
@@ -1192,12 +1449,14 @@ function renderSubmissionDetails(row, outputEl) {
   }
   const items = [
     ["Project", submission.project_name || row?.repo_id || "—", ""],
-    ["Team", submission.team_name || "—", ""],
+    ["Team", submission.team?.name || submission.team_name || "—", ""],
     ["Track", submission.chosen_track || "—", ""],
+    ["Technologies", submissionTechnologiesDisplay(submission), ""],
     ["Submitted", submission.timestamp || "—", ""],
     ["GitHub repo", submission.repo_url || row?.repo || "—", "url"],
     ["Demo", submission.demo_url || "—", "url"],
   ];
+  const membersHtml = renderManagerTeamMembersHtml(submission);
   container.innerHTML = `
     <div class="submission-grid">
       ${items
@@ -1217,7 +1476,37 @@ function renderSubmissionDetails(row, outputEl) {
         )
         .join("")}
     </div>
+    ${membersHtml}
   `;
+}
+
+/** Admin/organizer drawer: full member roster including emails. */
+function renderManagerTeamMembersHtml(submission) {
+  const team = submission?.team && typeof submission.team === "object" ? submission.team : null;
+  const members = Array.isArray(team?.members) ? team.members : [];
+  if (members.length) {
+    const items = members
+      .map((m) => {
+        const name = escapeHtml(m.full_name || "—");
+        const email = m.cursor_email
+          ? `<span class="judge-team-member__email">${escapeHtml(m.cursor_email)}</span>`
+          : "";
+        const social = memberSocialLink(m);
+        const luma = memberLumaLink(m);
+        return `<li class="judge-team-member"><span class="judge-team-member__name">${name}</span>${
+          email ? ` ${email}` : ""
+        }${social ? ` ${social}` : ""}${luma ? ` ${luma}` : ""}</li>`;
+      })
+      .join("");
+    return `<div class="submission-item submission-item--block"><div class="submission-label">Members (${members.length})</div><ul class="judge-team-list">${items}</ul></div>`;
+  }
+  const legacy = String(submission?.team_members || "").trim();
+  if (legacy) {
+    return `<div class="submission-item submission-item--block"><div class="submission-label">Members</div><div class="submission-value">${escapeHtml(
+      legacy
+    )}</div></div>`;
+  }
+  return "";
 }
 
 function formatAIOutput(text) {
@@ -1726,6 +2015,48 @@ function setManagerTab(name) {
     const on = panel.getAttribute("data-manager-panel") === name;
     panel.hidden = !on;
   });
+  // Live leaderboard polling is only active while the Leaderboards tab is
+  // visible. Switching away stops the timer, so we don't churn /api/judges.
+  if (name === "leaderboards") {
+    startLeaderboardLiveUpdates();
+  } else {
+    stopLeaderboardLiveUpdates();
+  }
+}
+
+let _leaderboardLiveTimer = null;
+const LEADERBOARD_POLL_MS = 8000;
+
+async function pollLeaderboardOnce() {
+  const indicator = document.getElementById("leaderboard-live-indicator");
+  if (indicator) indicator.setAttribute("aria-busy", "true");
+  try {
+    await loadJudgeData();
+    renderOverallLeaderboard();
+    renderLeaderboard("money-movement", "leaderboard-money-movement");
+    renderLeaderboard(
+      "financial-intelligence",
+      "leaderboard-financial-intelligence"
+    );
+  } catch (err) {
+    console.warn("leaderboard poll failed", err);
+  } finally {
+    if (indicator) indicator.removeAttribute("aria-busy");
+  }
+}
+
+function startLeaderboardLiveUpdates() {
+  if (_leaderboardLiveTimer) return;
+  // Kick once immediately so the user sees fresh numbers on tab switch.
+  pollLeaderboardOnce();
+  _leaderboardLiveTimer = setInterval(pollLeaderboardOnce, LEADERBOARD_POLL_MS);
+}
+
+function stopLeaderboardLiveUpdates() {
+  if (_leaderboardLiveTimer) {
+    clearInterval(_leaderboardLiveTimer);
+    _leaderboardLiveTimer = null;
+  }
 }
 
 function initManagerTabs() {
@@ -1777,6 +2108,14 @@ function openModal(id) {
     setManagerTab("submissions");
     renderManagerPanel();
     maybeRenderSummaryTable();
+    // Background-refresh in case the page sat idle since DOMContentLoaded.
+    // Don't await — the panel already has whatever is cached on screen.
+    loadSummary()
+      .then(() => {
+        maybeRenderSummaryTable();
+        renderManagerPanel();
+      })
+      .catch((err) => console.warn("manager refresh", err));
   }
   if (id === "judge-modal") {
     setActiveJudgeStageTab("overview");
@@ -1784,6 +2123,7 @@ function openModal(id) {
     refreshJudgeSubmissionSelect();
     refreshJudgeSubmissions({ silent: false });
     syncJudgeFullViewFromSelection();
+    attachJudgeReelsHandlers();
   }
 }
 
@@ -1934,6 +2274,8 @@ function closeModal(id) {
   const modal = document.getElementById(id);
   if (!modal) return;
   if (id === "judge-modal") closeJudgeSidePanel();
+  if (id === "manager-modal") stopLeaderboardLiveUpdates();
+  if (id === "submit-modal") closeTeamRosterDrawer();
   modal.classList.add("hidden");
   if (
     lastFocusedBeforeModal &&
@@ -1944,6 +2286,202 @@ function closeModal(id) {
 }
 
 // ---------- Submit form ----------
+// In-memory roster for the active submit modal session.
+const submitTeamMembers = [];
+let submitTeamMemberEditIndex = -1;
+
+function teamRosterEls() {
+  return {
+    root: document.querySelector("[data-team-roster]"),
+    chips: document.querySelector("[data-team-roster-chips]"),
+    empty: document.querySelector("[data-team-roster-empty]"),
+    addBtn: document.querySelector("[data-team-roster-add]"),
+    drawer: document.querySelector("[data-team-roster-drawer]"),
+    error: document.querySelector("[data-team-roster-drawer-error]"),
+    save: document.querySelector("[data-team-roster-save]"),
+    cancel: document.querySelector("[data-team-roster-cancel]"),
+    inputs: {
+      full_name: document.querySelector("[data-tm-field='full_name']"),
+      cursor_email: document.querySelector("[data-tm-field='cursor_email']"),
+      luma_profile: document.querySelector("[data-tm-field='luma_profile']"),
+      social_url: document.querySelector("[data-tm-field='social_url']"),
+    },
+  };
+}
+
+function resetSubmitTeamRoster() {
+  submitTeamMembers.length = 0;
+  submitTeamMemberEditIndex = -1;
+  renderTeamRosterChips();
+  closeTeamRosterDrawer();
+}
+
+function isValidUrlLenient(value) {
+  const s = String(value || "").trim();
+  if (!s) return true;
+  try {
+    const u = new URL(s.startsWith("http") ? s : `https://${s}`);
+    return /^https?:$/.test(u.protocol);
+  } catch {
+    return false;
+  }
+}
+
+function isValidEmail(value) {
+  const s = String(value || "").trim();
+  if (!s) return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+}
+
+function renderTeamRosterChips() {
+  const { chips } = teamRosterEls();
+  if (!chips) return;
+  chips.innerHTML = submitTeamMembers
+    .map((m, idx) => {
+      const name = escapeHtml(m.full_name);
+      const email = m.cursor_email
+        ? `<span class="team-roster__chip-sep" aria-hidden="true">·</span><span class="team-roster__chip-email" title="${escapeAttr(
+            m.cursor_email
+          )}">${escapeHtml(m.cursor_email)}</span>`
+        : "";
+      return `
+        <li class="team-roster__chip" data-tm-idx="${idx}">
+          <span class="team-roster__chip-name" title="${escapeAttr(
+            m.full_name
+          )}">${name}</span>${email}
+          <span class="team-roster__chip-actions">
+            <button type="button" class="team-roster__chip-btn team-roster__chip-btn--edit" data-tm-edit="${idx}" aria-label="Edit ${escapeAttr(
+        m.full_name
+      )}">✎</button>
+            <button type="button" class="team-roster__chip-btn team-roster__chip-btn--remove" data-tm-remove="${idx}" aria-label="Remove ${escapeAttr(
+        m.full_name
+      )}">×</button>
+          </span>
+        </li>`;
+    })
+    .join("");
+}
+
+function clearTeamRosterDrawerInputs() {
+  const { inputs, error } = teamRosterEls();
+  if (!inputs) return;
+  Object.values(inputs).forEach((el) => {
+    if (el) el.value = "";
+  });
+  if (error) error.textContent = "";
+}
+
+function fillTeamRosterDrawerFrom(member) {
+  const { inputs } = teamRosterEls();
+  if (!inputs || !member) return;
+  inputs.full_name.value = member.full_name || "";
+  inputs.cursor_email.value = member.cursor_email || "";
+  inputs.luma_profile.value = member.luma_profile || "";
+  inputs.social_url.value = member.social_url || "";
+}
+
+function openTeamRosterDrawer(editIndex = -1) {
+  const { drawer, addBtn, save, inputs, error } = teamRosterEls();
+  if (!drawer || !addBtn) return;
+  submitTeamMemberEditIndex = editIndex;
+  if (editIndex >= 0 && submitTeamMembers[editIndex]) {
+    fillTeamRosterDrawerFrom(submitTeamMembers[editIndex]);
+    if (save) save.textContent = "Save";
+  } else {
+    clearTeamRosterDrawerInputs();
+    if (save) save.textContent = "+ Add";
+  }
+  if (error) error.textContent = "";
+  drawer.hidden = false;
+  addBtn.setAttribute("aria-expanded", "true");
+  setTimeout(() => inputs.full_name?.focus(), 30);
+}
+
+function closeTeamRosterDrawer() {
+  const { drawer, addBtn } = teamRosterEls();
+  if (!drawer || !addBtn) return;
+  drawer.hidden = true;
+  addBtn.setAttribute("aria-expanded", "false");
+  submitTeamMemberEditIndex = -1;
+}
+
+function commitTeamRosterDrawer() {
+  const { inputs, error } = teamRosterEls();
+  if (!inputs) return;
+  const member = {
+    full_name: String(inputs.full_name.value || "").trim(),
+    cursor_email: String(inputs.cursor_email.value || "").trim(),
+    luma_profile: String(inputs.luma_profile.value || "").trim(),
+    social_url: String(inputs.social_url.value || "").trim(),
+  };
+  if (!member.full_name) {
+    if (error) error.textContent = "Full name is required.";
+    inputs.full_name?.focus();
+    return;
+  }
+  if (!member.cursor_email || !isValidEmail(member.cursor_email)) {
+    if (error)
+      error.textContent = "Enter a valid email so we can invite Cursor.";
+    inputs.cursor_email?.focus();
+    return;
+  }
+  if (member.luma_profile && !isValidUrlLenient(member.luma_profile)) {
+    if (error) error.textContent = "Luma profile must be a valid URL.";
+    inputs.luma_profile?.focus();
+    return;
+  }
+  if (member.social_url && !isValidUrlLenient(member.social_url)) {
+    if (error) error.textContent = "LinkedIn / X must be a valid URL.";
+    inputs.social_url?.focus();
+    return;
+  }
+  if (submitTeamMemberEditIndex >= 0) {
+    submitTeamMembers[submitTeamMemberEditIndex] = member;
+  } else {
+    submitTeamMembers.push(member);
+  }
+  renderTeamRosterChips();
+  closeTeamRosterDrawer();
+}
+
+function setupTeamRosterHandlers() {
+  const { root, chips, addBtn, save, cancel, inputs } = teamRosterEls();
+  if (!root || root.dataset.bound === "1") return;
+  root.dataset.bound = "1";
+  if (addBtn) {
+    addBtn.addEventListener("click", () => openTeamRosterDrawer(-1));
+  }
+  if (save) save.addEventListener("click", commitTeamRosterDrawer);
+  if (cancel) cancel.addEventListener("click", () => closeTeamRosterDrawer());
+  if (chips) {
+    chips.addEventListener("click", (e) => {
+      const editBtn = e.target.closest("[data-tm-edit]");
+      const rmBtn = e.target.closest("[data-tm-remove]");
+      if (editBtn) {
+        const idx = Number(editBtn.getAttribute("data-tm-edit"));
+        if (Number.isInteger(idx)) openTeamRosterDrawer(idx);
+        return;
+      }
+      if (rmBtn) {
+        const idx = Number(rmBtn.getAttribute("data-tm-remove"));
+        if (Number.isInteger(idx) && submitTeamMembers[idx]) {
+          submitTeamMembers.splice(idx, 1);
+          renderTeamRosterChips();
+        }
+      }
+    });
+  }
+  Object.values(inputs || {}).forEach((el) => {
+    if (!el) return;
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        commitTeamRosterDrawer();
+      }
+    });
+  });
+}
+
 function setSubmitFormLoading(form, loading) {
   if (!form) return;
   const btn = form.querySelector(".btn-submit-project, button[type='submit']");
@@ -1991,6 +2529,25 @@ async function handleSubmitForm(e) {
     if (firstTech) firstTech.focus();
     return;
   }
+  if (submitTeamMembers.length === 0) {
+    toast("Add at least one team member before submitting.");
+    teamRosterEls().addBtn?.focus();
+    return;
+  }
+  const teamName =
+    String(data.team_name || "").trim() ||
+    String(data.project_name || "").trim();
+  const members = submitTeamMembers.map((m) => ({
+    full_name: String(m.full_name || "").trim(),
+    cursor_email: String(m.cursor_email || "").trim(),
+    luma_profile: String(m.luma_profile || "").trim(),
+    social_url: String(m.social_url || "").trim(),
+  }));
+  // Legacy comma-separated names kept until backend rollouts are verified.
+  const legacyMembersStr = members
+    .map((m) => m.full_name)
+    .filter(Boolean)
+    .join(", ");
   const entry = {
     submitted_at: new Date().toISOString(),
     hack_id: getActiveHackId(),
@@ -1999,7 +2556,8 @@ async function handleSubmitForm(e) {
     repo_url: data.github_url || "",
     chosen_track: data.chosen_track || "",
     demo_url: demoUrl,
-    team_members: data.team_members || "",
+    team_members: legacyMembersStr,
+    team: { name: teamName, members },
     description: data.description || "",
     notes: data.notes || "",
     technology_ids: technologyIds,
@@ -2020,16 +2578,25 @@ async function handleSubmitForm(e) {
     setSubmitFormLoading(form, false);
   }
   form.reset();
+  resetSubmitTeamRoster();
   closeModal("submit-modal");
   await loadSubmissionData();
   await loadSummary();
+  const proj = String(entry.project_name || "").trim() || "Your project";
+  const track = String(entry.chosen_track || "").trim();
+  const partnerLabels = submissionPartnerLabels(entry);
+  let title = `Submitted: ${proj}`;
+  if (partnerLabels.length) {
+    title += ` — linked ${partnerLabels.join(", ")}`;
+  } else if (technologyIds.length) {
+    const n = technologyIds.length;
+    title += ` — linked ${n} partner technolog${n === 1 ? "y" : "ies"}`;
+  }
   toast("", {
     variant: "success",
-    title: "You're in — submission received!",
-    detail: `${entry.project_name || "Your project"} · ${
-      entry.chosen_track || "track not set"
-    }`,
-    meta: "Your entry is saved. Judges and organizers can see it on the live board.",
+    title,
+    detail: track,
+    meta: "Saved — visible on the live board.",
   });
   requestAnimationFrame(() => {
     setTimeout(() => launchConfetti(), 90);
@@ -2497,125 +3064,115 @@ function setJudgeSubmissionByIndex(index) {
 
 function moveJudgeSubmission(delta) {
   setJudgeSubmissionByIndex(judgeCurrentIndex + delta);
+  // Forward navigation also triggers a silent queue refresh so newly-landed
+  // submissions show up in the counter without a manual ↻ tap.
+  if (delta > 0) {
+    refreshJudgeSubmissions({ silent: true }).catch(() => {});
+  }
 }
 
-function initJudgeSwipeControls() {
-  const card = document.querySelector("#judge-modal .judge-demo-card");
-  if (!card) return;
-  const swipeLayer = document.getElementById("judge-card-swipe-layer");
+// ---------- Reels-style wheel + swipe navigation on the demo stage ----------
+let _judgeWheelLockUntil = 0;
+const JUDGE_WHEEL_THRESHOLD = 24;
+const JUDGE_WHEEL_DEBOUNCE_MS = 400;
+const JUDGE_SWIPE_THRESHOLD_PX = 60;
+const JUDGE_SWIPE_DIRECTION_RATIO = 1.2;
+
+function judgePrefersReducedMotion() {
+  try {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  } catch {
+    return false;
+  }
+}
+
+function isJudgeModalOpen() {
+  const modal = document.getElementById("judge-modal");
+  return !!modal && !modal.classList.contains("hidden");
+}
+
+function attachJudgeReelsHandlers() {
+  const card = document.getElementById("judge-demo-card");
+  if (!card || card.dataset.reelsBound === "1") return;
+  card.dataset.reelsBound = "1";
+
+  // Wheel — debounced, ignore tiny deltas, ignore horizontal-dominant scrolls.
+  // Note: wheel events fired inside the demo iframe do not bubble across the
+  // cross-origin boundary, so this only triggers on the surrounding gutters
+  // / caption / nav strip — iframe scroll is left intact.
+  card.addEventListener(
+    "wheel",
+    (ev) => {
+      if (!isJudgeModalOpen()) return;
+      if (judgePrefersReducedMotion()) return;
+      const absY = Math.abs(ev.deltaY);
+      const absX = Math.abs(ev.deltaX);
+      if (absY < JUDGE_WHEEL_THRESHOLD) return;
+      if (absY <= absX) return;
+      const now = Date.now();
+      if (now < _judgeWheelLockUntil) {
+        ev.preventDefault();
+        return;
+      }
+      _judgeWheelLockUntil = now + JUDGE_WHEEL_DEBOUNCE_MS;
+      ev.preventDefault();
+      moveJudgeSubmission(ev.deltaY > 0 ? 1 : -1);
+    },
+    { passive: false }
+  );
+
+  // Pointer swipe — vertical only, lock if horizontal dominates.
   let startX = 0;
   let startY = 0;
-  let currentX = 0;
   let tracking = false;
+  let axisLock = "";
 
-  function resetCard() {
-    card.style.transform = "";
-    card.style.opacity = "";
-  }
-
-  function toggleDemoPlayback() {
-    const frame = document.querySelector("#judge-demo-stage iframe");
-    if (!frame?.contentWindow) return;
-    const src = frame.getAttribute("src") || "";
-    const playing = card.dataset.demoPlaying === "true";
-    if (src.includes("youtube.com/embed/")) {
-      frame.contentWindow.postMessage(
-        JSON.stringify({
-          event: "command",
-          func: playing ? "pauseVideo" : "playVideo",
-          args: [],
-        }),
-        "*"
-      );
-    } else if (src.includes("player.vimeo.com/video/")) {
-      frame.contentWindow.postMessage(
-        JSON.stringify({ method: playing ? "pause" : "play" }),
-        "*"
-      );
-    } else {
-      return;
-    }
-    card.dataset.demoPlaying = playing ? "false" : "true";
-  }
-
-  const startSwipe = (e) => {
-    if (e.target.closest("a, button, iframe, .judge-panel-toggle")) return;
-    e.stopPropagation();
+  card.addEventListener("pointerdown", (ev) => {
+    if (!isJudgeModalOpen()) return;
+    if (ev.pointerType === "mouse" && ev.button !== 0) return;
+    // Don't hijack pointerdown originating from interactive overlay controls.
+    if (ev.target.closest("button, a, input, textarea, select")) return;
+    startX = ev.clientX;
+    startY = ev.clientY;
     tracking = true;
-    startX = e.clientX;
-    startY = e.clientY;
-    currentX = 0;
-    card.classList.add("is-swiping");
-    card.classList.add("is-peeking-controls");
-    e.currentTarget.setPointerCapture?.(e.pointerId);
-  };
+    axisLock = "";
+  });
 
-  const moveSwipe = (e) => {
+  card.addEventListener("pointermove", (ev) => {
     if (!tracking) return;
-    e.stopPropagation();
-    currentX = e.clientX - startX;
-    const rotate = Math.max(-8, Math.min(8, currentX / 24));
-    const fade = Math.max(0.82, 1 - Math.abs(currentX) / 900);
-    card.style.transform = `translateX(${currentX}px) rotate(${rotate}deg)`;
-    card.style.opacity = String(fade);
-  };
+    const dx = ev.clientX - startX;
+    const dy = ev.clientY - startY;
+    if (!axisLock) {
+      if (
+        Math.abs(dx) > 18 &&
+        Math.abs(dx) > Math.abs(dy) * JUDGE_SWIPE_DIRECTION_RATIO
+      ) {
+        axisLock = "x";
+      } else if (Math.abs(dy) > 18) {
+        axisLock = "y";
+      }
+    }
+    if (axisLock === "x") {
+      tracking = false;
+    }
+  });
 
-  const endSwipe = (e) => {
+  const finishSwipe = (ev) => {
     if (!tracking) return;
-    e.stopPropagation();
     tracking = false;
-    card.classList.remove("is-swiping");
-    card.classList.remove("is-peeking-controls");
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
-    if (Math.abs(dx) < 8 && Math.abs(dy) < 8) {
-      resetCard();
-      toggleDemoPlayback();
-      return;
-    }
-    if (dy > 120 && Math.abs(dy) > Math.abs(dx) * 1.25) {
-      resetCard();
-      closeModal("judge-modal");
-      return;
-    }
-    if (!isJudgeSidePanelOpen() && dx < -100 && Math.abs(dx) > Math.abs(dy) * 1.25) {
-      resetCard();
-      openJudgeSidePanel();
-      return;
-    }
-    if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.4) {
-      const direction = dx < 0 ? -1 : 1;
-      card.classList.add("is-swipe-release");
-      card.style.transform = `translateX(${direction * window.innerWidth}px) rotate(${
-        direction * 10
-      }deg)`;
-      card.style.opacity = "0";
-      window.setTimeout(() => {
-        card.classList.remove("is-swipe-release");
-        resetCard();
-        moveJudgeSubmission(dx < 0 ? 1 : -1);
-      }, 180);
-    } else {
-      card.classList.add("is-swipe-release");
-      resetCard();
-      window.setTimeout(() => card.classList.remove("is-swipe-release"), 180);
-    }
+    const dx = ev.clientX - startX;
+    const dy = ev.clientY - startY;
+    if (Math.abs(dy) < JUDGE_SWIPE_THRESHOLD_PX) return;
+    if (Math.abs(dy) <= Math.abs(dx) * JUDGE_SWIPE_DIRECTION_RATIO) return;
+    // Reels convention: swipe up → next, swipe down → previous.
+    moveJudgeSubmission(dy < 0 ? 1 : -1);
   };
-
-  const cancelSwipe = () => {
+  card.addEventListener("pointerup", finishSwipe);
+  card.addEventListener("pointercancel", () => {
     tracking = false;
-    card.classList.remove("is-swiping");
-    card.classList.remove("is-peeking-controls");
-    card.classList.add("is-swipe-release");
-    resetCard();
-    window.setTimeout(() => card.classList.remove("is-swipe-release"), 180);
-  };
-
-  [card, swipeLayer].filter(Boolean).forEach((target) => {
-    target.addEventListener("pointerdown", startSwipe);
-    target.addEventListener("pointermove", moveSwipe);
-    target.addEventListener("pointerup", endSwipe);
-    target.addEventListener("pointercancel", cancelSwipe);
+  });
+  card.addEventListener("pointerleave", () => {
+    tracking = false;
   });
 }
 
@@ -2911,6 +3468,85 @@ function shortSourceLabel(source) {
   return ` · ${tail}`;
 }
 
+function countSubmissionMembers(submission) {
+  if (!submission) return 0;
+  const team = submission.team && typeof submission.team === "object" ? submission.team : null;
+  if (team && Array.isArray(team.members) && team.members.length) {
+    return team.members.length;
+  }
+  const legacy = String(submission.team_members || "").trim();
+  if (!legacy) return 0;
+  return legacy.split(/[,;\n]+/).map((s) => s.trim()).filter(Boolean).length;
+}
+
+function memberSocialLink(member) {
+  const url = String(member?.social_url || "").trim();
+  if (!url) return "";
+  let label = "link";
+  try {
+    const host = new URL(
+      url.startsWith("http") ? url : `https://${url}`
+    ).hostname.toLowerCase();
+    if (host.includes("linkedin")) label = "in";
+    else if (host.includes("twitter") || host === "x.com" || host.endsWith(".x.com")) label = "𝕏";
+    else if (host.includes("github")) label = "gh";
+    else label = host.replace(/^www\./, "").split(".")[0];
+  } catch {
+    label = "link";
+  }
+  return `<a class="judge-team-member__link" href="${escapeAttr(
+    url
+  )}" target="_blank" rel="noopener noreferrer" aria-label="${escapeAttr(
+    member.full_name + " social profile"
+  )}">${escapeHtml(label)} ↗</a>`;
+}
+
+function memberLumaLink(member) {
+  const url = String(member?.luma_profile || "").trim();
+  if (!url) return "";
+  return `<a class="judge-team-member__link" href="${escapeAttr(
+    url
+  )}" target="_blank" rel="noopener noreferrer" aria-label="${escapeAttr(
+    member.full_name + " Luma profile"
+  )}">luma ↗</a>`;
+}
+
+/** Judge-side team block. Structured members win; legacy comma string is the fallback. */
+function renderJudgeTeamBlock(team, members, legacyMembersStr) {
+  const teamName = String(team?.name || "").trim();
+  if (Array.isArray(members) && members.length) {
+    const items = members
+      .map((m) => {
+        const social = memberSocialLink(m);
+        const luma = memberLumaLink(m);
+        const email = m.cursor_email
+          ? `<span class="judge-team-member__email" title="${escapeAttr(
+              m.cursor_email
+            )}" aria-hidden="true">·</span>`
+          : "";
+        return `<li class="judge-team-member"><span class="judge-team-member__name">${escapeHtml(
+          m.full_name || "—"
+        )}</span>${email}${social ? ` ${social}` : ""}${
+          luma ? ` ${luma}` : ""
+        }</li>`;
+      })
+      .join("");
+    const header = teamName
+      ? `<p class="judge-rail-mini-label">Team · ${escapeHtml(teamName)}</p>`
+      : `<span class="judge-rail-mini-label">Team</span>`;
+    return `<div class="judge-overview-extra">${header}<ul class="judge-team-list">${items}</ul></div>`;
+  }
+  if (legacyMembersStr) {
+    const header = teamName
+      ? `<p class="judge-rail-mini-label">Team · ${escapeHtml(teamName)}</p>`
+      : `<span class="judge-rail-mini-label">Members</span>`;
+    return `<div class="judge-overview-extra">${header}<p>${escapeHtml(
+      legacyMembersStr
+    )}</p></div>`;
+  }
+  return "";
+}
+
 function renderJudgeOverviewExtras(submissionId) {
   const host = document.getElementById("judge-side-detail-extras");
   if (!host) return;
@@ -2922,7 +3558,9 @@ function renderJudgeOverviewExtras(submissionId) {
   const sub = found?.sub || null;
   const row = found?.row || null;
   const description = (sub?.description || "").trim();
-  const members = (sub?.team_members || "").trim();
+  const legacyMembers = (sub?.team_members || "").trim();
+  const team = sub?.team && typeof sub.team === "object" ? sub.team : null;
+  const teamMembers = Array.isArray(team?.members) ? team.members : [];
   const notes = (sub?.notes || "").trim();
   const repoUrl = (sub?.repo_url || row?.repo || "").trim();
   const demoUrl = (sub?.demo_url || "").trim();
@@ -2934,13 +3572,8 @@ function renderJudgeOverviewExtras(submissionId) {
       )}</p></div>`
     );
   }
-  if (members) {
-    blocks.push(
-      `<div class="judge-overview-extra"><span class="judge-rail-mini-label">Members</span><p>${escapeHtml(
-        members
-      )}</p></div>`
-    );
-  }
+  const teamBlock = renderJudgeTeamBlock(team, teamMembers, legacyMembers);
+  if (teamBlock) blocks.push(teamBlock);
   if (notes) {
     blocks.push(
       `<div class="judge-overview-extra"><span class="judge-rail-mini-label">Notes</span><p>${escapeHtml(
@@ -2972,10 +3605,27 @@ function renderJudgeOverviewExtras(submissionId) {
   host.innerHTML = empty + actionsHtml;
 }
 
+function setJudgeReelsCounter(text) {
+  const count = document.getElementById("judge-video-count");
+  if (!count) return;
+  if (count.textContent === text) return;
+  count.textContent = text;
+  if (judgePrefersReducedMotion()) return;
+  count.classList.remove("is-flash");
+  // Force reflow so the animation restarts cleanly.
+  void count.offsetWidth;
+  count.classList.add("is-flash");
+}
+
+function setJudgeReelsCaptionVisible(visible) {
+  const caption = document.getElementById("judge-reels-caption");
+  if (!caption) return;
+  caption.classList.toggle("is-hidden", !visible);
+}
+
 function renderJudgeVideoStage() {
   const title = document.getElementById("judge-video-title");
   const meta = document.getElementById("judge-video-meta");
-  const count = document.getElementById("judge-video-count");
   const chips = document.getElementById("judge-stage-chips");
   const entries = getJudgeReviewEntries();
   const selectedId = document.getElementById("judge-submission-select")?.value || "";
@@ -2985,16 +3635,41 @@ function renderJudgeVideoStage() {
 
   if (!current) {
     if (title) title.textContent = "No submissions yet";
-    if (meta) meta.textContent = "Click ↻ to refresh the queue.";
-    if (count) count.textContent = "0 / 0";
+    if (meta) meta.textContent = "Tap ↻ to refresh the queue.";
+    setJudgeReelsCounter("0 / 0");
     if (chips) chips.innerHTML = "";
+    setJudgeReelsCaptionVisible(false);
+    const demoCard = document.getElementById("judge-demo-card");
+    const iframe = document.querySelector("#judge-demo-stage iframe");
+    const fallback = document.getElementById("judge-demo-fallback");
+    if (demoCard) demoCard.classList.add("is-empty");
+    if (iframe) {
+      iframe.removeAttribute("src");
+      iframe.setAttribute("hidden", "");
+    }
+    if (fallback) {
+      fallback.removeAttribute("hidden");
+      const msg = fallback.querySelector(".judge-demo-fallback__msg");
+      if (msg) msg.textContent = "No submissions yet";
+      const hint = fallback.querySelector(".judge-demo-fallback__hint");
+      if (hint) {
+        hint.textContent = "Tap ↻ to refresh the queue";
+        hint.removeAttribute("hidden");
+      }
+      const fbLink = fallback.querySelector(".judge-demo-fallback__link");
+      if (fbLink) fbLink.setAttribute("hidden", "");
+    }
     renderJudgeScoreQueue();
     return;
   }
 
+  const demoCard = document.getElementById("judge-demo-card");
+  if (demoCard) demoCard.classList.remove("is-empty");
+  setJudgeReelsCaptionVisible(true);
+
   const sub = current.sub || {};
   if (title) title.textContent = current.name || "Untitled project";
-  if (count) count.textContent = `${judgeCurrentIndex + 1} / ${entries.length}`;
+  setJudgeReelsCounter(`${judgeCurrentIndex + 1} / ${entries.length}`);
   const team = (sub.team_name || "").trim();
   if (meta) {
     const parts = [];
@@ -3015,6 +3690,45 @@ function renderJudgeVideoStage() {
         : `<span class="judge-stage-chip judge-stage-chip--status-current">○ current</span>`
     );
     chips.innerHTML = cells.join("");
+  }
+
+  const demoUrl = String(sub.demo_url || "").trim();
+  const embed = demoEmbedUrl(demoUrl);
+  const iframe = document.querySelector("#judge-demo-stage iframe");
+  const fallback = document.getElementById("judge-demo-fallback");
+  const fallbackLink = fallback?.querySelector(".judge-demo-fallback__link");
+  const fallbackHint = fallback?.querySelector(".judge-demo-fallback__hint");
+  if (fallbackHint) {
+    fallbackHint.textContent = "";
+    fallbackHint.setAttribute("hidden", "");
+  }
+  if (iframe && fallback) {
+    if (embed) {
+      fallback.setAttribute("hidden", "");
+      iframe.removeAttribute("hidden");
+      const msgEl = fallback.querySelector(".judge-demo-fallback__msg");
+      if (msgEl) msgEl.textContent = "No embeddable demo URL";
+      if (iframe.getAttribute("src") !== embed) {
+        iframe.setAttribute("src", embed);
+        if (demoCard) demoCard.dataset.demoPlaying = "false";
+      }
+    } else {
+      iframe.removeAttribute("src");
+      iframe.setAttribute("hidden", "");
+      fallback.removeAttribute("hidden");
+      const msgEl = fallback.querySelector(".judge-demo-fallback__msg");
+      if (msgEl && !demoUrl) msgEl.textContent = "No demo URL on file";
+      else if (msgEl)
+        msgEl.textContent = "Open demo in new tab (link not embeddable)";
+      if (fallbackLink) {
+        if (demoUrl) {
+          fallbackLink.setAttribute("href", demoUrl);
+          fallbackLink.removeAttribute("hidden");
+        } else {
+          fallbackLink.setAttribute("hidden", "");
+        }
+      }
+    }
   }
 }
 
@@ -3395,86 +4109,33 @@ function ensureLeaderboardNote(listEl, show, text) {
   }
 }
 
+/**
+ * Slim KPI strip: only the four numbers organizers actually act on during a
+ * judging session — Total / Scored / Unscored / Flagged (+ Forks once at least
+ * one repo has resolved a fork status). Everything else moved into the table.
+ */
 function renderManagerPanel() {
   const stats = document.getElementById("manager-stats");
-  const aggregates = document.getElementById("manager-aggregates");
   const rows = window.__summaryRows || [];
-  const persistedScores = Array.from(judgeMap.values()).reduce(
-    (sum, info) => sum + (info?.responses?.length || 0),
-    0
-  );
-  const tracked = rows.length;
-
-  const moneyMovement = rows.filter((r) =>
-    trackMatchesCategory(getRowTrackLabel(r), "money-movement")
-  ).length;
-  const financialIntelligence = rows.filter((r) =>
-    trackMatchesCategory(getRowTrackLabel(r), "financial-intelligence")
-  ).length;
-  const noTrackLabel = rows.filter((r) => !getRowTrackLabel(r)).length;
-  const vagueTrack = rows.filter((r) => {
-    const t = getRowTrackLabel(r);
-    if (!t) return false;
-    return (
-      !trackMatchesCategory(t, "money-movement") &&
-      !trackMatchesCategory(t, "financial-intelligence")
-    );
+  const total = rows.length;
+  const scored = rows.filter((r) => {
+    const info = getJudgeInfoForRow(r);
+    return !!(info && info.responses && info.responses.length);
   }).length;
-  const flagged = rows.filter((r) => hasAnyFlag(r)).length;
-
-  const sumCommits = rows.reduce(
-    (s, r) => s + (Number(r.total_commits) || 0),
-    0
-  );
-  const sumAdd = rows.reduce(
-    (s, r) => s + (Number(r.total_loc_added) || 0),
-    0
-  );
-  const sumDel = rows.reduce(
-    (s, r) => s + (Number(r.total_loc_deleted) || 0),
-    0
-  );
-  const analyzed = rows.filter((r) => r.analysis_status === "analyzed").length;
-  const nRepos = rows.length || 1;
-  const avgCommits = sumCommits / nRepos;
+  const unscored = Math.max(0, total - scored);
+  const flagged = rows.filter((r) => hasAnyFlagWithAdmin(r)).length;
+  const forks = rows.filter((r) => {
+    const url = r.repo || getSubmissionInfoForRow(r)?.repo_url || "";
+    return getCachedForkStatus(url) === "fork";
+  }).length;
 
   if (stats) {
     stats.innerHTML = `
-    <div class="manager-stat"><span class="manager-stat-num">${tracked}</span><span class="manager-stat-lbl">Total</span></div>
-    <div class="manager-stat"><span class="manager-stat-num">${moneyMovement}</span><span class="manager-stat-lbl">Money mov.</span></div>
-    <div class="manager-stat"><span class="manager-stat-num">${financialIntelligence}</span><span class="manager-stat-lbl">Fin. intel.</span></div>
-    <div class="manager-stat"><span class="manager-stat-num">${flagged}</span><span class="manager-stat-lbl">Flagged</span></div>
-    <div class="manager-stat"><span class="manager-stat-num">${persistedScores}</span><span class="manager-stat-lbl">DB scores</span></div>
-    <div class="manager-stat"><span class="manager-stat-num">0</span><span class="manager-stat-lbl">Local-only</span></div>
-    <div class="manager-stat"><span class="manager-stat-num">${noTrackLabel}</span><span class="manager-stat-lbl">No track</span></div>
-    <div class="manager-stat"><span class="manager-stat-num">${vagueTrack}</span><span class="manager-stat-lbl">Other track</span></div>
-    <div class="manager-stat"><span class="manager-stat-num">${formatNumber(sumCommits)}</span><span class="manager-stat-lbl">Σ commits</span></div>
-    <div class="manager-stat"><span class="manager-stat-num">${avgCommits.toFixed(1)}</span><span class="manager-stat-lbl">Avg cmt/repo</span></div>
-    <div class="manager-stat"><span class="manager-stat-num">${formatNumber(analyzed)}</span><span class="manager-stat-lbl">Analyzed</span></div>
-    <div class="manager-stat"><span class="manager-stat-num">${formatNumber(sumAdd)}</span><span class="manager-stat-lbl">Σ +LOC</span></div>
-  `;
-  }
-
-  if (aggregates) {
-    aggregates.innerHTML = `
-    <div class="manager-aggregate-strip">
-      <div class="manager-agg"><span class="manager-agg-k">Σ commits</span><span class="manager-agg-v">${formatNumber(
-        sumCommits
-      )}</span></div>
-      <div class="manager-agg"><span class="manager-agg-k">Σ +LOC</span><span class="manager-agg-v">${formatNumber(
-        sumAdd
-      )}</span></div>
-      <div class="manager-agg"><span class="manager-agg-k">Σ −LOC</span><span class="manager-agg-v">${formatNumber(
-        sumDel
-      )}</span></div>
-      <div class="manager-agg"><span class="manager-agg-k">Churn (add+del)</span><span class="manager-agg-v">${formatNumber(
-        sumAdd + sumDel
-      )}</span></div>
-      <div class="manager-agg"><span class="manager-agg-k">Avg commits/repo</span><span class="manager-agg-v">${avgCommits.toFixed(
-        1
-      )}</span></div>
-    </div>
-  `;
+      <div class="manager-stat"><span class="manager-stat-num">${total}</span><span class="manager-stat-lbl">Total submissions</span></div>
+      <div class="manager-stat manager-stat--accent"><span class="manager-stat-num">${scored}</span><span class="manager-stat-lbl">Scored · ${unscored} unscored</span></div>
+      <div class="manager-stat manager-stat--danger"><span class="manager-stat-num">${flagged}</span><span class="manager-stat-lbl">Flagged</span></div>
+      <div class="manager-stat"><span class="manager-stat-num">${forks}</span><span class="manager-stat-lbl">Forks</span></div>
+    `;
   }
 
   renderOverallLeaderboard();
@@ -3483,9 +4144,8 @@ function renderManagerPanel() {
     "financial-intelligence",
     "leaderboard-financial-intelligence"
   );
-  renderManagerSnapshot();
   renderFlaggedList();
-  renderLocalSubmissions();
+  renderForkedList();
 }
 
 function renderOverallLeaderboard() {
@@ -3582,77 +4242,11 @@ function renderLeaderboard(category, listId) {
     .join("");
 }
 
-function renderManagerSnapshot() {
-  const tbody = document.getElementById("manager-snapshot-tbody");
-  if (!tbody) return;
-  const rows = [...(window.__summaryRows || [])].sort(
-    (a, b) =>
-      (Number(b.total_commits) || 0) - (Number(a.total_commits) || 0)
-  );
-
-  if (rows.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" class="manager-snapshot-empty">No submission rows — check API or data bundle.</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = rows
-    .map((r) => {
-      const sub = getSubmissionInfoForRow(r);
-      const repoId =
-        r.repo_id || r.submission_id || extractRepoName(r.repo || sub?.repo_url);
-      const name =
-        sub?.project_name || r.repo_id || extractRepoName(r.repo);
-      const track = getRowTrackLabel(r) || "—";
-      const tc = Number(r.total_commits) || 0;
-      const la = Number(r.total_loc_added) || 0;
-      const ld = Number(r.total_loc_deleted) || 0;
-      const tagStr = integrityShortTags(r).join(" · ") || "—";
-      const j = rowJudgeScore(r);
-      const url = r.repo || sub?.repo_url || "";
-      const demo = sub?.demo_url || "";
-      const links = `${repoLink(url)}${
-        demo ? ` ${demoLink(sub)}` : ""
-      } <button type="button" class="btn btn-ghost manager-open-detail" data-repo="${escapeAttr(
-        repoId
-      )}">Details</button>`;
-      return `<tr data-repo-id="${escapeAttr(repoId)}" class="manager-snap-row" tabindex="0">
-        <td><span class="snap-name">${escapeHtml(name)}</span>${tc ? `<span class="snap-meta">${tc} commits</span>` : ""}</td>
-        <td>${trackChip(track === "—" ? "" : track)}</td>
-        <td class="num-cell">${tc}</td>
-        <td class="num-cell loc-add">+${formatNumber(la)}</td>
-        <td class="num-cell loc-del">−${formatNumber(ld)}</td>
-        <td class="snap-flags">${escapeHtml(tagStr)}</td>
-        <td class="num-cell">${j > 0 ? j.toFixed(1) : "—"}</td>
-        <td class="snap-actions">${links}</td>
-      </tr>`;
-    })
-    .join("");
-
-  tbody.querySelectorAll(".manager-open-detail").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const id = btn.getAttribute("data-repo");
-      if (id) openDrawer(id);
-    });
-  });
-  tbody.querySelectorAll(".manager-snap-row").forEach((tr) => {
-    const id = tr.getAttribute("data-repo-id");
-    const open = () => id && openDrawer(id);
-    tr.addEventListener("dblclick", open);
-    tr.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        open();
-      }
-    });
-  });
-}
-
 function renderFlaggedList() {
   const ul = document.getElementById("flagged-list");
   if (!ul) return;
   const rows = window.__summaryRows || [];
-  const flagged = rows.filter((r) => hasAnyFlag(r)).slice(0, 30);
+  const flagged = rows.filter((r) => hasAnyFlagWithAdmin(r)).slice(0, 30);
   if (flagged.length === 0) {
     ul.innerHTML =
       '<li style="justify-content:center;color:var(--muted);font-style:italic">No flags raised</li>';
@@ -3667,9 +4261,11 @@ function renderFlaggedList() {
         tags.push("big-init");
       if (Number(r.has_merge_commits) > 0) tags.push("merge");
       const sub = getSubmissionInfoForRow(r);
+      const url = r.repo || sub?.repo_url || "";
+      if (getCachedForkStatus(url) === "fork") tags.push("fork");
+      if (isRowAdminFlagged(r)) tags.push("admin⚑");
       const name = sub?.project_name || r.repo_id;
       const tc = Number(r.total_commits) || 0;
-      const url = r.repo || sub?.repo_url || "";
       const repoId =
         r.repo_id || r.submission_id || extractRepoName(r.repo || url);
       const detailBtn = `<button type="button" class="btn btn-ghost manager-open-detail" data-repo="${escapeAttr(
@@ -3700,29 +4296,57 @@ function renderFlaggedList() {
   });
 }
 
-function renderLocalSubmissions() {
-  const ul = document.getElementById("local-submissions");
+function renderForkedList() {
+  const ul = document.getElementById("forked-list");
   if (!ul) return;
-  const local = getLocalList(localSubmissionsKey());
-  if (local.length === 0) {
+  const rows = window.__summaryRows || [];
+  const forks = rows.filter((r) => {
+    const url = r.repo || getSubmissionInfoForRow(r)?.repo_url || "";
+    return getCachedForkStatus(url) === "fork";
+  });
+  if (forks.length === 0) {
     ul.innerHTML =
-      '<li style="justify-content:center;color:var(--muted);font-style:italic">No browser-only submissions. Live submissions must be in Supabase.</li>';
+      '<li style="justify-content:center;color:var(--muted);font-style:italic">No forked repos detected (yet). Fork status resolves async after opening the Submissions tab.</li>';
     return;
   }
-  ul.innerHTML = local
-    .map(
-      (s) => `
-    <li>
-      <span class="flagged-name">${escapeHtml(s.project_name)} · ${escapeHtml(
-        s.team_name
-      )}</span>
-      <span class="flagged-tags">${escapeHtml(
-        s.chosen_track || "unassigned"
-      )}</span>
-    </li>
-  `
-    )
+  ul.innerHTML = forks
+    .map((r) => {
+      const sub = getSubmissionInfoForRow(r);
+      const url = r.repo || sub?.repo_url || "";
+      const name = sub?.project_name || r.repo_id || extractRepoName(url);
+      const parent = (loadForkCache()[normalizeRepoKey(url)] || {}).parent;
+      const repoId =
+        r.repo_id || r.submission_id || extractRepoName(r.repo || url);
+      const detailBtn = `<button type="button" class="btn btn-ghost manager-open-detail" data-repo="${escapeAttr(
+        repoId
+      )}">Details</button>`;
+      const linkPart = url
+        ? `<a class="repo-link" href="${escapeAttr(
+            url
+          )}" target="_blank" rel="noreferrer">Repo</a>`
+        : "";
+      return `
+      <li>
+        <span class="flagged-name">${escapeHtml(name)}${
+          parent
+            ? `<span class="flagged-meta">forked from ${escapeHtml(parent)}</span>`
+            : ""
+        }</span>
+        <span class="flagged-actions"><span class="flagged-tags">FORK</span>${
+          linkPart ? ` ${linkPart}` : ""
+        } ${detailBtn}</span>
+      </li>
+    `;
+    })
     .join("");
+
+  ul.querySelectorAll(".manager-open-detail").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const id = btn.getAttribute("data-repo");
+      if (id) openDrawer(id);
+    });
+  });
 }
 
 function exportSubmissionsJSON() {
@@ -3786,8 +4410,6 @@ function toast(message, options) {
     const detail = String(opts.detail || message || "").trim();
     const meta = String(opts.meta || "").trim();
     wrap.innerHTML =
-      '<span class="toast-glow" aria-hidden="true"></span>' +
-      '<span class="toast-shine" aria-hidden="true"></span>' +
       '<div class="toast-surface">' +
       '<span class="toast-check" aria-hidden="true"><span class="toast-check-mark">✓</span></span>' +
       '<div class="toast-text">' +
@@ -3915,9 +4537,81 @@ document.addEventListener("DOMContentLoaded", () => {
       (t.id === "filter-preT0" ||
         t.id === "filter-bulk" ||
         t.id === "filter-merge" ||
+        t.id === "filter-fork" ||
         t.id === "sort-select")
     ) {
       maybeRenderSummaryTable();
+    }
+  });
+
+  // Admin row actions inside the submissions table (delegated, since the table
+  // lives in a <template> until the manager modal is opened).
+  document.getElementById("manager-modal")?.addEventListener("click", (e) => {
+    const t = e.target;
+    if (!t || !t.closest) return;
+    const editBtn = t.closest("[data-row-edit]");
+    if (editBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const id = editBtn.getAttribute("data-row-edit");
+      if (id) openDrawer(id);
+      return;
+    }
+    const flagBtn = t.closest("[data-row-flag]");
+    if (flagBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const url = flagBtn.getAttribute("data-row-flag");
+      if (!url) return;
+      const now = toggleAdminFlag(url);
+      toast(
+        now
+          ? "Flagged — visible in Integrity watchlist"
+          : "Unflagged"
+      );
+      maybeRenderSummaryTable();
+      renderManagerPanel();
+      return;
+    }
+    const delBtn = t.closest("[data-row-delete]");
+    if (delBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const url = delBtn.getAttribute("data-row-delete");
+      const name = delBtn.getAttribute("data-row-name") || "this submission";
+      if (!url) return;
+      const ok = window.confirm(
+        `Delete ${name}?\n\nThis attempts a server-side delete and otherwise hides the row in this browser. Cannot be undone here.`
+      );
+      if (!ok) return;
+      const repoKey = normalizeRepoKey(url);
+      (async () => {
+        let serverDeleted = false;
+        try {
+          const res = await fetch(
+            `/api/submissions?repo_key=${encodeURIComponent(repoKey)}`,
+            { method: "DELETE" }
+          );
+          serverDeleted = res.ok;
+        } catch {}
+        markRowAdminHidden(url);
+        // Drop from in-memory rows so the panel rerenders cleanly.
+        if (Array.isArray(window.__summaryRows)) {
+          window.__summaryRows = window.__summaryRows.filter((r) => {
+            const k = normalizeRepoKey(
+              r.repo || getSubmissionInfoForRow(r)?.repo_url || ""
+            );
+            return k !== repoKey;
+          });
+        }
+        maybeRenderSummaryTable();
+        renderManagerPanel();
+        toast(
+          serverDeleted
+            ? `Deleted ${name}`
+            : `Hid ${name} locally (no server DELETE endpoint — follow-up needed)`
+        );
+      })();
     }
   });
 
@@ -4060,6 +4754,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Submit + Judge forms
   const submitForm = document.getElementById("submit-form");
   if (submitForm) submitForm.addEventListener("submit", handleSubmitForm);
+  setupTeamRosterHandlers();
   const judgeForm = document.getElementById("judge-form");
   if (judgeForm) judgeForm.addEventListener("submit", handleJudgeForm);
 
@@ -4095,7 +4790,6 @@ document.addEventListener("DOMContentLoaded", () => {
       openJudgeSidePanel();
     });
   }
-  initJudgeSwipeControls();
   initJudgePanelToggle();
   document.querySelectorAll("[data-judge-stage-tab]").forEach((b) => {
     b.addEventListener("click", () => {
@@ -4229,14 +4923,14 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // ← / → / [ / ] cycle queue when not typing
+    // ← / → / [ / ] / ↑ / ↓ cycle queue when not typing
     if (judgeOpen && !inTextInput) {
-      if (e.key === "ArrowRight" || e.key === "]") {
+      if (e.key === "ArrowRight" || e.key === "]" || e.key === "ArrowDown") {
         e.preventDefault();
         moveJudgeSubmission(1);
         return;
       }
-      if (e.key === "ArrowLeft" || e.key === "[") {
+      if (e.key === "ArrowLeft" || e.key === "[" || e.key === "ArrowUp") {
         e.preventDefault();
         moveJudgeSubmission(-1);
         return;
@@ -4694,7 +5388,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (tbody) {
         tbody.innerHTML = `
       <tr>
-        <td colspan="13">
+        <td colspan="14">
           <div class="empty-state">
             <div class="empty-state-icon">⚠️</div>
             <div>Failed to load data: ${err.message}</div>

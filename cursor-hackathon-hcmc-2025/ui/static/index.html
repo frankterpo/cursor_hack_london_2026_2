@@ -10,7 +10,7 @@
       name="description"
       content="Cursor × Thrad London 2026 — agentic builds on conversational ad infrastructure: buy-side, sell-side, and measurement inside LLM-native channels."
     />
-    <link rel="stylesheet" href="style.css?v=136" />
+    <link rel="stylesheet" href="style.css?v=152" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -1125,14 +1125,102 @@
               />
             </label>
           </div>
-          <label class="field">
+          <div class="field team-roster" data-team-roster>
             <span class="field-label">Team members <em>*</em></span>
-            <input
-              name="team_members"
-              required
-              placeholder="Alice, Bob, Charlie"
-            />
-          </label>
+            <p class="team-roster__hint">
+              Add each teammate. Cursor invites and Luma check-in use these.
+            </p>
+            <ul
+              class="team-roster__chips"
+              data-team-roster-chips
+              aria-live="polite"
+              aria-label="Current team members"
+            ></ul>
+            <p
+              class="team-roster__empty"
+              data-team-roster-empty
+              role="status"
+            >
+              No members yet — add at least one to submit.
+            </p>
+            <div class="team-roster__add-wrap">
+              <button
+                type="button"
+                class="btn btn-ghost btn-small team-roster__add"
+                data-team-roster-add
+                aria-expanded="false"
+                aria-controls="team-member-drawer"
+              >
+                + Add member
+              </button>
+              <div
+                class="team-roster__drawer"
+                id="team-member-drawer"
+                data-team-roster-drawer
+                hidden
+                role="group"
+                aria-label="Member details"
+              >
+                <div class="team-roster__drawer-grid">
+                  <label class="field field--inline">
+                    <span class="field-label">Full name <em>*</em></span>
+                    <input
+                      type="text"
+                      data-tm-field="full_name"
+                      autocomplete="name"
+                      placeholder="Alice Example"
+                    />
+                  </label>
+                  <label class="field field--inline">
+                    <span class="field-label">Email for Cursor <em>*</em></span>
+                    <input
+                      type="email"
+                      data-tm-field="cursor_email"
+                      autocomplete="email"
+                      placeholder="alice@example.com"
+                    />
+                  </label>
+                  <label class="field field--inline">
+                    <span class="field-label">Luma profile</span>
+                    <input
+                      type="url"
+                      data-tm-field="luma_profile"
+                      placeholder="https://lu.ma/u/alice"
+                    />
+                  </label>
+                  <label class="field field--inline">
+                    <span class="field-label">LinkedIn or X URL</span>
+                    <input
+                      type="url"
+                      data-tm-field="social_url"
+                      placeholder="https://linkedin.com/in/alice"
+                    />
+                  </label>
+                </div>
+                <p
+                  class="team-roster__drawer-error"
+                  data-team-roster-drawer-error
+                  role="alert"
+                ></p>
+                <div class="team-roster__drawer-actions">
+                  <button
+                    type="button"
+                    class="btn btn-ghost btn-small"
+                    data-team-roster-cancel
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-small"
+                    data-team-roster-save
+                  >
+                    + Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="field">
             <span class="field-label">Technologies used <em>*</em></span>
             <div
@@ -1196,57 +1284,136 @@
           class="judge-workbench__primary"
           aria-label="Submission detail"
         >
-          <header class="judge-stage-head">
-            <div class="judge-stage-head__row">
-              <div class="judge-stage-head__nav">
-                <button
-                  type="button"
-                  class="judge-stage-nav"
-                  id="judge-prev-submission"
-                  aria-label="Previous submission"
-                  title="Previous (← or [)"
+          <div class="judge-stage-split">
+            <div class="judge-stage-split__media">
+              <div class="judge-demo-card" id="judge-demo-card">
+            <div class="judge-demo-stage" id="judge-demo-stage">
+              <iframe
+                title="Demo video preview"
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                allowfullscreen
+              ></iframe>
+              <div class="judge-demo-fallback" id="judge-demo-fallback" hidden>
+                <p class="judge-demo-fallback__msg">No embeddable demo URL</p>
+                <p class="judge-demo-fallback__hint" id="judge-demo-fallback-hint" hidden></p>
+                <a
+                  class="btn btn-ghost btn-small judge-demo-fallback__link"
+                  href="#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Open demo ↗</a
                 >
-                  &larr;
-                </button>
-                <span class="judge-stage-count" id="judge-video-count">0 / 0</span>
-                <button
-                  type="button"
-                  class="judge-stage-nav"
-                  id="judge-next-submission"
-                  aria-label="Next submission"
-                  title="Next (→ or ])"
-                >
-                  &rarr;
-                </button>
-                <button
-                  type="button"
-                  class="judge-stage-nav judge-stage-nav--refresh"
-                  id="judge-refresh-submissions"
-                  aria-label="Refresh submissions list"
-                  title="Refresh queue"
-                >
-                  ↻
-                </button>
               </div>
-              <div class="judge-stage-head__title-block">
-                <p
-                  class="judge-stage-meta-row"
-                  id="judge-stage-chips"
+
+              <div class="judge-reels-overlay" id="judge-reels-overlay">
+                <span
+                  class="judge-reels-counter"
+                  id="judge-video-count"
                   aria-live="polite"
-                ></p>
-                <h2 class="judge-stage-title" id="judge-video-title">
-                  Pick a submission
-                </h2>
-                <p class="judge-stage-meta" id="judge-video-meta"></p>
+                  aria-label="Submission position"
+                  >0 / 0</span
+                >
+
+                <div
+                  class="judge-reels-nav"
+                  role="group"
+                  aria-label="Submission navigation"
+                >
+                  <button
+                    type="button"
+                    class="judge-reels-btn"
+                    id="judge-prev-submission"
+                    aria-label="Previous submission"
+                    title="Previous (↑ / ← / [)"
+                  >
+                    <span aria-hidden="true">▲</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="judge-reels-btn"
+                    id="judge-next-submission"
+                    aria-label="Next submission"
+                    title="Next (↓ / → / ])"
+                  >
+                    <span aria-hidden="true">▼</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="judge-reels-btn judge-reels-btn--refresh"
+                    id="judge-refresh-submissions"
+                    aria-label="Refresh submissions list"
+                    title="Refresh queue"
+                  >
+                    <span aria-hidden="true">↻</span>
+                  </button>
+                </div>
+
+                <div class="judge-reels-caption" id="judge-reels-caption">
+                  <p
+                    class="judge-reels-chips"
+                    id="judge-stage-chips"
+                    aria-live="polite"
+                  ></p>
+                  <h2 class="judge-reels-title" id="judge-video-title">
+                    Pick a submission
+                  </h2>
+                  <p class="judge-reels-meta" id="judge-video-meta"></p>
+                </div>
               </div>
             </div>
+            </div>
+            </div>
+          </div>
+
+          <footer class="judge-stage-foot" aria-hidden="true">
+            <span><kbd>↑</kbd> / <kbd>↓</kbd> prev · next</span>
+            <span><kbd>←</kbd> / <kbd>→</kbd> prev · next</span>
+            <span><kbd>⌘</kbd> + <kbd>↵</kbd> save</span>
+            <span><kbd>Esc</kbd> close</span>
+          </footer>
+        </section>
+
+        <!-- Right column: sticky scoring rail -->
+        <aside
+          class="judge-workbench__rail"
+          id="judge-rail"
+          aria-label="Scoring rail"
+        >
+          <header class="judge-rail-head">
+            <span id="judge-modal-title" class="judge-rail-eyebrow"
+              >Judge panel</span
+            >
+            <button
+              type="button"
+              class="close-btn judge-rail-close"
+              data-close-modal
+              aria-label="Close judge modal"
+            >
+              &times;
+            </button>
           </header>
 
-          <nav class="judge-stage-tabs" role="tablist" aria-label="Stage view">
+          <div class="judge-rail-identity" aria-live="polite">
+            <span class="judge-rail-mini-label">Judging as</span>
+            <div class="judge-rail-identity__row">
+              <p id="judge-display-name" class="judge-rail-identity__name">—</p>
+              <span
+                id="judge-queue-stats"
+                class="judge-rail-identity__chip"
+              ></span>
+            </div>
+          </div>
+
+          <nav
+            class="judge-stage-tabs judge-stage-tabs--rail"
+            role="tablist"
+            aria-label="Submission detail views"
+          >
             <button
               type="button"
               class="judge-stage-tab is-active"
-              id="judge-tab-overview"
+              id="judge-tab-overview-rail"
               role="tab"
               aria-selected="true"
               aria-controls="judge-stage-overview"
@@ -1257,7 +1424,7 @@
             <button
               type="button"
               class="judge-stage-tab"
-              id="judge-tab-code"
+              id="judge-tab-code-rail"
               role="tab"
               aria-selected="false"
               aria-controls="judge-stage-code"
@@ -1269,7 +1436,7 @@
             <button
               type="button"
               class="judge-stage-tab"
-              id="judge-tab-ai"
+              id="judge-tab-ai-rail"
               role="tab"
               aria-selected="false"
               aria-controls="judge-stage-ai"
@@ -1280,12 +1447,15 @@
             </button>
           </nav>
 
-          <div class="judge-stage-body" id="judge-stage-body">
+          <div
+            class="judge-stage-body judge-stage-body--rail"
+            id="judge-stage-body"
+          >
             <section
               id="judge-stage-overview"
               class="judge-stage-pane is-active"
               role="tabpanel"
-              aria-labelledby="judge-tab-overview"
+              aria-labelledby="judge-tab-overview-rail"
             >
               <p
                 class="judge-side-repo-pill"
@@ -1306,7 +1476,7 @@
               id="judge-stage-code"
               class="judge-stage-pane"
               role="tabpanel"
-              aria-labelledby="judge-tab-code"
+              aria-labelledby="judge-tab-code-rail"
               hidden
             >
               <div id="judge-code-signal" class="judge-code-signal"></div>
@@ -1371,7 +1541,7 @@
               id="judge-stage-ai"
               class="judge-stage-pane"
               role="tabpanel"
-              aria-labelledby="judge-tab-ai"
+              aria-labelledby="judge-tab-ai-rail"
               hidden
             >
               <div
@@ -1405,45 +1575,6 @@
                 </table>
               </div>
             </section>
-          </div>
-
-          <footer class="judge-stage-foot" aria-hidden="true">
-            <span><kbd>←</kbd> / <kbd>→</kbd> prev · next</span>
-            <span><kbd>[</kbd> / <kbd>]</kbd> prev · next</span>
-            <span><kbd>⌘</kbd> + <kbd>↵</kbd> save</span>
-            <span><kbd>Esc</kbd> close</span>
-          </footer>
-        </section>
-
-        <!-- Right column: sticky scoring rail -->
-        <aside
-          class="judge-workbench__rail"
-          id="judge-rail"
-          aria-label="Scoring rail"
-        >
-          <header class="judge-rail-head">
-            <span id="judge-modal-title" class="judge-rail-eyebrow"
-              >Judge panel</span
-            >
-            <button
-              type="button"
-              class="close-btn judge-rail-close"
-              data-close-modal
-              aria-label="Close judge modal"
-            >
-              &times;
-            </button>
-          </header>
-
-          <div class="judge-rail-identity" aria-live="polite">
-            <span class="judge-rail-mini-label">Judging as</span>
-            <div class="judge-rail-identity__row">
-              <p id="judge-display-name" class="judge-rail-identity__name">—</p>
-              <span
-                id="judge-queue-stats"
-                class="judge-rail-identity__chip"
-              ></span>
-            </div>
           </div>
 
           <details
@@ -1540,14 +1671,14 @@
             <div id="judge-coverage-chips" class="judge-coverage-chips"></div>
           </details>
 
-          <section class="judge-rail-queue" aria-label="Submission queue">
-            <div class="judge-rail-queue__head">
+          <details class="judge-rail-queue" open aria-label="Submission queue">
+            <summary class="judge-rail-queue__head judge-rail-queue__summary">
               <span class="judge-rail-mini-label">Queue</span>
               <span
                 class="judge-rail-queue__count"
                 id="judge-rail-queue-count"
               ></span>
-            </div>
+            </summary>
             <select
               id="judge-submission-picker"
               class="judge-submission-select--hidden"
@@ -1556,7 +1687,7 @@
               tabindex="-1"
             ></select>
             <div id="judge-score-queue" class="judge-rail-queue__list"></div>
-          </section>
+          </details>
 
           <!-- Preserved but visually hidden — kept so existing renderers stay wired -->
           <div
@@ -1651,7 +1782,7 @@
                 aria-controls="panel-mgr-integrity"
                 tabindex="-1"
               >
-                Integrity &amp; local
+                Integrity
               </button>
             </div>
 
@@ -1668,49 +1799,11 @@
                 aria-label="Submission and analysis totals"
               ></div>
 
-              <section
-                class="manager-section manager-section--compact"
-                aria-label="Engineering signals aggregate"
-              >
-                <h3>Engineering signals (aggregate)</h3>
-                <p class="manager-hint">
-                  Aggregated from the Git analysis feed (commits + churn). Use
-                  alongside integrity flags when reviewing submissions.
-                </p>
-                <div class="manager-aggregates" id="manager-aggregates"></div>
-              </section>
-
               <div
                 id="manager-submissions-host"
-                class="manager-submissions-host"
+                class="manager-submissions-host manager-submissions-host--full"
                 aria-label="Live submissions table"
               ></div>
-
-              <section class="manager-section manager-section--first">
-                <h3>All submissions · snapshot</h3>
-                <p class="manager-hint">
-                  Quick scan with commits, churn, and links. Row actions open the
-                  same detail drawer as the main table. API-backed lists are
-                  scoped to the active hackathon on the server.
-                </p>
-                <div class="manager-table-scroll">
-                  <table class="manager-snapshot-table" id="manager-snapshot-table">
-                    <thead>
-                      <tr>
-                        <th scope="col">Project</th>
-                        <th scope="col">Track</th>
-                        <th scope="col">Commits</th>
-                        <th scope="col">+LOC</th>
-                        <th scope="col">−LOC</th>
-                        <th scope="col">Integrity</th>
-                        <th scope="col">Judge Ø</th>
-                        <th scope="col">Links</th>
-                      </tr>
-                    </thead>
-                    <tbody id="manager-snapshot-tbody"></tbody>
-                  </table>
-                </div>
-              </section>
             </div>
 
             <div
@@ -1722,9 +1815,20 @@
               hidden
             >
               <section class="manager-section manager-section--first">
-                <h3>Leaderboard · overall (judge average)</h3>
+                <h3>
+                  Leaderboard · overall (judge average)
+                  <span
+                    class="live-indicator"
+                    id="leaderboard-live-indicator"
+                    aria-label="Live updating every few seconds"
+                    title="Live · polling judge totals"
+                  >
+                    <span class="live-indicator__dot" aria-hidden="true"></span>
+                    <span class="live-indicator__label">LIVE</span>
+                  </span>
+                </h3>
                 <p class="manager-hint">
-                  Highest combined rubric scores — across both tracks.
+                  Highest combined rubric scores — across both tracks. Auto-refreshes every 8s while this tab is open.
                 </p>
                 <div class="leaderboard leaderboard--full">
                   <ol id="leaderboard-overall"></ol>
@@ -1760,31 +1864,26 @@
               hidden
             >
               <section class="manager-section manager-section--first">
-            <h3>Integrity watchlist</h3>
-            <p class="manager-hint">
-              Projects with one or more integrity flags raised.
-            </p>
-            <ul id="flagged-list" class="flagged-list"></ul>
-          </section>
+                <h3>Integrity watchlist</h3>
+                <p class="manager-hint">
+                  Projects with one or more integrity flags raised (Pre-T₀ / Bulk / Init / Merge / Fork).
+                </p>
+                <ul id="flagged-list" class="flagged-list"></ul>
+              </section>
 
-          <section class="manager-section">
-            <h3>Locally-submitted projects</h3>
-            <p class="manager-hint">
-                  Submissions entered through the Submit modal this session
-                  (browser only).
-            </p>
-            <ul id="local-submissions" class="flagged-list"></ul>
-          </section>
+              <section class="manager-section">
+                <h3>Suspicious repos · forks</h3>
+                <p class="manager-hint">
+                  Repos detected as forks via GitHub
+                  <code>/repos/&lt;owner&gt;/&lt;repo&gt;</code>. Unauthenticated requests
+                  are best-effort (60 req/h per IP). Results are cached for 24h in the browser.
+                </p>
+                <ul id="forked-list" class="flagged-list"></ul>
+              </section>
             </div>
           </div>
 
-          <footer class="modal-foot">
-            <p class="form-help">
-              Export downloads JSON including merged Git summary rows
-              (<code>github_summary_rows</code>), local scores, and
-              browser-only submissions. Production can POST the same payload to
-              your API.
-            </p>
+          <footer class="modal-foot modal-foot--manager">
             <div class="modal-actions">
               <button
                 type="button"
@@ -1967,6 +2066,11 @@
                   <label><input type="checkbox" id="filter-preT0" /> Pre-T0</label>
                   <label><input type="checkbox" id="filter-bulk" /> Bulk</label>
                   <label><input type="checkbox" id="filter-merge" /> Merge</label>
+                  <label
+                    class="filter-fork"
+                    title="Show only repos detected as forks"
+                    ><input type="checkbox" id="filter-fork" /> Forks</label
+                  >
                   <div class="sorter">
                     <span>Sort by</span>
                     <select id="sort-select" aria-label="Sort submissions">
@@ -1986,6 +2090,20 @@
                     <tr>
                       <th scope="col" class="th-repo">Submission</th>
                       <th scope="col" class="th-track">Track</th>
+                      <th
+                        scope="col"
+                        class="th-partners"
+                        data-tooltip="Sponsor integrations selected on the submission form"
+                      >
+                        Stack
+                      </th>
+                      <th
+                        scope="col"
+                        class="th-flag"
+                        data-tooltip="GitHub fork detection: NEW (created during the hack) / FORK (forked from another repo) / UNKNOWN (rate-limited or private)"
+                      >
+                        Repo
+                      </th>
                       <th scope="col" class="th-status">Status</th>
                       <th
                         scope="col"
@@ -2051,6 +2169,7 @@
                         Assessment
                       </th>
                       <th scope="col" class="th-ai">AI Summary</th>
+                      <th scope="col" class="th-actions">Actions</th>
                     </tr>
                   </thead>
                   <tbody></tbody>
@@ -2181,6 +2300,6 @@
       }
     </script>
 
-    <script src="script.js?v=129"></script>
+    <script src="script.js?v=141"></script>
   </body>
 </html>

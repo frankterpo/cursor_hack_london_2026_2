@@ -14,7 +14,7 @@ const DEFAULT_HACKATHON_ID =
 
 /** Slug matching `hacks.json` `active_hack_id` (UI filters on this, not the UUID). */
 const ACTIVE_HACK_SLUG =
-  process.env.ACTIVE_HACK_SLUG || "cursor-live-london-q3-2026";
+  process.env.ACTIVE_HACK_SLUG || "cursor-thrads-london-2026";
 
 /**
  * Resolve the active hackathon UUID by slug, with a process-level cache so
@@ -119,23 +119,45 @@ async function getSubmissions() {
       if (!sub.technologies) sub.technologies = [];
     }
   }
+  try {
+    const teamBySub = await getTeamsBySubmissionMap(
+      submissions.map((s) => s.id).filter(Boolean)
+    );
+    for (const sub of submissions) {
+      sub.team = (sub.id && teamBySub.get(sub.id)) || null;
+      sub.team_members_legacy_text = String(sub.team_members || "");
+    }
+  } catch (error) {
+    console.warn("[db] getTeamsBySubmissionMap failed:", error.message || error);
+    for (const sub of submissions) {
+      if (sub.team === undefined) sub.team = null;
+      sub.team_members_legacy_text = String(sub.team_members || "");
+    }
+  }
   return submissions;
 }
 
 async function upsertSubmission(row) {
   const activeHackathonId = await getActiveHackathonUuid();
   const title = submissionTitleForRow(row);
+  // Prefer a comma-joined legacy string derived from the structured `team` if present,
+  // so older readers that still consume submissions.team_members keep working.
+  const structuredTeam = normalizeTeamPayload(row.team);
+  const derivedLegacyMembers = structuredTeam
+    ? structuredTeam.members.map((m) => m.full_name).filter(Boolean).join(", ")
+    : "";
+  const teamMembersLegacy = derivedLegacyMembers || row.team_members || "";
   const payload = {
     repo_key: row.repo_key,
     repo_url: row.repo_url,
     repo_id: row.repo_id || "",
     title,
-    team_name: row.team_name || "",
+    team_name: row.team_name || (structuredTeam ? structuredTeam.name : ""),
     project_name: row.project_name || "",
     chosen_track: row.chosen_track || "",
     demo_url: row.demo_url || "",
     description: row.description || "",
-    team_members: row.team_members || "",
+    team_members: teamMembersLegacy,
     notes: row.notes || "",
     submitted_at: row.timestamp || row.submitted_at || new Date().toISOString(),
     analysis_status: row.analysis_status || "pending",
@@ -343,6 +365,140 @@ async function getSubmissionTechnologiesMap(hackathonId) {
   return out;
 }
 
+// --- Teams + members ---
+
+/**
+ * Sanitize an incoming `team` payload from the submit form.
+ * Returns null if there's no usable team info (no name, no valid members).
+ */
+function normalizeTeamPayload(team) {
+  if (!team || typeof team !== "object") return null;
+  const name = String(team.name || "").trim();
+  const rawMembers = Array.isArray(team.members) ? team.members : [];
+  const members = rawMembers
+    .filter((m) => m && typeof m === "object")
+    .map((m) => ({
+      full_name: String(m.full_name || "").trim(),
+      cursor_email: String(m.cursor_email || "").trim(),
+      luma_profile: String(m.luma_profile || "").trim(),
+      social_url: String(m.social_url || "").trim(),
+    }))
+    .filter((m) => m.full_name);
+  if (!name && members.length === 0) return null;
+  return { name, members };
+}
+
+/**
+ * Upsert a team row for a submission + replace its members.
+ * Best-effort: logs and rethrows so the caller can decide whether to bail.
+ */
+async function persistTeam(submissionId, team, { fallbackName = "" } = {}) {
+  if (!submissionId) return null;
+  const normalized = normalizeTeamPayload(team) || { name: "", members: [] };
+  const name = normalized.name || String(fallbackName || "").trim();
+  const upserted = await supabaseRest("/teams?on_conflict=submission_id", {
+    method: "POST",
+    headers: { Prefer: "return=representation,resolution=merge-duplicates" },
+    body: JSON.stringify({ submission_id: submissionId, name }),
+  });
+  let teamId = upserted && upserted[0] && upserted[0].id;
+  if (!teamId) {
+    const sid = encodeURIComponent(submissionId);
+    const existing = await supabaseRest(
+      `/teams?submission_id=eq.${sid}&select=id&limit=1`
+    );
+    teamId = existing && existing[0] && existing[0].id;
+  }
+  if (!teamId) {
+    console.warn(`[db] persistTeam: no team id for submission ${submissionId}`);
+    return null;
+  }
+  const tid = encodeURIComponent(teamId);
+  await supabaseRest(`/team_members?team_id=eq.${tid}`, {
+    method: "DELETE",
+    headers: { Prefer: "return=minimal" },
+  });
+  const memberRows = normalized.members
+    .map((m) => ({
+      team_id: teamId,
+      full_name: m.full_name,
+      cursor_email: m.cursor_email,
+      luma_profile: m.luma_profile,
+      social_url: m.social_url,
+    }))
+    .filter((m) => m.full_name);
+  if (memberRows.length) {
+    await supabaseRest("/team_members", {
+      method: "POST",
+      headers: { Prefer: "return=minimal" },
+      body: JSON.stringify(memberRows),
+    });
+  }
+  console.log(
+    `[db] persistTeam: submission=${submissionId} team_id=${teamId} members=${memberRows.length}`
+  );
+  return teamId;
+}
+
+/** Map of `submission_id -> {id,name,members[]}` for the given submission UUIDs. */
+async function getTeamsBySubmissionMap(submissionIds) {
+  const out = new Map();
+  const ids = Array.from(
+    new Set((submissionIds || []).map((id) => String(id || "").trim()).filter(Boolean))
+  );
+  if (ids.length === 0) return out;
+  const inFilter = ids.join(",");
+  const teams =
+    (await supabaseRest(
+      `/teams?submission_id=in.(${inFilter})&select=id,submission_id,name`
+    )) || [];
+  const teamIds = [];
+  for (const t of teams) {
+    if (!t.submission_id) continue;
+    out.set(t.submission_id, {
+      id: t.id,
+      name: t.name || "",
+      members: [],
+    });
+    if (t.id) teamIds.push(t.id);
+  }
+  if (teamIds.length === 0) return out;
+  const tin = teamIds.join(",");
+  const members =
+    (await supabaseRest(
+      `/team_members?team_id=in.(${tin})&select=id,team_id,full_name,luma_profile,cursor_email,social_url,created_at&order=created_at.asc`
+    )) || [];
+  const byTeam = new Map();
+  for (const m of members) {
+    if (!m.team_id) continue;
+    const list = byTeam.get(m.team_id) || [];
+    list.push({
+      id: m.id,
+      full_name: m.full_name || "",
+      luma_profile: m.luma_profile || "",
+      cursor_email: m.cursor_email || "",
+      social_url: m.social_url || "",
+    });
+    byTeam.set(m.team_id, list);
+  }
+  for (const team of out.values()) {
+    team.members = byTeam.get(team.id) || [];
+  }
+  return out;
+}
+
+/** Hard-delete a team_member by id. Used by the admin DELETE /api/team-members/:id route. */
+async function deleteTeamMember(id) {
+  const trimmed = String(id || "").trim();
+  if (!trimmed) return { deleted: 0 };
+  const tid = encodeURIComponent(trimmed);
+  const result = await supabaseRest(`/team_members?id=eq.${tid}`, {
+    method: "DELETE",
+    headers: { Prefer: "return=representation" },
+  });
+  return { deleted: Array.isArray(result) ? result.length : 0 };
+}
+
 module.exports = {
   getSubmissions,
   upsertSubmission,
@@ -357,6 +513,10 @@ module.exports = {
   setSubmissionTechnologies,
   getSubmissionTechnologiesMap,
   getActiveHackathonUuid,
+  persistTeam,
+  normalizeTeamPayload,
+  getTeamsBySubmissionMap,
+  deleteTeamMember,
   DEFAULT_HACKATHON_ID,
   ACTIVE_HACK_SLUG,
 };
