@@ -3622,10 +3622,12 @@ img.judge-avatar {
   min-height: 0;
   min-width: 0;
   align-items: stretch;
+  height: 100%;
 }
 
 /* ---------- Demo reel (portrait embed) ---------- */
-.judge-demo-card {
+.judge-demo-card,
+#judge-demo-card {
   position: relative;
   flex: 1 1 auto;
   display: flex;
@@ -3633,9 +3635,10 @@ img.judge-avatar {
   align-items: stretch;
   justify-content: flex-start;
   gap: 0;
-  padding: 0 0 10px;
+  padding: 0;
   border-bottom: none;
   min-height: 0;
+  height: 100%;
   /* Reels-style: stop the browser from hijacking the vertical gesture so
      pointerup deltas can drive prev/next. The iframe is a separate document
      and keeps its own touch handling. */
@@ -3643,17 +3646,21 @@ img.judge-avatar {
   width: 100%;
   max-width: 100%;
 }
-.judge-demo-card.is-empty .judge-demo-stage iframe {
+.judge-demo-card.is-empty .judge-demo-stage iframe,
+.judge-demo-card.is-empty .judge-demo-stage video {
   /* Iframe is hidden in empty state, but keep the rule scoped so reels
      overlay controls (counter, nav, refresh) remain at full opacity. */
   opacity: 0.45;
 }
-.judge-demo-stage {
+.judge-demo-stage,
+#judge-demo-stage {
   position: relative;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
-  min-height: 200px;
+  min-height: 0;
   flex: 1 1 auto;
   max-height: none;
   aspect-ratio: unset;
@@ -3662,13 +3669,28 @@ img.judge-avatar {
   background: #000;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
 }
-.judge-demo-stage:has(iframe:not([hidden])[src]:not([src=""])) {
+/* Portrait 9:16 only when the embed is active and fallback panel is hidden */
+.judge-demo-stage:has(iframe:not([hidden])[src]:not([src=""])):has(
+    .judge-demo-fallback[hidden]
+  ),
+.judge-demo-stage:has(video.judge-demo-video:not([hidden])[src]):has(
+    .judge-demo-fallback[hidden]
+  ) {
   flex: 0 1 auto;
   aspect-ratio: 9 / 16;
   max-height: min(74vh, calc(100vh - 180px));
 }
-.judge-demo-stage iframe {
+/* Fallback / no-embed: grow with the card; never keep the 9:16 cap */
+.judge-demo-stage:has(.judge-demo-fallback:not([hidden])) {
+  flex: 1 1 auto;
+  aspect-ratio: unset;
+  max-height: none;
+}
+.judge-demo-stage iframe,
+.judge-demo-stage video.judge-demo-video {
   display: block;
+  flex: 1 1 auto;
+  min-height: 0;
   width: 100%;
   height: 100%;
   border: 0;

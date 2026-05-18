@@ -640,7 +640,10 @@ function getSubmissionInfoForRow(row) {
     row.project_name != null ||
     row.team_name != null ||
     row.chosen_track != null ||
-    row.demo_url != null
+    row.demo_url != null ||
+    row.video_url != null ||
+    row.demo_link != null ||
+    row["Demo URL"] != null
   ) {
     return row;
   }
@@ -772,9 +775,11 @@ function getRowTrackLabel(row) {
 }
 
 function demoLink(submission) {
-  if (!submission || !submission.demo_url) return "";
+  const raw = submissionDemoUrl(submission, null);
+  if (!raw) return "";
+  const href = normalizeDemoUrlForParse(raw) || raw;
   return `<a class="repo-link" href="${escapeAttr(
-    submission.demo_url
+    href
   )}" target="_blank" rel="noreferrer">Demo</a>`;
 }
 
@@ -1144,6 +1149,26 @@ function dedupeSubmissionsBySubmissionId(submissions) {
   return out.reverse();
 }
 
+function pickMergedDemoUrl(submission, existingRow) {
+  const fromApi = [
+    submission.demo_url,
+    submission.video_url,
+    submission.demo_link,
+  ]
+    .map((x) => String(x || "").trim())
+    .find(Boolean);
+  if (fromApi) return fromApi;
+  const fromRow = [
+    existingRow?.demo_url,
+    existingRow?.video_url,
+    existingRow?.demo_link,
+    existingRow?.["Demo URL"],
+  ]
+    .map((x) => String(x || "").trim())
+    .find(Boolean);
+  return fromRow || "";
+}
+
 function mergeRows(summaryRows, submissions) {
   const byRepo = new Map();
   const submissionsDedup = dedupeSubmissionsBySubmissionId(submissions);
@@ -1168,9 +1193,11 @@ function mergeRows(summaryRows, submissions) {
     const repoKey = normalizeRepoKey(submission.repo_url || "");
     if (!repoKey) return;
     if (byRepo.has(repoKey)) {
+      const prev = byRepo.get(repoKey);
       byRepo.set(repoKey, {
-        ...byRepo.get(repoKey),
+        ...prev,
         ...submission,
+        demo_url: pickMergedDemoUrl(submission, prev),
         submission_status: "submitted",
       });
       return;
@@ -1184,7 +1211,7 @@ function mergeRows(summaryRows, submissions) {
       project_name: submission.project_name,
       team_name: submission.team_name,
       chosen_track: submission.chosen_track,
-      demo_url: submission.demo_url,
+      demo_url: pickMergedDemoUrl(submission, {}),
       submission_status: "submitted",
       analysis_status: "pending",
       total_commits: 0,
@@ -3008,37 +3035,121 @@ function isYouScoreEntry(entry, judgeName) {
   return entry.source === "local" && judgeNamesMatch(entry.judge, judgeName);
 }
 
-function demoEmbedUrl(url) {
-  const raw = String(url || "").trim();
-  if (!raw) return "";
-  try {
-    const u = new URL(raw);
-    const host = u.hostname.replace(/^www\./, "");
-    if (host === "youtu.be") {
-      return `https://www.youtube.com/embed/${encodeURIComponent(
-        u.pathname.slice(1)
-      )}?enablejsapi=1`;
+/** Absolute http(s) URL for parsing/embeds; rejects unsafe schemes. */
+function normalizeDemoUrlForParse(raw) {
+  let s = String(raw || "").trim();
+  if (!s) return "";
+  const protoMatch = s.match(/^([a-z][a-z0-9+.-]*):/i);
+  if (protoMatch) {
+    const p = protoMatch[1].toLowerCase();
+    if (p === "javascript" || p === "data" || p === "vbscript" || p === "file") {
+      return "";
     }
-    if (host.includes("youtube.com")) {
-      const id = u.searchParams.get("v");
-      if (id) return `https://www.youtube.com/embed/${encodeURIComponent(id)}?enablejsapi=1`;
-      if (u.pathname.startsWith("/shorts/")) {
+    if (p !== "http" && p !== "https") return "";
+  }
+  if (!/^https?:\/\//i.test(s)) {
+    if (s.startsWith("//")) s = `https:${s}`;
+    else s = `https://${s.replace(/^\/+/, "")}`;
+  }
+  return s;
+}
+
+/** Resolve demo link from API objects and merged CSV/summary rows. */
+function submissionDemoUrl(sub, row) {
+  const o = sub || {};
+  const r = row || {};
+  const candidates = [
+    o.demo_url,
+    o.video_url,
+    o.demo_link,
+    r.demo_url,
+    r.video_url,
+    r.demo_link,
+    r["Demo URL"],
+  ];
+  for (const c of candidates) {
+    const t = String(c || "").trim();
+    if (t) return t;
+  }
+  return "";
+}
+
+function isLikelyDirectVideoUrl(url) {
+  const base = normalizeDemoUrlForParse(url);
+  if (!base) return false;
+  try {
+    const u = new URL(base);
+    if (u.protocol !== "http:" && u.protocol !== "https:") return false;
+    return /\.(mp4|webm|ogg|ogv|mov)(\?[^#]*)?(#|$)/i.test(u.pathname);
+  } catch {
+    return false;
+  }
+}
+
+function demoEmbedUrl(url) {
+  const normalized = normalizeDemoUrlForParse(url);
+  if (!normalized) return "";
+  try {
+    const u = new URL(normalized);
+    if (u.protocol !== "http:" && u.protocol !== "https:") return "";
+    const host = u.hostname.replace(/^www\./, "").toLowerCase();
+
+    if (host === "youtu.be") {
+      const id = u.pathname.split("/").filter(Boolean)[0];
+      if (id) {
         return `https://www.youtube.com/embed/${encodeURIComponent(
-          u.pathname.split("/")[2] || ""
+          id
         )}?enablejsapi=1`;
       }
     }
-    if (host.includes("vimeo.com")) {
-      const id = u.pathname.split("/").filter(Boolean).pop();
-      if (id) return `https://player.vimeo.com/video/${encodeURIComponent(id)}`;
+
+    if (host.includes("youtube.com") || host.includes("youtube-nocookie.com")) {
+      const v = u.searchParams.get("v");
+      if (v) {
+        return `https://www.youtube.com/embed/${encodeURIComponent(
+          v
+        )}?enablejsapi=1`;
+      }
+      const parts = u.pathname.split("/").filter(Boolean);
+      const shortsIdx = parts.indexOf("shorts");
+      if (shortsIdx >= 0 && parts[shortsIdx + 1]) {
+        return `https://www.youtube.com/embed/${encodeURIComponent(
+          parts[shortsIdx + 1]
+        )}?enablejsapi=1`;
+      }
+      const embedIdx = parts.indexOf("embed");
+      if (embedIdx >= 0 && parts[embedIdx + 1]) {
+        return `https://www.youtube.com/embed/${encodeURIComponent(
+          parts[embedIdx + 1]
+        )}?enablejsapi=1`;
+      }
+      const liveIdx = parts.indexOf("live");
+      if (liveIdx >= 0 && parts[liveIdx + 1]) {
+        return `https://www.youtube.com/embed/${encodeURIComponent(
+          parts[liveIdx + 1]
+        )}?enablejsapi=1`;
+      }
     }
+
+    if (host.includes("vimeo.com")) {
+      const parts = u.pathname.split("/").filter(Boolean);
+      const videoIdx = parts.indexOf("video");
+      const id =
+        videoIdx >= 0 ? parts[videoIdx + 1] : parts[parts.length - 1];
+      if (id) {
+        return `https://player.vimeo.com/video/${encodeURIComponent(id)}`;
+      }
+    }
+
     if (host.includes("loom.com")) {
       const parts = u.pathname.split("/").filter(Boolean);
       const shareIndex = parts.indexOf("share");
       const id = shareIndex >= 0 ? parts[shareIndex + 1] : parts.pop();
       if (id) return `https://www.loom.com/embed/${encodeURIComponent(id)}`;
     }
-  } catch {}
+  } catch {
+    return "";
+  }
   return "";
 }
 
@@ -3563,7 +3674,9 @@ function renderJudgeOverviewExtras(submissionId) {
   const teamMembers = Array.isArray(team?.members) ? team.members : [];
   const notes = (sub?.notes || "").trim();
   const repoUrl = (sub?.repo_url || row?.repo || "").trim();
-  const demoUrl = (sub?.demo_url || "").trim();
+  const demoRaw = submissionDemoUrl(sub, row);
+  const demoUrl =
+    normalizeDemoUrlForParse(demoRaw) || String(demoRaw || "").trim();
   const blocks = [];
   if (description) {
     blocks.push(
@@ -3641,11 +3754,22 @@ function renderJudgeVideoStage() {
     setJudgeReelsCaptionVisible(false);
     const demoCard = document.getElementById("judge-demo-card");
     const iframe = document.querySelector("#judge-demo-stage iframe");
+    const videoEl = document.getElementById("judge-demo-video");
     const fallback = document.getElementById("judge-demo-fallback");
     if (demoCard) demoCard.classList.add("is-empty");
     if (iframe) {
       iframe.removeAttribute("src");
       iframe.setAttribute("hidden", "");
+    }
+    if (videoEl) {
+      try {
+        videoEl.pause();
+      } catch {
+        /* ignore */
+      }
+      videoEl.removeAttribute("src");
+      if (typeof videoEl.load === "function") videoEl.load();
+      videoEl.setAttribute("hidden", "");
     }
     if (fallback) {
       fallback.removeAttribute("hidden");
@@ -3692,9 +3816,13 @@ function renderJudgeVideoStage() {
     chips.innerHTML = cells.join("");
   }
 
-  const demoUrl = String(sub.demo_url || "").trim();
+  const demoUrl = submissionDemoUrl(sub, current.row);
   const embed = demoEmbedUrl(demoUrl);
+  const directVideo = Boolean(demoUrl) && !embed && isLikelyDirectVideoUrl(demoUrl);
+  const demoOpenHref =
+    normalizeDemoUrlForParse(demoUrl) || String(demoUrl || "").trim();
   const iframe = document.querySelector("#judge-demo-stage iframe");
+  const videoEl = document.getElementById("judge-demo-video");
   const fallback = document.getElementById("judge-demo-fallback");
   const fallbackLink = fallback?.querySelector(".judge-demo-fallback__link");
   const fallbackHint = fallback?.querySelector(".judge-demo-fallback__hint");
@@ -3702,7 +3830,60 @@ function renderJudgeVideoStage() {
     fallbackHint.textContent = "";
     fallbackHint.setAttribute("hidden", "");
   }
-  if (iframe && fallback) {
+  if (iframe && fallback && videoEl) {
+    if (directVideo) {
+      const abs = normalizeDemoUrlForParse(demoUrl);
+      iframe.removeAttribute("src");
+      iframe.setAttribute("hidden", "");
+      fallback.setAttribute("hidden", "");
+      if (videoEl.src !== abs) {
+        videoEl.src = abs;
+        if (demoCard) demoCard.dataset.demoPlaying = "false";
+      }
+      videoEl.removeAttribute("hidden");
+    } else if (embed) {
+      try {
+        videoEl.pause();
+      } catch {
+        /* ignore */
+      }
+      videoEl.removeAttribute("src");
+      if (typeof videoEl.load === "function") videoEl.load();
+      videoEl.setAttribute("hidden", "");
+      fallback.setAttribute("hidden", "");
+      iframe.removeAttribute("hidden");
+      const msgEl = fallback.querySelector(".judge-demo-fallback__msg");
+      if (msgEl) msgEl.textContent = "No embeddable demo URL";
+      if (iframe.getAttribute("src") !== embed) {
+        iframe.setAttribute("src", embed);
+        if (demoCard) demoCard.dataset.demoPlaying = "false";
+      }
+    } else {
+      try {
+        videoEl.pause();
+      } catch {
+        /* ignore */
+      }
+      videoEl.removeAttribute("src");
+      if (typeof videoEl.load === "function") videoEl.load();
+      videoEl.setAttribute("hidden", "");
+      iframe.removeAttribute("src");
+      iframe.setAttribute("hidden", "");
+      fallback.removeAttribute("hidden");
+      const msgEl = fallback.querySelector(".judge-demo-fallback__msg");
+      if (msgEl && !demoUrl) msgEl.textContent = "No demo URL on file";
+      else if (msgEl)
+        msgEl.textContent = "Open demo in new tab (link not embeddable)";
+      if (fallbackLink) {
+        if (demoOpenHref) {
+          fallbackLink.setAttribute("href", demoOpenHref);
+          fallbackLink.removeAttribute("hidden");
+        } else {
+          fallbackLink.setAttribute("hidden", "");
+        }
+      }
+    }
+  } else if (iframe && fallback) {
     if (embed) {
       fallback.setAttribute("hidden", "");
       iframe.removeAttribute("hidden");
@@ -3721,8 +3902,8 @@ function renderJudgeVideoStage() {
       else if (msgEl)
         msgEl.textContent = "Open demo in new tab (link not embeddable)";
       if (fallbackLink) {
-        if (demoUrl) {
-          fallbackLink.setAttribute("href", demoUrl);
+        if (demoOpenHref) {
+          fallbackLink.setAttribute("href", demoOpenHref);
           fallbackLink.removeAttribute("hidden");
         } else {
           fallbackLink.setAttribute("hidden", "");
@@ -3866,7 +4047,7 @@ function renderJudgeSubmissionSummary() {
     subInfo?.chosen_track || row?.chosen_track || ""
   );
   const repoUrl = subInfo?.repo_url || row?.repo || "";
-  const demoUrl = subInfo?.demo_url || "";
+  const demoUrl = submissionDemoUrl(subInfo, row);
   const judgeInfo = row ? getJudgeInfoForRow(row) : null;
   const merged = buildMergedScoreEntries(id, judgeInfo);
   const youScored = judgeName.trim()

@@ -178,8 +178,14 @@ def supabase_submission_to_client(row):
     legacy_members = str(
         row.get("team_members_legacy_text") or row.get("team_members") or ""
     )
+    demo_coalesced = (
+        str(row.get("demo_url") or "").strip()
+        or str(row.get("demo_link") or "").strip()
+        or str(row.get("video_url") or "").strip()
+    )
     return {
         **row,
+        "demo_url": demo_coalesced or row.get("demo_url"),
         "submission_id": repo_id,
         "repo": repo_url,
         "repo_url": repo_url,
