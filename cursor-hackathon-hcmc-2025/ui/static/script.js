@@ -1875,20 +1875,34 @@ function judgeCardAvatarMarkup(j) {
   )}</span>`;
 }
 
+function judgeRoleLine(person) {
+  if (person.title) {
+    return `<span class="judge-name">${escapeHtml(
+      person.name
+    )}</span><span class="judge-role">${escapeHtml(
+      person.title
+    )} · ${escapeHtml(person.role || "")}</span>`;
+  }
+  return `<span class="judge-name">${escapeHtml(
+    person.name
+  )}</span><span class="judge-role">${escapeHtml(person.role || "")}</span>`;
+}
+
+function judgeDualRoleLine(person, role) {
+  const roleText = role || person.role || "";
+  return `<span class="judge-name">${escapeHtml(
+    person.name
+  )}</span><span class="judge-role">${escapeHtml(roleText)}</span>`;
+}
+
 function renderJudgeDualCard(primary, secondary) {
+  const sharedRole = primary.role || secondary.role || "";
   const col = (person) => {
     const avatar = judgeCardAvatarMarkup(person);
-    const nameOnly = `<span class="judge-name">${escapeHtml(person.name)}</span>`;
-    const titleHtml = person.title
-      ? `<span class="judge-dual-title">${escapeHtml(person.title)}</span>`
-      : "";
-    const companyHtml = person.role
-      ? `<span class="judge-role">${escapeHtml(person.role)}</span>`
-      : "";
-    const focusHtml = person.focus
-      ? `<span class="judge-focus">${escapeHtml(person.focus)}</span>`
-      : "";
-    const dualBody = `<div class="judge-body">${nameOnly}${titleHtml}${companyHtml}${focusHtml}</div>`;
+    const dualBody = `<div class="judge-body">${judgeDualRoleLine(
+      person,
+      sharedRole
+    )}</div>`;
     const inBadge = person.linkedin
       ? '<span class="judge-linkedin" aria-hidden="true">in →</span>'
       : "";
@@ -1902,10 +1916,12 @@ function renderJudgeDualCard(primary, secondary) {
     }
     return `<div class="judge-dual-col judge-card">${linkInner}</div>`;
   };
+
   return `<li class="judge-grid__cell--dual">
     <div class="judge-card judge-card--dual">
       <div class="judge-dual-cols">
         ${col(primary)}
+        <div class="judge-dual-divider" role="presentation" aria-hidden="true"></div>
         ${col(secondary)}
       </div>
     </div>
@@ -1919,9 +1935,18 @@ function renderJudges() {
   // Static index ships judge cards in HTML; only replace when we have config
   // (e.g. opening file:// or failed fetch would clear the grid otherwise).
   if (!judges.length) return;
+
+  const cohostNames = new Set(
+    judges
+      .map((j) => j?.cohost?.name)
+      .filter(Boolean)
+      .map((n) => normalizeJudgeName(n)),
+  );
+
   ul.innerHTML = judges
     .map((j) => {
       if (!j || !j.name) return "";
+      if (cohostNames.has(normalizeJudgeName(j.name))) return "";
       if (j.cohost && j.cohost.name) {
         const secondary = { ...j.cohost, role: j.role || j.cohost.role || "" };
         return renderJudgeDualCard(j, secondary);
@@ -1944,15 +1969,7 @@ function renderJudges() {
         : `<span class="judge-avatar" style="background:${escapeAttr(
             color
           )}">${escapeHtml(initials)}</span>`;
-      const roleLine = j.title
-        ? `<span class="judge-name">${escapeHtml(
-            j.name
-          )}</span><span class="judge-role">${escapeHtml(
-            j.title
-          )} · ${escapeHtml(j.role || "")}</span>`
-        : `<span class="judge-name">${escapeHtml(
-            j.name
-          )}</span><span class="judge-role">${escapeHtml(j.role || "")}</span>`;
+      const roleLine = judgeRoleLine(j);
       const inner = `
       ${avatar}
       <div class="judge-body">
