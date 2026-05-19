@@ -915,16 +915,31 @@ function judgeAggregateBlockHtml(info) {
     }`;
 }
 
+/** Imported averages only — used on judge AI rail (no rubric duplicate). */
+function judgeAggregateCompactHtml(info) {
+  if (!info || !info.responses || info.responses.length === 0) return "";
+  const n = info.responses.length;
+  const avg = Number(
+    (info.averages && info.averages.grand_total) ?? info.average_score ?? 0
+  ).toFixed(1);
+  const suffix = info.legacy_mode ? "" : "/10";
+  const judgeWord = n === 1 ? "judge" : "judges";
+  return `<p class="judge-aggregate-compact" role="status"><strong>${n}</strong> ${judgeWord} · avg <strong>${avg}</strong>${suffix}</p>`;
+}
+
 function renderJudgeDetails(info, containerEl) {
   const container =
     containerEl || document.getElementById("judge-output");
+  if (!container) return;
+  const isJudgeAiRail = container.id === "judge-side-judge-output";
   if (!info || !info.responses || info.responses.length === 0) {
     container.innerHTML =
       '<div class="empty-state"><div class="empty-state-icon">🧑‍⚖️</div><div>No judge responses</div></div>';
     return;
   }
   const list = judgeImportResponsesListHtml(info);
-  container.innerHTML = `${judgeAggregateBlockHtml(info)}<div class="judge-list">${list}</div>`;
+  const rollup = isJudgeAiRail ? "" : judgeAggregateBlockHtml(info);
+  container.innerHTML = `${rollup}<div class="judge-list">${list}</div>`;
 }
 
 async function renderSummaryTable(rows) {
@@ -1357,10 +1372,10 @@ function renderJudgeSideScoresTab(submissionId, judgeInfo) {
   const merged = buildMergedScoreEntries(submissionId, judgeInfo);
   tbody.innerHTML = mergedTableRowsHtml(merged);
   if (judgeInfo && judgeInfo.responses && judgeInfo.responses.length) {
-    agg.innerHTML = judgeAggregateBlockHtml(judgeInfo);
+    agg.innerHTML = judgeAggregateCompactHtml(judgeInfo);
   } else {
     agg.innerHTML = merged.length
-      ? `<p class="judge-scores-tab-hint">No imported panel average — see merged scores below (local + any imports).</p>`
+      ? `<p class="judge-scores-tab-hint">No imported panel rollup — merged scores below keep full rubric history.</p>`
       : `<div class="empty-state"><div class="empty-state-icon">🧑‍⚖️</div><div>No scores yet for this pick.</div></div>`;
   }
 }
@@ -1414,10 +1429,19 @@ async function loadDetails(repoId, elsOrOverrides) {
     }
 
     if (aiOutput) {
+      const isJudgeRailAi = aiOutput.id === "judge-side-ai-output";
+      if (isJudgeRailAi) {
+        _judgeSideAiPlainByRepo.set(repoId, aiText ? String(aiText) : "");
+      }
       if (aiText) {
         aiOutput.innerHTML = formatAIOutput(aiText);
+      } else if (isJudgeRailAi) {
+        aiOutput.innerHTML = `<div class="judge-ai-empty" role="status"><p class="judge-ai-empty-lead">No AI repo narrative loaded.</p><p class="judge-ai-empty-hint">When present, this summarizes authenticity and how the team applied their declared technologies. Generate notes with <code class="judge-inline-code">python3 ai/run_ai.py --work-dir work</code> after metrics exist.</p></div>`;
       } else {
         aiOutput.textContent = "No AI analysis available for this submission.";
+      }
+      if (isJudgeRailAi) {
+        refreshJudgeTechnologyUsagePane(repoId);
       }
     }
 
@@ -1445,9 +1469,24 @@ async function loadDetails(repoId, elsOrOverrides) {
     }
     if (metricsTime) metricsTime.textContent = "";
     if (aiOutput) {
-      aiOutput.textContent = rowHasAnalysis(summaryRow)
-        ? ""
-        : "AI analysis appears after repo analysis has been run.";
+      const isJudgeRailAi = aiOutput.id === "judge-side-ai-output";
+      if (isJudgeRailAi) {
+        _judgeSideAiPlainByRepo.set(repoId, "");
+      }
+      if (isJudgeRailAi) {
+        if (rowHasAnalysis(summaryRow)) {
+          aiOutput.innerHTML = `<p class="judge-ai-error" role="alert">${escapeHtml(
+            `Could not load AI notes: ${err.message}`
+          )}</p>`;
+        } else {
+          aiOutput.innerHTML = `<div class="judge-ai-empty" role="status"><p class="judge-ai-empty-lead">Repo analysis not ready.</p><p class="judge-ai-empty-hint">Run <code class="judge-inline-code">python3 scan.py …</code> then <code class="judge-inline-code">python3 ai/run_ai.py …</code> for stack-aware narrative in this tab.</p></div>`;
+        }
+        refreshJudgeTechnologyUsagePane(repoId);
+      } else {
+        aiOutput.textContent = rowHasAnalysis(summaryRow)
+          ? ""
+          : "AI analysis appears after repo analysis has been run.";
+      }
     }
     const judgeInfo = getJudgeInfoForRow(summaryRow);
     renderJudgeDetails(judgeInfo, judgeOutput);
@@ -2268,6 +2307,10 @@ function syncJudgeFullViewFromSelection() {
     }
     const aiOut = document.getElementById("judge-side-ai-output");
     if (aiOut) aiOut.innerHTML = "";
+    const techOut = document.getElementById("judge-side-tech-usage");
+    if (techOut) techOut.innerHTML = "";
+    const aggOut = document.getElementById("judge-side-scores-aggregate");
+    if (aggOut) aggOut.innerHTML = "";
     const repoPill = document.getElementById("judge-side-detail-title");
     if (repoPill) {
       repoPill.textContent = "";
@@ -2752,15 +2795,20 @@ function getJudgeReviewEntries() {
 
   rows.forEach((r) => {
     const sub = getSubmissionInfoForRow(r);
-    const name = sub?.project_name || r.repo_id || extractRepoName(r.repo);
-    const id = r.repo_id || name;
+    const demoUrl = submissionDemoUrl(sub, r);
+    const row =
+      demoUrl && !String(r.demo_url || "").trim()
+        ? { ...r, demo_url: demoUrl }
+        : r;
+    const name = sub?.project_name || row.repo_id || extractRepoName(row.repo);
+    const id = row.repo_id || name;
     entries.push({
       id,
       name,
-      trackLabel: formatTrackForLabel(sub?.chosen_track || r.chosen_track || ""),
-      scored: scored.has(id) || scored.has(normalizeSubmissionIdentity({ id, row: r, sub })),
+      trackLabel: formatTrackForLabel(sub?.chosen_track || row.chosen_track || ""),
+      scored: scored.has(id) || scored.has(normalizeSubmissionIdentity({ id, row, sub })),
       isLocal: false,
-      row: r,
+      row,
       sub: sub || null,
       assignedJudge: "",
       assignedIndex: -1,
@@ -2871,6 +2919,7 @@ function renderJudgeCoverageChips(allEntries) {
   const select = document.getElementById("judge-submission-select");
   const selectedId = select && select.value ? select.value : "";
   const selected = selectedId ? allEntries.find((e) => e.id === selectedId) : null;
+  updateJudgeCoverageSummaryLine(allEntries, selected);
 
   const pool = getJudgePool();
   const chips = [];
@@ -3062,13 +3111,19 @@ function submissionDemoUrl(sub, row) {
     o.demo_url,
     o.video_url,
     o.demo_link,
+    o.presentation_url,
     r.demo_url,
     r.video_url,
     r.demo_link,
+    r.presentation_url,
     r["Demo URL"],
+    r["Demo Link"],
+    r["Video URL"],
   ];
   for (const c of candidates) {
-    const t = String(c || "").trim();
+    let t = String(c || "").trim();
+    if (!t) continue;
+    t = t.replace(/[)\].,;]+$/u, "");
     if (t) return t;
   }
   return "";
@@ -3147,10 +3202,115 @@ function demoEmbedUrl(url) {
       const id = shareIndex >= 0 ? parts[shareIndex + 1] : parts.pop();
       if (id) return `https://www.loom.com/embed/${encodeURIComponent(id)}`;
     }
+
+    if (host.includes("drive.google.com") || host === "docs.google.com") {
+      const fileMatch = u.pathname.match(/\/file\/d\/([^/]+)/);
+      const id = fileMatch?.[1] || u.searchParams.get("id");
+      if (id) {
+        return `https://drive.google.com/file/d/${encodeURIComponent(id)}/preview`;
+      }
+    }
+
+    if (host === "m.youtube.com" || host === "music.youtube.com") {
+      const v = u.searchParams.get("v");
+      if (v) {
+        return `https://www.youtube.com/embed/${encodeURIComponent(
+          v
+        )}?enablejsapi=1`;
+      }
+    }
   } catch {
     return "";
   }
   return "";
+}
+
+function setJudgeDemoStageMode(mode, { iframe, videoEl, fallback, embed, demoUrl, demoOpenHref }) {
+  if (!iframe || !fallback) return;
+  const msgEl = fallback.querySelector(".judge-demo-fallback__msg");
+  const fallbackLink = fallback.querySelector(".judge-demo-fallback__link");
+  const fallbackHint = fallback.querySelector(".judge-demo-fallback__hint");
+  if (fallbackHint) {
+    fallbackHint.textContent = "";
+    fallbackHint.setAttribute("hidden", "");
+  }
+
+  if (mode === "video" && videoEl) {
+    const abs = normalizeDemoUrlForParse(demoUrl);
+    iframe.removeAttribute("src");
+    iframe.setAttribute("hidden", "");
+    fallback.setAttribute("hidden", "");
+    if (videoEl.src !== abs) videoEl.src = abs;
+    videoEl.removeAttribute("hidden");
+    return;
+  }
+
+  if (mode === "embed") {
+    if (videoEl) {
+      try {
+        videoEl.pause();
+      } catch {
+        /* ignore */
+      }
+      videoEl.removeAttribute("src");
+      if (typeof videoEl.load === "function") videoEl.load();
+      videoEl.setAttribute("hidden", "");
+    }
+    fallback.setAttribute("hidden", "");
+    iframe.removeAttribute("hidden");
+    if (msgEl) msgEl.textContent = "No embeddable demo URL";
+    if (iframe.getAttribute("src") !== embed) iframe.setAttribute("src", embed);
+    return;
+  }
+
+  if (videoEl) {
+    try {
+      videoEl.pause();
+    } catch {
+      /* ignore */
+    }
+    videoEl.removeAttribute("src");
+    if (typeof videoEl.load === "function") videoEl.load();
+    videoEl.setAttribute("hidden", "");
+  }
+  iframe.removeAttribute("src");
+  iframe.setAttribute("hidden", "");
+  fallback.removeAttribute("hidden");
+  if (msgEl && !demoUrl) msgEl.textContent = "No demo URL on file";
+  else if (msgEl) msgEl.textContent = "Link not embeddable — open in new tab";
+  if (fallbackLink) {
+    if (demoOpenHref) {
+      fallbackLink.setAttribute("href", demoOpenHref);
+      fallbackLink.removeAttribute("hidden");
+    } else {
+      fallbackLink.setAttribute("hidden", "");
+    }
+  }
+}
+
+function updateJudgeCoverageSummaryLine(allEntries, selected) {
+  const line = document.getElementById("judge-coverage-line");
+  if (!line) return;
+  const pool = getJudgePool();
+  if (!pool.length) {
+    line.textContent = "";
+    return;
+  }
+  if (selected) {
+    const scorers = selected.scoredBy || [];
+    const scoredFromPool = pool.filter((j) =>
+      scorers.some((nm) => judgeMatchesPool(nm, j.name))
+    ).length;
+    line.textContent = `${scoredFromPool}/${pool.length} panel scored`;
+    return;
+  }
+  const totalSubs = allEntries.length;
+  if (!totalSubs) {
+    line.textContent = "";
+    return;
+  }
+  const done = allEntries.filter((e) => (e.scoredBy || []).length > 0).length;
+  line.textContent = `${done}/${totalSubs} have scores`;
 }
 
 function setJudgeSubmissionByIndex(index) {
@@ -3318,6 +3478,7 @@ const JUDGE_TECH_KEYWORDS = [
     patterns: [/cursor[-_\s]?sdk/i, /@cursor\/sdk/i],
   },
   { id: "cursor", label: "Cursor", patterns: [/\bcursor\b/i] },
+  { id: "specter", label: "Specter", patterns: [/\bspecter\b/i] },
   { id: "tavily", label: "Tavily", patterns: [/\btavily\b/i, /tavily-python/i] },
   { id: "overmind", label: "Overmind", patterns: [/\bovermind\b/i] },
   { id: "openai", label: "OpenAI", patterns: [/\bopen[\s-]?ai\b/i] },
@@ -3467,6 +3628,108 @@ function summarizeRepoSignals({ submission, row, analysis } = {}) {
 
 /** Cache parsed metrics+commits responses so we don't refetch per tab switch. */
 const _stageCache = new Map();
+/** Plain-text AI body for tech narrative (mirrors HTML panel). */
+const _judgeSideAiPlainByRepo = new Map();
+
+function stripMarkdownishPlain(text) {
+  let s = String(text || "");
+  s = s.replace(/^#{1,6}\s+/gm, "");
+  s = s.replace(/\*\*([^*]+)\*\*/g, "$1");
+  s = s.replace(/\*([^*]+)\*/g, "$1");
+  s = s.replace(/`{1,3}[^`\n]*`{1,3}/g, " ");
+  s = s.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
+  return s.replace(/\s+/g, " ").trim();
+}
+
+function extractTechRelevantExcerptFromPlain(plain, keywords) {
+  const kws = (keywords || [])
+    .map((k) => String(k).trim().toLowerCase())
+    .filter(Boolean);
+  if (!plain || !kws.length) return "";
+  const sentences = plain
+    .split(/(?<=[.!?])\s+/)
+    .map((x) => x.trim())
+    .filter(Boolean);
+  for (const sent of sentences) {
+    const sl = sent.toLowerCase();
+    if (kws.some((k) => sl.includes(k))) return sent;
+  }
+  return "";
+}
+
+function buildJudgeTechnologyUsageInnerHtml(submission, repoId, aiPlain) {
+  const label =
+    '<span class="judge-rail-mini-label" id="judge-tech-usage-label">Technology usage</span>';
+  const summaryRow = findSummaryRowForRepoId(repoId);
+  const analysis = _stageCache.get(repoId);
+  const partnerLabels = submissionPartnerLabels(submission);
+  const { stack } = summarizeRepoSignals({
+    submission,
+    row: summaryRow,
+    analysis,
+  });
+  const detectedLabels = stack.map((s) => s.label);
+  const techOrdered = [];
+  const seen = new Set();
+  for (const t of [...partnerLabels, ...detectedLabels]) {
+    const k = String(t).trim();
+    if (!k) continue;
+    const lower = k.toLowerCase();
+    if (seen.has(lower)) continue;
+    seen.add(lower);
+    techOrdered.push(k);
+  }
+
+  const stripped = stripMarkdownishPlain(aiPlain || "");
+  let excerpt = "";
+  if (stripped.length >= 40) {
+    const kwForMatch =
+      techOrdered.length > 0
+        ? techOrdered
+        : JUDGE_TECH_KEYWORDS.map((x) => x.label);
+    excerpt = extractTechRelevantExcerptFromPlain(stripped, kwForMatch);
+    if (!excerpt) excerpt = stripped.slice(0, 500).trim();
+  }
+
+  const hasTechNames = techOrdered.length > 0;
+  const hasExcerpt = excerpt.length > 0;
+
+  if (!hasTechNames && !hasExcerpt) {
+    return `${label}<div class="judge-tech-usage-body judge-tech-usage-body--empty"><p>No AI technology summary yet. Declare partner technologies on the submission and run repo analysis plus <code class="judge-inline-code">python3 ai/run_ai.py --work-dir work</code> so notes can describe how the stack shows up in the repo.</p></div>`;
+  }
+
+  let paragraph = "";
+  if (hasTechNames) {
+    paragraph = `Technologies in play include ${techOrdered.join(
+      ", "
+    )} (submission picks and repo signals).`;
+  }
+  if (hasExcerpt) {
+    paragraph +=
+      (paragraph ? " " : "") +
+      excerpt +
+      (stripped.length > excerpt.length ? " …" : "");
+  }
+
+  return `${label}<div class="judge-tech-usage-body"><p>${escapeHtml(
+    paragraph
+  )}</p></div>`;
+}
+
+function refreshJudgeTechnologyUsagePane(repoId) {
+  const el = document.getElementById("judge-side-tech-usage");
+  if (!el) return;
+  const rid = String(repoId || "").trim();
+  if (!rid) {
+    el.innerHTML = "";
+    return;
+  }
+  const summaryRow = findSummaryRowForRepoId(rid);
+  const submission = getSubmissionInfoForRow(summaryRow);
+  const aiPlain = _judgeSideAiPlainByRepo.get(rid) ?? "";
+  el.innerHTML = buildJudgeTechnologyUsageInnerHtml(submission, rid, aiPlain);
+}
+
 async function loadStagePayload(repoId) {
   if (!repoId) return null;
   if (_stageCache.has(repoId)) return _stageCache.get(repoId);
@@ -3490,7 +3753,7 @@ function renderJudgeCodeSignal(submissionId) {
   const host = document.getElementById("judge-code-signal");
   if (!host) return;
   if (!submissionId) {
-    host.innerHTML = `<p class="judge-code-empty">Pick a submission to see commit signal &amp; stack chips.</p>`;
+    host.innerHTML = `<p class="judge-code-empty">Select a submission for code signal.</p>`;
     return;
   }
   const found = findSubmissionById(submissionId);
@@ -3528,9 +3791,9 @@ function renderJudgeCodeSignal(submissionId) {
           )
           .join("")}</div></div>`
     : `<div class="judge-code-group judge-code-group--empty"><span class="judge-rail-mini-label">Tech / SDK signal</span>
-        <p class="judge-code-empty">No tech mentions detected${
-          analysis ? "" : " yet (analysis not loaded)"
-        }. Scanned: submission.notes, description, technology_ids, repo URL.</p></div>`;
+        <p class="judge-code-empty">${
+          analysis ? "No tech mentions in notes, description, or repo." : "Loading analysis…"
+        }</p></div>`;
 
   const flagBlock = flags.length
     ? `<div class="judge-code-group"><span class="judge-rail-mini-label">Integrity flags</span>
@@ -3542,9 +3805,9 @@ function renderJudgeCodeSignal(submissionId) {
               )}" title="${escapeAttr(f.tooltip)}">${escapeHtml(f.label)}</span>`
           )
           .join("")}</div></div>`
-    : `<div class="judge-code-group"><span class="judge-rail-mini-label">Integrity flags</span>
+    : `<div class="judge-code-group judge-code-group--empty"><span class="judge-rail-mini-label">Integrity flags</span>
         <p class="judge-code-empty">${
-          analysis ? "Clean — no integrity flags raised." : "Loading analysis…"
+          analysis ? "No integrity flags." : "Loading analysis…"
         }</p></div>`;
 
   const commitsBlock = top_commits.length
@@ -3571,6 +3834,7 @@ function renderJudgeCodeSignal(submissionId) {
     : "";
 
   host.innerHTML = statBlock + stackBlock + flagBlock + commitsBlock;
+  refreshJudgeTechnologyUsagePane(repoId);
 }
 function shortSourceLabel(source) {
   if (!source) return "";
@@ -3824,92 +4088,36 @@ function renderJudgeVideoStage() {
   const iframe = document.querySelector("#judge-demo-stage iframe");
   const videoEl = document.getElementById("judge-demo-video");
   const fallback = document.getElementById("judge-demo-fallback");
-  const fallbackLink = fallback?.querySelector(".judge-demo-fallback__link");
-  const fallbackHint = fallback?.querySelector(".judge-demo-fallback__hint");
-  if (fallbackHint) {
-    fallbackHint.textContent = "";
-    fallbackHint.setAttribute("hidden", "");
-  }
-  if (iframe && fallback && videoEl) {
-    if (directVideo) {
-      const abs = normalizeDemoUrlForParse(demoUrl);
-      iframe.removeAttribute("src");
-      iframe.setAttribute("hidden", "");
-      fallback.setAttribute("hidden", "");
-      if (videoEl.src !== abs) {
-        videoEl.src = abs;
-        if (demoCard) demoCard.dataset.demoPlaying = "false";
-      }
-      videoEl.removeAttribute("hidden");
+  if (iframe && fallback) {
+    if (directVideo && videoEl) {
+      setJudgeDemoStageMode("video", {
+        iframe,
+        videoEl,
+        fallback,
+        embed,
+        demoUrl,
+        demoOpenHref,
+      });
     } else if (embed) {
-      try {
-        videoEl.pause();
-      } catch {
-        /* ignore */
-      }
-      videoEl.removeAttribute("src");
-      if (typeof videoEl.load === "function") videoEl.load();
-      videoEl.setAttribute("hidden", "");
-      fallback.setAttribute("hidden", "");
-      iframe.removeAttribute("hidden");
-      const msgEl = fallback.querySelector(".judge-demo-fallback__msg");
-      if (msgEl) msgEl.textContent = "No embeddable demo URL";
-      if (iframe.getAttribute("src") !== embed) {
-        iframe.setAttribute("src", embed);
-        if (demoCard) demoCard.dataset.demoPlaying = "false";
-      }
+      setJudgeDemoStageMode("embed", {
+        iframe,
+        videoEl,
+        fallback,
+        embed,
+        demoUrl,
+        demoOpenHref,
+      });
     } else {
-      try {
-        videoEl.pause();
-      } catch {
-        /* ignore */
-      }
-      videoEl.removeAttribute("src");
-      if (typeof videoEl.load === "function") videoEl.load();
-      videoEl.setAttribute("hidden", "");
-      iframe.removeAttribute("src");
-      iframe.setAttribute("hidden", "");
-      fallback.removeAttribute("hidden");
-      const msgEl = fallback.querySelector(".judge-demo-fallback__msg");
-      if (msgEl && !demoUrl) msgEl.textContent = "No demo URL on file";
-      else if (msgEl)
-        msgEl.textContent = "Open demo in new tab (link not embeddable)";
-      if (fallbackLink) {
-        if (demoOpenHref) {
-          fallbackLink.setAttribute("href", demoOpenHref);
-          fallbackLink.removeAttribute("hidden");
-        } else {
-          fallbackLink.setAttribute("hidden", "");
-        }
-      }
+      setJudgeDemoStageMode("fallback", {
+        iframe,
+        videoEl,
+        fallback,
+        embed,
+        demoUrl,
+        demoOpenHref,
+      });
     }
-  } else if (iframe && fallback) {
-    if (embed) {
-      fallback.setAttribute("hidden", "");
-      iframe.removeAttribute("hidden");
-      const msgEl = fallback.querySelector(".judge-demo-fallback__msg");
-      if (msgEl) msgEl.textContent = "No embeddable demo URL";
-      if (iframe.getAttribute("src") !== embed) {
-        iframe.setAttribute("src", embed);
-        if (demoCard) demoCard.dataset.demoPlaying = "false";
-      }
-    } else {
-      iframe.removeAttribute("src");
-      iframe.setAttribute("hidden", "");
-      fallback.removeAttribute("hidden");
-      const msgEl = fallback.querySelector(".judge-demo-fallback__msg");
-      if (msgEl && !demoUrl) msgEl.textContent = "No demo URL on file";
-      else if (msgEl)
-        msgEl.textContent = "Open demo in new tab (link not embeddable)";
-      if (fallbackLink) {
-        if (demoOpenHref) {
-          fallbackLink.setAttribute("href", demoOpenHref);
-          fallbackLink.removeAttribute("hidden");
-        } else {
-          fallbackLink.setAttribute("hidden", "");
-        }
-      }
-    }
+    if (demoCard) demoCard.dataset.demoPlaying = "false";
   }
 }
 

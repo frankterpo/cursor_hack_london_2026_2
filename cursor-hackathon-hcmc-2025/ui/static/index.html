@@ -10,7 +10,7 @@
       name="description"
       content="Cursor × Thrad London 2026 — agentic builds on conversational ad infrastructure: buy-side, sell-side, and measurement inside LLM-native channels."
     />
-    <link rel="stylesheet" href="style.css?v=155" />
+    <link rel="stylesheet" href="style.css?v=157" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -1372,7 +1372,7 @@
             </div>
           </div>
 
-          <footer class="judge-stage-foot" aria-hidden="true">
+          <footer class="judge-stage-foot judge-stage-foot--subtle" aria-hidden="true">
             <span><kbd>↑</kbd> / <kbd>↓</kbd> prev · next</span>
             <span><kbd>←</kbd> / <kbd>→</kbd> prev · next</span>
             <span><kbd>⌘</kbd> + <kbd>↵</kbd> save</span>
@@ -1400,8 +1400,11 @@
             </button>
           </header>
 
-          <div class="judge-rail-identity" aria-live="polite">
-            <span class="judge-rail-mini-label">Judging as</span>
+          <div
+            class="judge-rail-identity judge-rail-identity--compact"
+            aria-live="polite"
+            aria-label="Judging as"
+          >
             <div class="judge-rail-identity__row">
               <p id="judge-display-name" class="judge-rail-identity__name">—</p>
               <span
@@ -1453,6 +1456,7 @@
             </button>
           </nav>
 
+          <div class="judge-rail-scroll">
           <div
             class="judge-stage-body judge-stage-body--rail"
             id="judge-stage-body"
@@ -1553,15 +1557,29 @@
               <div
                 class="judge-side-block judge-side-block--ai"
                 id="judge-side-ai-output"
+                aria-live="polite"
               ></div>
-              <h4 class="judge-side-section-h">Judge responses (aggregate)</h4>
               <div
-                class="judge-side-block"
-                id="judge-side-judge-output"
+                class="judge-side-block judge-side-block--tech-usage"
+                id="judge-side-tech-usage"
+                role="region"
+                aria-labelledby="judge-tech-usage-label"
               ></div>
               <div
                 class="judge-side-block judge-side-block--scores"
                 id="judge-side-scores-aggregate"
+                aria-label="Imported judge scores summary"
+              ></div>
+              <h4
+                class="judge-side-section-h"
+                id="judge-side-judge-responses-heading"
+              >
+                Judge responses
+              </h4>
+              <div
+                class="judge-side-block"
+                id="judge-side-judge-output"
+                aria-labelledby="judge-side-judge-responses-heading"
               ></div>
               <h4 class="judge-side-section-h">All scores (merged)</h4>
               <div class="judge-prior-scroll">
@@ -1608,7 +1626,9 @@
               class="judge-rubric-reminder"
             ></div>
           </details>
+          </div>
 
+          <div class="judge-rail-pin">
           <form id="judge-form" class="judge-rail-form" novalidate>
             <input
               name="submission_id"
@@ -1671,13 +1691,17 @@
           </form>
 
           <details class="judge-rail-coverage" id="judge-coverage-wrap">
-            <summary class="judge-rail-mini-label">
-              Judge coverage <span aria-hidden="true">▾</span>
+            <summary class="judge-rail-coverage__summary">
+              <span class="judge-rail-mini-label">Coverage</span>
+              <span
+                class="judge-rail-coverage__line"
+                id="judge-coverage-line"
+              ></span>
             </summary>
             <div id="judge-coverage-chips" class="judge-coverage-chips"></div>
           </details>
 
-          <details class="judge-rail-queue" open aria-label="Submission queue">
+          <details class="judge-rail-queue" aria-label="Submission queue">
             <summary class="judge-rail-queue__head judge-rail-queue__summary">
               <span class="judge-rail-mini-label">Queue</span>
               <span
@@ -1694,6 +1718,7 @@
             ></select>
             <div id="judge-score-queue" class="judge-rail-queue__list"></div>
           </details>
+          </div>
 
           <!-- Preserved but visually hidden — kept so existing renderers stay wired -->
           <div
@@ -2306,6 +2331,6 @@
       }
     </script>
 
-    <script src="script.js?v=142"></script>
+    <script src="script.js?v=145"></script>
   </body>
 </html>
