@@ -342,6 +342,15 @@ function normalizeJudgeName(s) {
     .trim();
 }
 
+/** Curl / QA judge names — exclude from panel coverage counts. */
+function isTestJudgeName(name) {
+  const n = normalizeJudgeName(name);
+  if (!n) return false;
+  if (n === "test" || n === "restarttest") return true;
+  if (n.startsWith("test") && /^test\d*$/.test(n)) return true;
+  return false;
+}
+
 /**
  * Bidirectional fuzzy match — same logic as getJudgeIndex but for any pair.
  * Handles "Jan" ↔ "Ján Stehlík" (substring). Used by coverage view so a
@@ -446,7 +455,7 @@ function scoredJudgeNamesForRow(row) {
   const out = [];
   info.responses.forEach((r) => {
     const raw = String(r.judge_name || r.judge || "").trim();
-    if (!raw) return;
+    if (!raw || isTestJudgeName(raw)) return;
     const k = normalizeJudgeName(raw);
     if (seen.has(k)) return;
     seen.add(k);
@@ -3854,6 +3863,7 @@ function buildMergedScoreEntries(submissionId, judgeInfo) {
         String(r.judge).trim()
           ? String(r.judge).trim()
           : `Panel import #${idx + 1}`;
+      if (isTestJudgeName(jLabel)) return;
       const displayTotal = judgeInfo.legacy_mode
         ? r.total_score
         : normalizeStoredJudgeScore(r.total_score);
@@ -4869,6 +4879,7 @@ function getJudgeQueueChipStates(entry) {
   });
 
   scorers.forEach((name) => {
+    if (isTestJudgeName(name)) return;
     if (pool.some((j) => judgeMatchesPool(name, j.name))) return;
     const resp = responses.find(
       (r) =>
@@ -5116,7 +5127,7 @@ function renderJudgeScoreQueue() {
   if (!target) return;
   closeJudgeQueueJudgesPopover();
   initJudgeQueueJudgesPopover();
-  const entries = getJudgeReviewEntries();
+  const { entries } = getJudgeQueueEntries();
   const selectedId =
     document.getElementById("judge-submission-select")?.value || "";
   const done = entries.filter((e) => e.scored).length;
@@ -5127,6 +5138,7 @@ function renderJudgeScoreQueue() {
   }
   if (!entries.length) {
     target.innerHTML = "";
+    updateJudgeQuickRecap();
     return;
   }
   const width = String(entries.length).length;
@@ -5168,26 +5180,63 @@ function renderJudgeScoreQueue() {
       </div>`;
     })
     .join("");
+  updateJudgeQuickRecap();
 }
 
 function yourScoreForEntry(entry) {
   const judgeName = getJudgeNameForUi();
-  const info = entry?.row ? getJudgeInfoForRow(entry.row) : null;
-  if (!info?.responses?.length || !judgeName) return null;
-  const mine = info.responses.find(
-    (r) => (r.judge_name || r.judge || "").trim().toLowerCase() === judgeName.trim().toLowerCase()
-  );
-  if (!mine) return null;
-  return normalizeStoredJudgeScore(mine.total_score);
+  if (!judgeName.trim() || !entry?.row) return null;
+  return latestJudgeScoreOnRow(entry.row, judgeName);
 }
+
 function otherScoreCountForEntry(entry) {
   const judgeName = getJudgeNameForUi();
   const info = entry?.row ? getJudgeInfoForRow(entry.row) : null;
   if (!info?.responses?.length) return 0;
-  if (!judgeName) return info.responses.length;
-  return info.responses.filter(
-    (r) => (r.judge_name || r.judge || "").trim().toLowerCase() !== judgeName.trim().toLowerCase()
-  ).length;
+  const names = scoredJudgeNamesForRow(entry.row);
+  if (!judgeName) return names.length;
+  return names.filter((n) => !judgeMatchesPool(n, judgeName)).length;
+}
+
+/** Queue-wide recap: your per-row scores vs configured panel size. */
+function updateJudgeQuickRecap() {
+  const recap = document.getElementById("judge-quick-recap");
+  if (!recap) return;
+
+  const { entries } = getJudgeQueueEntries();
+  if (!entries.length) {
+    recap.textContent = "";
+    recap.hidden = true;
+    return;
+  }
+
+  const yourScores = [];
+  for (const entry of entries) {
+    const score = yourScoreForEntry(entry);
+    if (score != null) yourScores.push(score);
+  }
+
+  const panelCount = getJudgePool().length;
+  if (!yourScores.length && !panelCount) {
+    recap.textContent = "";
+    recap.hidden = true;
+    return;
+  }
+
+  const avg =
+    yourScores.length > 0
+      ? Math.round(
+          (yourScores.reduce((sum, s) => sum + s, 0) / yourScores.length) * 10
+        ) / 10
+      : null;
+  const avgLabel = avg == null ? "—" : formatJudgeScore(avg);
+  const scoreCount = yourScores.length;
+  const judgeCount = panelCount;
+
+  recap.textContent = `Quick recap: avg ${avgLabel} · ${scoreCount} score${
+    scoreCount === 1 ? "" : "s"
+  } · ${judgeCount} judge${judgeCount === 1 ? "" : "s"}`;
+  recap.hidden = false;
 }
 
 function renderJudgeSubmissionToolbar() {
@@ -5214,7 +5263,6 @@ function renderJudgeSubmissionToolbar() {
 function renderJudgeSubmissionSummary() {
   renderJudgeSubmissionToolbar();
   const target = document.getElementById("judge-submission-summary");
-  const recap = document.getElementById("judge-quick-recap");
   if (!target) return;
   const select = document.getElementById("judge-submission-select");
   const id = select?.value || "";
@@ -5222,20 +5270,12 @@ function renderJudgeSubmissionSummary() {
   if (!id) {
     target.innerHTML = "";
     target.classList.remove("is-visible");
-    if (recap) {
-      recap.textContent = "";
-      recap.hidden = true;
-    }
     return;
   }
   const found = findSubmissionById(id);
   if (!found) {
     target.innerHTML = "";
     target.classList.remove("is-visible");
-    if (recap) {
-      recap.textContent = "";
-      recap.hidden = true;
-    }
     return;
   }
   const { row, sub } = found;
@@ -5276,20 +5316,6 @@ function renderJudgeSubmissionSummary() {
         demoUrl
       )}" target="_blank" rel="noopener noreferrer" class="repo-link judge-sub-link-compact">Demo</a>`
     : `<span class="judge-sub-muted">Demo · —</span>`;
-
-  if (recap) {
-    if (merged.length) {
-      const ma = mergedScoreAverage(merged);
-      const nJ = countUniqueJudges(merged);
-      recap.textContent = `Quick recap: avg ${ma} · ${merged.length} score${
-        merged.length === 1 ? "" : "s"
-      } · ${nJ} judge${nJ === 1 ? "" : "s"}`;
-      recap.hidden = false;
-    } else {
-      recap.textContent = "";
-      recap.hidden = true;
-    }
-  }
 
   target.innerHTML = `
     <div class="judge-sub-summary-card">
