@@ -392,8 +392,29 @@ async function getJudgeResponses(repoKey) {
   return (rows || []).map(r => ({ ...r, timestamp: r.submitted_at }));
 }
 
+function judgeDbInt(value, maximum = 100) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) {
+    return 0;
+  }
+  return Math.max(0, Math.min(maximum, Math.round(n)));
+}
+
+function judgeSanitizeScoreMap(scores, maximum = 100) {
+  if (!scores || typeof scores !== "object" || Array.isArray(scores)) {
+    return {};
+  }
+  const out = {};
+  for (const [key, value] of Object.entries(scores)) {
+    if (key == null) continue;
+    out[String(key)] = judgeDbInt(value, maximum);
+  }
+  return out;
+}
+
 async function upsertJudgeResponse(row) {
   const activeHackathonId = await getActiveHackathonUuid();
+  const scoreCap = 100;
   const payload = {
     judge_name: row.judge_name,
     repo_key: row.repo_key,
@@ -403,12 +424,12 @@ async function upsertJudgeResponse(row) {
     scored_track: row.scored_track || "",
     notes: row.notes || "",
     submitted_at: row.timestamp || row.submitted_at || new Date().toISOString(),
-    core_scores: row.core_scores || {},
-    bonus_bucket_scores: row.bonus_bucket_scores || {},
-    core_total: row.core_total || 0,
-    bonus_total_raw: row.bonus_total_raw || 0,
-    bonus_total_capped: row.bonus_total_capped || 0,
-    total_score: row.total_score || 0,
+    core_scores: judgeSanitizeScoreMap(row.core_scores, scoreCap),
+    bonus_bucket_scores: judgeSanitizeScoreMap(row.bonus_bucket_scores, scoreCap),
+    core_total: judgeDbInt(row.core_total, scoreCap),
+    bonus_total_raw: judgeDbInt(row.bonus_total_raw, scoreCap),
+    bonus_total_capped: judgeDbInt(row.bonus_total_capped, scoreCap),
+    total_score: judgeDbInt(row.total_score, scoreCap),
     hackathon_id: row.hackathon_id || activeHackathonId,
   };
   const result = await supabaseRest(
@@ -554,6 +575,30 @@ async function getSubmissionTechnologiesMap(hackathonId) {
 // --- Teams + members ---
 
 /**
+ * Validate roster members from the submit form.
+ * Returns null when valid, or an error string for HTTP 400.
+ */
+function validateTeamPayload(team) {
+  if (!team || typeof team !== "object") return null;
+  const rawMembers = Array.isArray(team.members) ? team.members : [];
+  for (const m of rawMembers) {
+    if (!m || typeof m !== "object") continue;
+    const fullName = String(m.full_name || "").trim();
+    if (!fullName) continue;
+    if (!String(m.cursor_email || "").trim()) {
+      return "Each team member needs an email for Cursor.";
+    }
+    if (!String(m.luma_profile || "").trim()) {
+      return "Each team member needs a Luma profile URL.";
+    }
+    if (!String(m.social_url || "").trim()) {
+      return "Each team member needs a LinkedIn or X URL.";
+    }
+  }
+  return null;
+}
+
+/**
  * Sanitize an incoming `team` payload from the submit form.
  * Returns null if there's no usable team info (no name, no valid members).
  */
@@ -569,7 +614,10 @@ function normalizeTeamPayload(team) {
       luma_profile: String(m.luma_profile || "").trim(),
       social_url: String(m.social_url || "").trim(),
     }))
-    .filter((m) => m.full_name);
+    .filter(
+      (m) =>
+        m.full_name && m.cursor_email && m.luma_profile && m.social_url
+    );
   if (!name && members.length === 0) return null;
   return { name, members };
 }
@@ -701,6 +749,7 @@ module.exports = {
   getActiveHackathonUuid,
   persistTeam,
   normalizeTeamPayload,
+  validateTeamPayload,
   getTeamsBySubmissionMap,
   deleteTeamMember,
   persistGithubData,

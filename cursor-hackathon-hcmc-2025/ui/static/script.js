@@ -286,6 +286,27 @@ function normalizeRepoKey(repoUrl = "") {
 
 /** Load before submission/judge merges so cohort scoping matches config. */
 let eventFormat = null;
+
+const JUDGE_LEGACY_TOTAL_CAP = 11;
+const JUDGE_LEGACY_SCALE_MAX = 11.5;
+
+function judgeScoreTotalCap() {
+  return Number(eventFormat?.rubric?.total_cap ?? 100);
+}
+
+/** Map stored 0–11 scores to 0–100 for display and editing; leave 100-scale values as-is. */
+function normalizeStoredJudgeScore(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return null;
+  if (n <= JUDGE_LEGACY_SCALE_MAX) {
+    return Math.round((n * 100) / JUDGE_LEGACY_TOTAL_CAP * 10) / 10;
+  }
+  return Math.round(n * 10) / 10;
+}
+
+function judgeBonusCap() {
+  return Number(eventFormat?.judge_bonus_bucket?.max_points ?? 4);
+}
 let hacksIndex = { hacks: [], active_hack_id: null };
 
 function getActiveHackId() {
@@ -413,7 +434,7 @@ function isAssignedToCurrentJudge(entry) {
 
 function isJudgeMineOnlyChecked() {
   const cb = document.getElementById("judge-mine-only");
-  if (!cb) return false; // Default OFF — judges self-coordinate via coverage view
+  if (!cb) return false; // Default OFF — show full queue unless filtered
   return !!cb.checked;
 }
 
@@ -807,9 +828,28 @@ function lbNameCell(row, displayName) {
   return `<span class="lb-name">${safe}</span>`;
 }
 
+function judgeInfoAverageNumeric(info) {
+  if (!info?.responses?.length) return 0;
+  if (info.legacy_mode) {
+    return Number(
+      (info.averages && info.averages.grand_total) ?? info.average_score ?? 0
+    );
+  }
+  const vals = info.responses
+    .map((r) => normalizeStoredJudgeScore(r.total_score))
+    .filter((v) => v !== null);
+  if (!vals.length) return 0;
+  return vals.reduce((sum, v) => sum + v, 0) / vals.length;
+}
+
+function judgeInfoDisplayAverage(info) {
+  return formatJudgeScore(judgeInfoAverageNumeric(info));
+}
+
 function buildJudgeTooltip(info) {
   if (!info || !info.responses || info.responses.length === 0)
     return "No judge responses";
+  const cap = judgeScoreTotalCap();
   const parts = info.responses.map((r, idx) => {
     const thought = r.notes
       ? ` — ${r.notes}`
@@ -819,9 +859,9 @@ function buildJudgeTooltip(info) {
     if (info.legacy_mode) {
       return `#${idx + 1}: ${r.total_score}${thought}`;
     }
-    return `#${idx + 1}: ${r.total_score}/10 (core ${r.core_total}, bonus ${
-      r.bonus_total_capped
-    })${thought}`;
+    const score = normalizeStoredJudgeScore(r.total_score);
+    const scoreLabel = score === null ? "—" : formatJudgeScore(score);
+    return `#${idx + 1}: ${scoreLabel}/${cap}${thought}`;
   });
   return parts.join("\n");
 }
@@ -830,12 +870,15 @@ function renderJudgeCell(info) {
   if (!info || !info.responses || info.responses.length === 0) {
     return '<span class="judge-chip no-data">—</span>';
   }
-  const avg = Number(
-    (info.averages && info.averages.grand_total) ?? info.average_score ?? 0
-  ).toFixed(1);
-  const cap = info.legacy_mode ? "" : '<span class="judge-count">/10</span>';
+  const avg = judgeInfoDisplayAverage(info);
+  const count = info.responses.length;
+  const countLabel = count === 1 ? "1 judge" : `${count} judges`;
+  const totalCap = judgeScoreTotalCap();
+  const denom = info.legacy_mode
+    ? ""
+    : `<span class="judge-score-denom">/${totalCap}</span>`;
   const tooltip = escapeAttr(buildJudgeTooltip(info));
-  return `<span class="judge-chip" title="${tooltip}">${avg}${cap}<span class="judge-count"> · ${info.responses.length}</span></span>`;
+  return `<span class="judge-chip" title="${tooltip}"><span class="judge-score-group"><span class="judge-score-val">${avg}</span>${denom}</span><span class="judge-meta-count">${countLabel}</span></span>`;
 }
 
 function judgeImportResponsesListHtml(info) {
@@ -847,9 +890,11 @@ function judgeImportResponsesListHtml(info) {
         : "";
       const scoreLine = info.legacy_mode
         ? `#${idx + 1} • ${r.total_score}`
-        : `#${idx + 1} • ${r.total_score}/10 (core ${r.core_total}, bonus ${
-            r.bonus_total_capped
-          })`;
+        : (() => {
+            const score = normalizeStoredJudgeScore(r.total_score);
+            const label = score === null ? "—" : formatJudgeScore(score);
+            return `#${idx + 1} • ${label}/${judgeScoreTotalCap()}`;
+          })();
       return `<div class="judge-row"><div class="judge-score-pill">${scoreLine}</div>${thought}</div>`;
     })
     .join("");
@@ -859,86 +904,29 @@ function judgeAggregateBlockHtml(info) {
   if (!info || !info.responses || info.responses.length === 0) {
     return "";
   }
-  const grandAvg = Number(
-    (info.averages && info.averages.grand_total) ?? info.average_score ?? 0
-  ).toFixed(1);
-  const coreAvg = Number(
-    (info.averages && info.averages.core_total) ?? info.average_score ?? 0
-  ).toFixed(1);
-  const bonusAvg = Number(
-    (info.averages && info.averages.bonus_total) ?? 0
-  ).toFixed(1);
-  const criterionList = info.legacy_mode
-    ? ""
-    : Object.entries(info.averages.core_scores || {})
-        .map(
-          ([key, value]) =>
-            `<div class="judge-row"><div class="judge-score-pill">${escapeHtml(
-              humanizeKey(key)
-            )}</div><div class="judge-thought">${Number(value).toFixed(
-              1
-            )} avg</div></div>`
-        )
-        .join("");
-  const bonusList = info.legacy_mode
-    ? ""
-    : Object.entries(info.averages.bonus_bucket_scores || {})
-        .map(
-          ([key, value]) =>
-            `<div class="judge-row"><div class="judge-score-pill">${escapeHtml(
-              humanizeKey(key)
-            )}</div><div class="judge-thought">${Number(value).toFixed(
-              1
-            )} avg</div></div>`
-        )
-        .join("");
+  const grandAvg = judgeInfoDisplayAverage(info);
   return `
     <div class="judge-summary">
       <div class="judge-score-pill highlight" title="Average of imported judge scores (${info.responses.length} response${info.responses.length !== 1 ? "s" : ""})."><span class="judge-score-avg-label">Avg</span> ${grandAvg}${
-    info.legacy_mode ? "" : "/10"
+    info.legacy_mode ? "" : `/${judgeScoreTotalCap()}`
   }</div>
       <div class="judge-meta">${info.responses.length} response${
     info.responses.length !== 1 ? "s" : ""
   }</div>
-    </div>
-    ${
-      info.legacy_mode
-        ? ""
-        : `
-      <div class="judge-summary">
-        <div class="judge-score-pill">Core ${coreAvg}/7</div>
-        <div class="judge-score-pill">Bonus ${bonusAvg}/3</div>
-      </div>
-      <div class="judge-list">${criterionList}</div>
-      <div class="judge-list">${bonusList}</div>
-    `
-    }`;
-}
-
-/** Imported averages only — used on judge AI rail (no rubric duplicate). */
-function judgeAggregateCompactHtml(info) {
-  if (!info || !info.responses || info.responses.length === 0) return "";
-  const n = info.responses.length;
-  const avg = Number(
-    (info.averages && info.averages.grand_total) ?? info.average_score ?? 0
-  ).toFixed(1);
-  const suffix = info.legacy_mode ? "" : "/10";
-  const judgeWord = n === 1 ? "judge" : "judges";
-  return `<p class="judge-aggregate-compact" role="status"><strong>${n}</strong> ${judgeWord} · avg <strong>${avg}</strong>${suffix}</p>`;
+    </div>`;
 }
 
 function renderJudgeDetails(info, containerEl) {
   const container =
     containerEl || document.getElementById("judge-output");
   if (!container) return;
-  const isJudgeAiRail = container.id === "judge-side-judge-output";
   if (!info || !info.responses || info.responses.length === 0) {
     container.innerHTML =
       '<div class="empty-state"><div class="empty-state-icon">🧑‍⚖️</div><div>No judge responses</div></div>';
     return;
   }
   const list = judgeImportResponsesListHtml(info);
-  const rollup = isJudgeAiRail ? "" : judgeAggregateBlockHtml(info);
+  const rollup = judgeAggregateBlockHtml(info);
   container.innerHTML = `${rollup}<div class="judge-list">${list}</div>`;
 }
 
@@ -1302,7 +1290,6 @@ function detailElsForJudgeSidePanel() {
     metricsFlags: document.getElementById("judge-side-metrics-flags"),
     metricsTime: document.getElementById("judge-side-metrics-time"),
     aiOutput: document.getElementById("judge-side-ai-output"),
-    judgeOutput: document.getElementById("judge-side-judge-output"),
     commitsTbody: document.querySelector("#judge-side-commits-table tbody"),
     commitCountEl: document.getElementById("judge-side-commit-count"),
   };
@@ -1312,10 +1299,8 @@ function mergeDetailEls(overrides) {
   if (!overrides) return detailElsForDrawer();
 
   const submissionOut = overrides.submissionOutput;
-  const judgeOut = overrides.judgeOutput;
   const targetsJudgeSidePanel =
-    (submissionOut && submissionOut.id === "judge-side-submission-output") ||
-    (judgeOut && judgeOut.id === "judge-side-judge-output");
+    submissionOut && submissionOut.id === "judge-side-submission-output";
 
   if (targetsJudgeSidePanel) {
     const side = detailElsForJudgeSidePanel();
@@ -1334,28 +1319,6 @@ function mergeDetailEls(overrides) {
   return o;
 }
 
-function mergedTableRowsHtml(merged) {
-  return merged
-    .map(
-      (e) => `
-    <tr>
-      <td class="judge-prior-td judge-prior-judge">${escapeHtml(e.judge)}${
-        e.source === "local"
-          ? ' <span class="judge-prior-src">local</span>'
-          : ' <span class="judge-prior-src">import</span>'
-      }</td>
-      <td class="judge-prior-td judge-prior-when">${escapeHtml(
-        formatJudgeTime(e.at)
-      )}</td>
-      <td class="judge-prior-td judge-prior-num">${escapeHtml(
-        String(e.total ?? "—")
-      )}</td>
-      <td class="judge-prior-td judge-prior-detail">${escapeHtml(e.detail)}</td>
-    </tr>`
-    )
-    .join("");
-}
-
 function countUniqueJudges(merged) {
   const s = new Set();
   for (const e of merged) {
@@ -1363,21 +1326,6 @@ function countUniqueJudges(merged) {
     if (j) s.add(j.toLowerCase());
   }
   return s.size;
-}
-
-function renderJudgeSideScoresTab(submissionId, judgeInfo) {
-  const agg = document.getElementById("judge-side-scores-aggregate");
-  const tbody = document.querySelector("#judge-side-merged-scores tbody");
-  if (!agg || !tbody) return;
-  const merged = buildMergedScoreEntries(submissionId, judgeInfo);
-  tbody.innerHTML = mergedTableRowsHtml(merged);
-  if (judgeInfo && judgeInfo.responses && judgeInfo.responses.length) {
-    agg.innerHTML = judgeAggregateCompactHtml(judgeInfo);
-  } else {
-    agg.innerHTML = merged.length
-      ? `<p class="judge-scores-tab-hint">No imported panel rollup — merged scores below keep full rubric history.</p>`
-      : `<div class="empty-state"><div class="empty-state-icon">🧑‍⚖️</div><div>No scores yet for this pick.</div></div>`;
-  }
 }
 
 async function loadDetails(repoId, elsOrOverrides) {
@@ -1430,18 +1378,12 @@ async function loadDetails(repoId, elsOrOverrides) {
 
     if (aiOutput) {
       const isJudgeRailAi = aiOutput.id === "judge-side-ai-output";
-      if (isJudgeRailAi) {
-        _judgeSideAiPlainByRepo.set(repoId, aiText ? String(aiText) : "");
-      }
       if (aiText) {
         aiOutput.innerHTML = formatAIOutput(aiText);
       } else if (isJudgeRailAi) {
         aiOutput.innerHTML = `<div class="judge-ai-empty" role="status"><p class="judge-ai-empty-lead">No AI repo narrative loaded.</p><p class="judge-ai-empty-hint">When present, this summarizes authenticity and how the team applied their declared technologies. Generate notes with <code class="judge-inline-code">python3 ai/run_ai.py --work-dir work</code> after metrics exist.</p></div>`;
       } else {
         aiOutput.textContent = "No AI analysis available for this submission.";
-      }
-      if (isJudgeRailAi) {
-        refreshJudgeTechnologyUsagePane(repoId);
       }
     }
 
@@ -1450,10 +1392,6 @@ async function loadDetails(repoId, elsOrOverrides) {
 
     const commitTargets = { tbody: commitsTbody, countEl: commitCountEl };
     renderCommits(commitsData.rows || [], commitTargets);
-    if (judgeOutput && judgeOutput.id === "judge-side-judge-output") {
-      const sid = document.getElementById("judge-submission-select")?.value;
-      if (sid) renderJudgeSideScoresTab(sid, judgeInfo);
-    }
   } catch (err) {
     const summaryRow = findSummaryRowForRepoId(repoId);
     renderSubmissionDetails(summaryRow, submissionOutput);
@@ -1471,9 +1409,6 @@ async function loadDetails(repoId, elsOrOverrides) {
     if (aiOutput) {
       const isJudgeRailAi = aiOutput.id === "judge-side-ai-output";
       if (isJudgeRailAi) {
-        _judgeSideAiPlainByRepo.set(repoId, "");
-      }
-      if (isJudgeRailAi) {
         if (rowHasAnalysis(summaryRow)) {
           aiOutput.innerHTML = `<p class="judge-ai-error" role="alert">${escapeHtml(
             `Could not load AI notes: ${err.message}`
@@ -1481,7 +1416,6 @@ async function loadDetails(repoId, elsOrOverrides) {
         } else {
           aiOutput.innerHTML = `<div class="judge-ai-empty" role="status"><p class="judge-ai-empty-lead">Repo analysis not ready.</p><p class="judge-ai-empty-hint">Run <code class="judge-inline-code">python3 scan.py …</code> then <code class="judge-inline-code">python3 ai/run_ai.py …</code> for stack-aware narrative in this tab.</p></div>`;
         }
-        refreshJudgeTechnologyUsagePane(repoId);
       } else {
         aiOutput.textContent = rowHasAnalysis(summaryRow)
           ? ""
@@ -1492,10 +1426,6 @@ async function loadDetails(repoId, elsOrOverrides) {
     renderJudgeDetails(judgeInfo, judgeOutput);
     const commitTargets = { tbody: commitsTbody, countEl: commitCountEl };
     renderCommits([], commitTargets);
-    if (judgeOutput && judgeOutput.id === "judge-side-judge-output") {
-      const sid = document.getElementById("judge-submission-select")?.value;
-      if (sid) renderJudgeSideScoresTab(sid, judgeInfo);
-    }
   }
 }
 
@@ -2201,12 +2131,14 @@ function openModal(id) {
       .catch((err) => console.warn("manager refresh", err));
   }
   if (id === "judge-modal") {
+    setActiveJudgeRailTab(getStoredJudgeRailTab(), { persist: false });
     setActiveJudgeStageTab("overview");
     setJudgeSaveStatus("", "");
     refreshJudgeSubmissionSelect();
     refreshJudgeSubmissions({ silent: false });
     syncJudgeFullViewFromSelection();
     attachJudgeReelsHandlers();
+    onJudgeModalOpened();
   }
 }
 
@@ -2272,10 +2204,48 @@ function openJudgeSidePanel() {
   if (repoId) loadDetails(repoId, detailElsForJudgeSidePanel());
 }
 
+const JUDGE_RAIL_TABS = ["score", "submission"];
+const JUDGE_RAIL_TAB_KEY = "judge-rail-tab";
+
+function getStoredJudgeRailTab() {
+  try {
+    const v = sessionStorage.getItem(JUDGE_RAIL_TAB_KEY);
+    return JUDGE_RAIL_TABS.includes(v) ? v : "score";
+  } catch {
+    return "score";
+  }
+}
+
+function setActiveJudgeRailTab(which, { persist = true } = {}) {
+  const target = JUDGE_RAIL_TABS.includes(which) ? which : "score";
+  document.querySelectorAll("[data-judge-rail-tab]").forEach((btn) => {
+    const isActive = btn.getAttribute("data-judge-rail-tab") === target;
+    btn.classList.toggle("is-active", isActive);
+    btn.setAttribute("aria-selected", isActive ? "true" : "false");
+    btn.tabIndex = isActive ? 0 : -1;
+  });
+  JUDGE_RAIL_TABS.forEach((key) => {
+    const pane = document.getElementById(`judge-rail-panel-${key}`);
+    if (!pane) return;
+    const isActive = key === target;
+    pane.classList.toggle("is-active", isActive);
+    if (isActive) pane.removeAttribute("hidden");
+    else pane.setAttribute("hidden", "");
+  });
+  if (persist) {
+    try {
+      sessionStorage.setItem(JUDGE_RAIL_TAB_KEY, target);
+    } catch {}
+  }
+}
+
 const JUDGE_STAGE_TABS = ["overview", "code", "ai"];
+function judgeStageTabRoot() {
+  return document.getElementById("judge-rail-panel-submission") || document;
+}
 function setActiveJudgeStageTab(which) {
   const target = JUDGE_STAGE_TABS.includes(which) ? which : "overview";
-  document.querySelectorAll("[data-judge-stage-tab]").forEach((btn) => {
+  judgeStageTabRoot().querySelectorAll("[data-judge-stage-tab]").forEach((btn) => {
     const isActive = btn.getAttribute("data-judge-stage-tab") === target;
     btn.classList.toggle("is-active", isActive);
     btn.setAttribute("aria-selected", isActive ? "true" : "false");
@@ -2308,6 +2278,7 @@ function syncJudgeFullViewFromSelection() {
   if (hidden) hidden.value = id;
   renderJudgeVideoStage();
   renderJudgeScoreQueue();
+  renderJudgeOverviewMeta(id);
   renderJudgeOverviewExtras(id);
   renderJudgeCodeSignal(id);
   if (!id) {
@@ -2324,10 +2295,6 @@ function syncJudgeFullViewFromSelection() {
     }
     const aiOut = document.getElementById("judge-side-ai-output");
     if (aiOut) aiOut.innerHTML = "";
-    const techOut = document.getElementById("judge-side-tech-usage");
-    if (techOut) techOut.innerHTML = "";
-    const aggOut = document.getElementById("judge-side-scores-aggregate");
-    if (aggOut) aggOut.innerHTML = "";
     const repoPill = document.getElementById("judge-side-detail-title");
     if (repoPill) {
       repoPill.textContent = "";
@@ -2346,21 +2313,26 @@ function syncJudgeFullViewFromSelection() {
 
 function onJudgeSubmissionSelectChanged() {
   const selectedId = document.getElementById("judge-submission-select")?.value || "";
-  const allEntries = getJudgeReviewEntries();
-  const idx = allEntries.findIndex((e) => e.id === selectedId);
+  const { allEntries, entries } = getJudgeQueueEntries();
+  const idx = entries.findIndex((e) => e.id === selectedId);
   if (idx >= 0) judgeCurrentIndex = idx;
+  syncJudgeIdentityQueueChip();
   if (_judgeSavedTick) clearInterval(_judgeSavedTick);
   if (_judgeSavedTimer) clearTimeout(_judgeSavedTimer);
   setJudgeSaveStatus("", "");
-  renderJudgeCoverageChips(allEntries);
   renderJudgeSubmissionSummary();
   syncJudgeFullViewFromSelection();
+  syncJudgeScoreFormFromExisting();
+  if (isEagleViewOpen()) renderEagleView();
 }
 
 function closeModal(id) {
   const modal = document.getElementById(id);
   if (!modal) return;
-  if (id === "judge-modal") closeJudgeSidePanel();
+  if (id === "judge-modal") {
+    closeJudgeSidePanel();
+    onJudgeModalClosed();
+  }
   if (id === "manager-modal") stopLeaderboardLiveUpdates();
   if (id === "submit-modal") closeTeamRosterDrawer();
   modal.classList.add("hidden");
@@ -2512,12 +2484,22 @@ function commitTeamRosterDrawer() {
     inputs.cursor_email?.focus();
     return;
   }
-  if (member.luma_profile && !isValidUrlLenient(member.luma_profile)) {
+  if (!member.luma_profile) {
+    if (error) error.textContent = "Luma profile is required.";
+    inputs.luma_profile?.focus();
+    return;
+  }
+  if (!isValidUrlLenient(member.luma_profile)) {
     if (error) error.textContent = "Luma profile must be a valid URL.";
     inputs.luma_profile?.focus();
     return;
   }
-  if (member.social_url && !isValidUrlLenient(member.social_url)) {
+  if (!member.social_url) {
+    if (error) error.textContent = "LinkedIn or X URL is required.";
+    inputs.social_url?.focus();
+    return;
+  }
+  if (!isValidUrlLenient(member.social_url)) {
     if (error) error.textContent = "LinkedIn / X must be a valid URL.";
     inputs.social_url?.focus();
     return;
@@ -2609,7 +2591,7 @@ async function handleSubmitForm(e) {
     return;
   }
   if (technologyIds.length === 0) {
-    toast("Pick at least one technology you used (Overmind, Tavily, or Cursor SDK).");
+    toast("Pick at least one technology partner you used.");
     const firstTech = form.querySelector(
       '[data-tech-picker] input[type="checkbox"]'
     );
@@ -2618,6 +2600,20 @@ async function handleSubmitForm(e) {
   }
   if (submitTeamMembers.length === 0) {
     toast("Add at least one team member before submitting.");
+    teamRosterEls().addBtn?.focus();
+    return;
+  }
+  const incompleteMember = submitTeamMembers.find(
+    (m) =>
+      !String(m.full_name || "").trim() ||
+      !String(m.cursor_email || "").trim() ||
+      !String(m.luma_profile || "").trim() ||
+      !String(m.social_url || "").trim()
+  );
+  if (incompleteMember) {
+    toast(
+      "Each team member needs full name, email, Luma profile, and LinkedIn or X URL."
+    );
     teamRosterEls().addBtn?.focus();
     return;
   }
@@ -2693,14 +2689,13 @@ async function handleSubmitForm(e) {
 // ---------- Judge form ----------
 function buildJudgeFormSkeleton() {
   renderJudgeRubricReminder();
+  syncJudgeScoreLabels();
   attachScoreInputListeners();
+  initJudgeWorkbenchUx();
 }
 
 function renderJudgeRubricReminder() {
-  const targets = [
-    document.getElementById("judge-rubric-reminder"),
-    document.getElementById("judge-rubric-reminder-side"),
-  ].filter(Boolean);
+  const targets = [document.getElementById("judge-rubric-reminder-side")].filter(Boolean);
   if (!targets.length) return;
   const criteria = eventFormat?.rubric?.criteria || [];
   const quests = eventFormat?.side_quests || [];
@@ -2750,13 +2745,802 @@ function updateJudgeRunningTotal() {
   const total = clampJudgeScore(document.getElementById("judge-score-input")?.value);
   const el = document.getElementById("judge-running-total");
   if (el) el.textContent = total === null ? "0" : formatJudgeScore(total);
+  updateJudgeScoreScaleHint();
+}
+
+function updateJudgeScoreScaleHint() {
+  const hint = document.getElementById("judge-score-scale-hint");
+  if (!hint) return;
+  const score = clampJudgeScore(document.getElementById("judge-score-input")?.value);
+  hint.textContent = score === null ? "" : `Out of ${judgeScoreTotalCap()}`;
+}
+
+function syncJudgeScoreLabels() {
+  const cap = judgeScoreTotalCap();
+  const label = document.getElementById("judge-score-label");
+  const input = document.getElementById("judge-score-input");
+  const rubricHint = document.getElementById("judge-rubric-cap-hint");
+  if (label) label.textContent = `Score · 0–${cap}`;
+  if (input) {
+    input.max = String(cap);
+    input.placeholder = "85";
+  }
+  if (rubricHint) {
+    rubricHint.textContent = `Overall score · 0–${cap}`;
+  }
+}
+
+// ---------- Judge workbench UX (rail resize, coop toasts, eagle view) ----------
+const JUDGE_RAIL_WIDTH_KEY = "judge-rail-width";
+const JUDGE_RAIL_MIN_PX = 280;
+const JUDGE_RAIL_MAX_PX = 480;
+const JUDGE_COOP_POLL_MS = 25000;
+const JUDGE_EAGLE_REFRESH_MS = 30000;
+
+let _judgeCoopTimer = null;
+let _judgeEagleTimer = null;
+let _judgeScoreFingerprint = null;
+let _judgeCoopToastTimer = null;
+
+function isJudgeModalOpen() {
+  const modal = document.getElementById("judge-modal");
+  return modal && !modal.classList.contains("hidden");
+}
+
+function getJudgeWorkbenchEl() {
+  return document.querySelector(".judge-workbench");
+}
+
+function syncJudgeRailResizeA11y(widthPx) {
+  const handle = document.getElementById("judge-rail-resize");
+  if (!handle) return;
+  const clamped = Math.round(
+    Math.max(JUDGE_RAIL_MIN_PX, Math.min(JUDGE_RAIL_MAX_PX, widthPx))
+  );
+  handle.setAttribute("aria-valuemin", String(JUDGE_RAIL_MIN_PX));
+  handle.setAttribute("aria-valuemax", String(JUDGE_RAIL_MAX_PX));
+  handle.setAttribute("aria-valuenow", String(clamped));
+}
+
+function applyJudgeRailWidth(px) {
+  const workbench = getJudgeWorkbenchEl();
+  if (!workbench) return;
+  const clamped = Math.round(
+    Math.max(JUDGE_RAIL_MIN_PX, Math.min(JUDGE_RAIL_MAX_PX, px))
+  );
+  workbench.style.setProperty("--judge-rail-width", `${clamped}px`);
+  syncJudgeRailResizeA11y(clamped);
+  try {
+    localStorage.setItem(JUDGE_RAIL_WIDTH_KEY, String(clamped));
+  } catch {
+    /* ignore */
+  }
+}
+
+function restoreJudgeRailWidth() {
+  const workbench = getJudgeWorkbenchEl();
+  if (!workbench) return;
+  let stored = null;
+  try {
+    stored = Number(localStorage.getItem(JUDGE_RAIL_WIDTH_KEY));
+  } catch {
+    stored = null;
+  }
+  if (Number.isFinite(stored) && stored >= JUDGE_RAIL_MIN_PX && stored <= JUDGE_RAIL_MAX_PX) {
+    workbench.style.setProperty("--judge-rail-width", `${stored}px`);
+    syncJudgeRailResizeA11y(stored);
+  }
+}
+
+function initJudgeRailResize() {
+  const handle = document.getElementById("judge-rail-resize");
+  const rail = document.getElementById("judge-rail");
+  const workbench = getJudgeWorkbenchEl();
+  if (!handle || !rail || !workbench) return;
+  if (handle.dataset.bound === "1") return;
+  handle.dataset.bound = "1";
+
+  const readWidth = () => {
+    const raw = getComputedStyle(workbench).getPropertyValue("--judge-rail-width").trim();
+    const n = parseFloat(raw);
+    return Number.isFinite(n) ? n : JUDGE_RAIL_MIN_PX;
+  };
+
+  syncJudgeRailResizeA11y(readWidth());
+
+  const onPointerDown = (e) => {
+    if (window.matchMedia("(max-width: 920px)").matches) return;
+    e.preventDefault();
+    rail.classList.add("is-resizing");
+    workbench.classList.add("is-rail-resizing");
+    document.body.classList.add("is-judge-rail-resizing");
+    const startX = e.clientX;
+    const startW = readWidth();
+    handle.setPointerCapture(e.pointerId);
+
+    const onMove = (ev) => {
+      const delta = startX - ev.clientX;
+      applyJudgeRailWidth(startW + delta);
+    };
+    const onUp = (ev) => {
+      rail.classList.remove("is-resizing");
+      workbench.classList.remove("is-rail-resizing");
+      document.body.classList.remove("is-judge-rail-resizing");
+      try {
+        handle.releasePointerCapture(ev.pointerId);
+      } catch {
+        /* ignore */
+      }
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+  };
+
+  handle.addEventListener("pointerdown", onPointerDown);
+  handle.addEventListener("keydown", (e) => {
+    const step = e.shiftKey ? 32 : 12;
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      applyJudgeRailWidth(readWidth() + step);
+      return;
+    }
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      applyJudgeRailWidth(readWidth() - step);
+      return;
+    }
+    if (e.key === "Home") {
+      e.preventDefault();
+      applyJudgeRailWidth(JUDGE_RAIL_MAX_PX);
+      return;
+    }
+    if (e.key === "End") {
+      e.preventDefault();
+      applyJudgeRailWidth(JUDGE_RAIL_MIN_PX);
+    }
+  });
+}
+
+function buildJudgeScoreFingerprint() {
+  const fp = new Map();
+  judgeMap.forEach((info, repoKey) => {
+    if (!info?.responses?.length) return;
+    for (const r of info.responses) {
+      const judge = String(r.judge_name || r.judge || "").trim();
+      if (!judge) continue;
+      const project = String(r.project_name || "").trim() || repoKey;
+      const subId = String(r.submission_id || "").trim();
+      const key = `${normalizeJudgeName(judge)}|${subId || normalizeRepoKey(r.repo_url || repoKey)}|${slugify(project)}`;
+      const score = normalizeStoredJudgeScore(r.total_score);
+      const at = r.scored_at || r.timestamp || "";
+      const prev = fp.get(key);
+      if (!prev || String(at) >= String(prev.at)) {
+        fp.set(key, { judge, project, score, at, subId });
+      }
+    }
+  });
+  return fp;
+}
+
+function showJudgeCoopToast(message) {
+  let el = document.getElementById("judge-coop-toast");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "judge-coop-toast";
+    el.className = "judge-coop-toast";
+    el.setAttribute("role", "status");
+    el.setAttribute("aria-live", "polite");
+    document.body.appendChild(el);
+  }
+  el.innerHTML = message;
+  el.hidden = false;
+  if (_judgeCoopToastTimer) clearTimeout(_judgeCoopToastTimer);
+  _judgeCoopToastTimer = setTimeout(() => {
+    el.hidden = true;
+    el.textContent = "";
+  }, 3000);
+}
+
+function diffJudgeCoopToasts(prevFp, nextFp) {
+  if (!prevFp || !nextFp) return;
+  const me = normalizeJudgeName(getJudgeNameForUi());
+  for (const [key, next] of nextFp.entries()) {
+    const prev = prevFp.get(key);
+    if (prev && prev.score === next.score && prev.at === next.at) continue;
+    const judgeKey = normalizeJudgeName(next.judge);
+    if (!judgeKey || (me && judgeKey === me)) continue;
+    const proj = escapeHtml(next.project || "submission");
+    const judge = escapeHtml(next.judge);
+    const score =
+      next.score === null || next.score === undefined
+        ? "—"
+        : formatJudgeScore(Number(next.score));
+    showJudgeCoopToast(`<strong>${judge}</strong> scored ${proj}: ${score}`);
+    return;
+  }
+}
+
+async function pollJudgeCoopOnce() {
+  if (!isJudgeModalOpen()) return;
+  const prev = _judgeScoreFingerprint || buildJudgeScoreFingerprint();
+  try {
+    await loadJudgeData();
+  } catch (err) {
+    console.warn("judge coop poll failed", err);
+    return;
+  }
+  const next = buildJudgeScoreFingerprint();
+  diffJudgeCoopToasts(prev, next);
+  _judgeScoreFingerprint = next;
+  if (!document.getElementById("judge-eagle-overlay")?.classList.contains("hidden")) {
+    renderEagleView();
+  }
+}
+
+function startJudgeCoopPolling() {
+  if (_judgeCoopTimer) return;
+  _judgeScoreFingerprint = buildJudgeScoreFingerprint();
+  _judgeCoopTimer = setInterval(() => {
+    pollJudgeCoopOnce().catch(() => {});
+  }, JUDGE_COOP_POLL_MS);
+}
+
+function stopJudgeCoopPolling() {
+  if (_judgeCoopTimer) {
+    clearInterval(_judgeCoopTimer);
+    _judgeCoopTimer = null;
+  }
+  _judgeScoreFingerprint = null;
+  const toast = document.getElementById("judge-coop-toast");
+  if (toast) {
+    toast.hidden = true;
+    toast.textContent = "";
+  }
+  if (_judgeCoopToastTimer) {
+    clearTimeout(_judgeCoopToastTimer);
+    _judgeCoopToastTimer = null;
+  }
+}
+
+/** Eagle matrix columns: configured panel judges only (not walk-in / curl test names). */
+function collectEagleJudgeColumns() {
+  return getJudgePool()
+    .map((j) => j?.name)
+    .filter(Boolean)
+    .sort((a, b) => a.localeCompare(b));
+}
+
+function latestJudgeScoreOnRow(row, judgeName) {
+  const response = latestJudgeResponseOnRow(row, judgeName);
+  return response ? normalizeStoredJudgeScore(response.total_score) : null;
+}
+
+/** Mean of latest judge scores on a row (only judges with a score). */
+function averageJudgeScoresOnRow(row, judgeNames) {
+  if (!row) return null;
+  const scores = [];
+  for (const j of judgeNames) {
+    const score = latestJudgeScoreOnRow(row, j);
+    if (score !== null && score !== undefined && score !== "") {
+      scores.push(Number(score));
+    }
+  }
+  if (!scores.length) return null;
+  const sum = scores.reduce((a, b) => a + b, 0);
+  return Math.round((sum / scores.length) * 10) / 10;
+}
+
+function latestJudgeResponseOnRow(row, judgeName) {
+  const info = getJudgeInfoForRow(row);
+  if (!info?.responses?.length) return null;
+  const target = normalizeJudgeName(judgeName);
+  let best = null;
+  for (const r of info.responses) {
+    const j = normalizeJudgeName(r.judge_name || r.judge || "");
+    if (j !== target) continue;
+    const at = r.scored_at || r.timestamp || "";
+    if (!best || String(at) >= String(best.at)) {
+      best = { response: r, at };
+    }
+  }
+  return best ? best.response : null;
+}
+
+function syncJudgeScoreFormFromExisting() {
+  const submissionId = document.getElementById("judge-submission-select")?.value || "";
+  const judgeName = getJudgeNameForUi();
+  const scoreInput = document.getElementById("judge-score-input");
+  const notes = document.getElementById("judge-form")?.querySelector("textarea[name=thoughts]");
+  if (!submissionId || !judgeName.trim()) {
+    if (scoreInput) scoreInput.value = "";
+    if (notes) notes.value = "";
+    updateJudgeRunningTotal();
+    return;
+  }
+  const found = findSubmissionById(submissionId);
+  const mine = found?.row ? latestJudgeResponseOnRow(found.row, judgeName) : null;
+  if (mine) {
+    const score = normalizeStoredJudgeScore(mine.total_score);
+    if (scoreInput) {
+      scoreInput.value = score === null ? "" : formatJudgeScore(score);
+    }
+    if (notes) notes.value = mine.thoughts || mine.notes || "";
+  } else {
+    if (scoreInput) scoreInput.value = "";
+    if (notes) notes.value = "";
+  }
+  updateJudgeRunningTotal();
+}
+
+function findJudgeReviewEntryById(submissionId) {
+  const raw = String(submissionId || "").trim();
+  if (!raw) return null;
+  const entries = getJudgeReviewEntries();
+  const exact = entries.find((e) => e.id === raw);
+  if (exact) return exact;
+  const lower = raw.toLowerCase();
+  return (
+    entries.find((e) => e.id.toLowerCase() === lower) ||
+    entries.find((e) => normalizeSubmissionIdentity(e).toLowerCase() === lower) ||
+    entries.find((e) => slugify(e.name || "").toLowerCase() === lower) ||
+    null
+  );
+}
+
+function focusJudgeScoreInput() {
+  const scoreInput = document.getElementById("judge-score-input");
+  if (!scoreInput) return;
+  scoreInput.removeAttribute("readonly");
+  scoreInput.disabled = false;
+  if (!document.activeElement?.matches("textarea, input, select")) {
+    scoreInput.focus({ preventScroll: true });
+  }
+}
+
+function navigateToJudgeSubmission(submissionId, options = {}) {
+  const { keepEagleOpen = false } = options;
+  const entry = findJudgeReviewEntryById(submissionId);
+  if (!entry) return;
+  const id = entry.id;
+  if (!keepEagleOpen) closeEagleView();
+  setActiveJudgeRailTab("score");
+
+  let { entries: queueEntries, mineOnly, allEntries } = getJudgeQueueEntries();
+  let queueIdx = queueEntries.findIndex((e) => e.id === id);
+
+  if (queueIdx < 0 && mineOnly && allEntries.some((e) => e.id === id)) {
+    const mineOnlyCb = document.getElementById("judge-mine-only");
+    if (mineOnlyCb?.checked) {
+      mineOnlyCb.checked = false;
+      refreshJudgeSubmissionSelect();
+      ({ entries: queueEntries } = getJudgeQueueEntries());
+      queueIdx = queueEntries.findIndex((e) => e.id === id);
+    }
+  }
+
+  if (queueIdx >= 0) {
+    setJudgeSubmissionByIndex(queueIdx);
+  } else {
+    const select = document.getElementById("judge-submission-select");
+    if (!select || !Array.from(select.options).some((o) => o.value === id)) {
+      toast("That project is not in your current queue filter");
+      return;
+    }
+    judgeCurrentIndex = Math.max(0, queueEntries.findIndex((e) => e.id === id));
+    select.value = id;
+    const picker = document.getElementById("judge-submission-picker");
+    if (picker) picker.value = id;
+    onJudgeSubmissionSelectChanged();
+  }
+
+  focusJudgeScoreInput();
+}
+
+function renderEagleView() {
+  const thead = document.getElementById("judge-eagle-thead");
+  const tbody = document.getElementById("judge-eagle-tbody");
+  const updated = document.getElementById("judge-eagle-updated");
+  if (!thead || !tbody) return;
+
+  const judges = collectEagleJudgeColumns();
+  const entries = getJudgeReviewEntries();
+  const currentId = document.getElementById("judge-submission-select")?.value || "";
+
+  const colCount = judges.length + 2;
+  thead.innerHTML = `<tr><th scope="col" class="judge-eagle__project">Project</th>${judges
+    .map((j) => `<th scope="col">${escapeHtml(j)}</th>`)
+    .join("")}<th scope="col" class="judge-eagle__avg" title="Average of judges who scored">Avg</th></tr>`;
+
+  if (!entries.length) {
+    tbody.innerHTML = `<tr><td class="judge-eagle__project" colspan="${colCount}">No submissions</td></tr>`;
+  } else {
+    tbody.innerHTML = entries
+      .map((entry) => {
+        const row = entry.row;
+        const isCurrent = entry.id === currentId;
+        const rawLabel = entry.name || entry.id || "—";
+        const label = escapeHtml(rawLabel);
+        const cells = judges
+          .map((j) => {
+            const score = row ? latestJudgeScoreOnRow(row, j) : null;
+            if (score === null || score === undefined || score === "") {
+              return `<td class="judge-eagle__cell--empty">—</td>`;
+            }
+            return `<td class="judge-eagle__cell--score">${escapeHtml(
+              formatJudgeScore(Number(score))
+            )}</td>`;
+          })
+          .join("");
+        const avg = row ? averageJudgeScoresOnRow(row, judges) : null;
+        const avgCell =
+          avg === null
+            ? `<td class="judge-eagle__cell--empty judge-eagle__cell--avg">—</td>`
+            : `<td class="judge-eagle__cell--score judge-eagle__cell--avg">${escapeHtml(
+                formatJudgeScore(avg)
+              )}</td>`;
+        return `<tr class="${isCurrent ? "is-current" : ""}"><th scope="row" class="judge-eagle__project"><button type="button" class="judge-eagle__project-btn" data-judge-eagle-id="${escapeAttr(
+          entry.id
+        )}" title="${escapeAttr(`Go to ${rawLabel}`)}">${label}</button></th>${cells}${avgCell}</tr>`;
+      })
+      .join("");
+  }
+
+  if (updated) {
+    updated.textContent = `Updated ${new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`;
+  }
+}
+
+function setEagleViewOpen(open) {
+  const workbench = document.querySelector(".judge-workbench");
+  const openBtn = document.getElementById("judge-eagle-open");
+  workbench?.classList.toggle("is-eagle-open", open);
+  if (openBtn) {
+    openBtn.setAttribute("aria-expanded", open ? "true" : "false");
+    openBtn.classList.toggle("is-active", open);
+    const label = open ? "Close Eagle view" : "Eagle view";
+    openBtn.setAttribute("aria-label", label);
+    openBtn.setAttribute("title", label);
+  }
+}
+
+function openEagleView() {
+  const overlay = document.getElementById("judge-eagle-overlay");
+  if (!overlay) return;
+  overlay.classList.remove("hidden");
+  overlay.removeAttribute("hidden");
+  setEagleViewOpen(true);
+  renderEagleView();
+  if (_judgeEagleTimer) clearInterval(_judgeEagleTimer);
+  _judgeEagleTimer = setInterval(() => {
+    if (overlay.classList.contains("hidden")) return;
+    pollJudgeCoopOnce()
+      .then(() => renderEagleView())
+      .catch(() => renderEagleView());
+  }, JUDGE_EAGLE_REFRESH_MS);
+  document.getElementById("judge-eagle-close")?.focus();
+}
+
+function closeEagleView() {
+  const overlay = document.getElementById("judge-eagle-overlay");
+  if (!overlay) return;
+  overlay.classList.add("hidden");
+  overlay.setAttribute("hidden", "");
+  setEagleViewOpen(false);
+  if (_judgeEagleTimer) {
+    clearInterval(_judgeEagleTimer);
+    _judgeEagleTimer = null;
+  }
+  document.getElementById("judge-eagle-open")?.focus();
+}
+
+function isEagleViewOpen() {
+  const overlay = document.getElementById("judge-eagle-overlay");
+  return overlay && !overlay.classList.contains("hidden");
+}
+
+function initEagleView() {
+  const openBtn = document.getElementById("judge-eagle-open");
+  const closeBtn = document.getElementById("judge-eagle-close");
+  const refreshBtn = document.getElementById("judge-eagle-refresh");
+  if (openBtn && openBtn.dataset.bound !== "1") {
+    openBtn.dataset.bound = "1";
+    openBtn.addEventListener("click", () => {
+      if (isEagleViewOpen()) closeEagleView();
+      else openEagleView();
+    });
+  }
+  if (closeBtn && closeBtn.dataset.bound !== "1") {
+    closeBtn.dataset.bound = "1";
+    closeBtn.addEventListener("click", () => closeEagleView());
+  }
+  if (refreshBtn && refreshBtn.dataset.bound !== "1") {
+    refreshBtn.dataset.bound = "1";
+    refreshBtn.addEventListener("click", () => {
+      pollJudgeCoopOnce()
+        .then(() => renderEagleView())
+        .catch(() => renderEagleView());
+    });
+  }
+  const tbody = document.getElementById("judge-eagle-tbody");
+  if (tbody && tbody.dataset.bound !== "1") {
+    tbody.dataset.bound = "1";
+    tbody.addEventListener("click", (e) => {
+      const btn = e.target.closest(".judge-eagle__project-btn[data-judge-eagle-id]");
+      if (!btn) return;
+      e.preventDefault();
+      navigateToJudgeSubmission(btn.getAttribute("data-judge-eagle-id"));
+    });
+    tbody.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      const btn = e.target.closest(".judge-eagle__project-btn[data-judge-eagle-id]");
+      if (!btn) return;
+      e.preventDefault();
+      navigateToJudgeSubmission(btn.getAttribute("data-judge-eagle-id"));
+    });
+  }
+}
+
+function renderJudgeOverviewMeta(submissionId) {
+  const host = document.getElementById("judge-overview-meta");
+  if (!host) return;
+  if (!submissionId) {
+    host.innerHTML = "";
+    return;
+  }
+  const found = findSubmissionById(submissionId);
+  const sub = found?.sub || null;
+  const row = found?.row || null;
+  if (!sub && !row) {
+    host.innerHTML = "";
+    return;
+  }
+  const team = (sub?.team?.name || sub?.team_name || "").trim();
+  const track = formatTrackForLabel(sub?.chosen_track || row?.chosen_track || "");
+  const tech = submissionTechnologiesDisplay(sub || row || {});
+  const repo = (sub?.repo_url || row?.repo || "").trim();
+  const demo = submissionDemoUrl(sub, row);
+  const chips = [];
+  if (team) chips.push(`<span class="judge-overview-meta__chip">Team · ${escapeHtml(team)}</span>`);
+  if (track && track !== "unscored") {
+    chips.push(
+      `<span class="judge-overview-meta__chip judge-overview-meta__chip--track">Track · ${escapeHtml(track)}</span>`
+    );
+  }
+  if (tech && tech !== "—") {
+    chips.push(`<span class="judge-overview-meta__chip">Tech · ${escapeHtml(tech)}</span>`);
+  }
+  if (repo) {
+    chips.push(
+      `<span class="judge-overview-meta__chip"><a href="${escapeAttr(repo)}" target="_blank" rel="noopener noreferrer">Repo ↗</a></span>`
+    );
+  }
+  if (demo) {
+    chips.push(
+      `<span class="judge-overview-meta__chip"><a href="${escapeAttr(demo)}" target="_blank" rel="noopener noreferrer">Demo ↗</a></span>`
+    );
+  }
+  host.innerHTML = chips.join("");
+}
+
+function initJudgeRailTabs() {
+  const tabs = document.querySelectorAll("[data-judge-rail-tab]");
+  if (!tabs.length || document.documentElement.dataset.judgeRailTabsBound === "1") {
+    return;
+  }
+  document.documentElement.dataset.judgeRailTabsBound = "1";
+  tabs.forEach((b) => {
+    b.addEventListener("click", () => {
+      const next = b.getAttribute("data-judge-rail-tab") || "score";
+      setActiveJudgeRailTab(next);
+      if (next === "score") {
+        const scoreInput = document.getElementById("judge-score-input");
+        if (scoreInput && !document.activeElement?.matches("textarea, input, select")) {
+          scoreInput.focus({ preventScroll: true });
+        }
+      }
+    });
+    b.addEventListener("keydown", (e) => {
+      const railTabs = [...document.querySelectorAll("[data-judge-rail-tab]")];
+      const i = railTabs.indexOf(document.activeElement);
+      if (i < 0) return;
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        const next = railTabs[(i + 1) % railTabs.length];
+        next.focus();
+        next.click();
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        const prev = railTabs[(i - 1 + railTabs.length) % railTabs.length];
+        prev.focus();
+        prev.click();
+      }
+    });
+  });
+}
+
+function initJudgeWorkbenchUx() {
+  restoreJudgeRailWidth();
+  initJudgeRailResize();
+  initEagleView();
+  initJudgeRubricPopover();
+  initJudgeRailTabs();
+}
+
+let _judgeRubricPopover = null;
+
+function positionJudgeRubricPopover(btn, pop) {
+  const gap = 8;
+  const margin = 14;
+  const rect = btn.getBoundingClientRect();
+  const width = Math.min(300, window.innerWidth - margin * 2);
+  pop.style.width = `${width}px`;
+  pop.style.left = `${Math.min(
+    Math.max(margin, rect.right - width),
+    window.innerWidth - width - margin
+  )}px`;
+
+  const height = pop.offsetHeight || 0;
+  const above = rect.top - height - gap;
+  const below = rect.bottom + gap;
+  pop.style.top = `${above >= margin ? above : Math.min(below, window.innerHeight - height - margin)}px`;
+}
+
+function closeJudgeRubricPopover() {
+  if (!_judgeRubricPopover) return;
+  _judgeRubricPopover.pinned = false;
+  _judgeRubricPopover.wrap.classList.remove("judge-rubric-open");
+  _judgeRubricPopover.pop.classList.remove("subtrack-sdk-popover--open");
+  _judgeRubricPopover.btn.setAttribute("aria-expanded", "false");
+}
+
+function openJudgeRubricPopover(pinned) {
+  if (!_judgeRubricPopover) return;
+  closeJudgeRubricPopover();
+  _judgeRubricPopover.pinned = !!pinned;
+  _judgeRubricPopover.wrap.classList.add("judge-rubric-open");
+  _judgeRubricPopover.pop.classList.add("subtrack-sdk-popover--open");
+  _judgeRubricPopover.btn.setAttribute("aria-expanded", "true");
+  positionJudgeRubricPopover(_judgeRubricPopover.btn, _judgeRubricPopover.pop);
+}
+
+function maybeCloseJudgeRubricPopover() {
+  if (!_judgeRubricPopover) return;
+  window.setTimeout(() => {
+    const item = _judgeRubricPopover;
+    const active = document.activeElement;
+    const hasFocus = item.wrap.contains(active) || item.pop.contains(active);
+    const isHovering = item.wrap.matches(":hover") || item.pop.matches(":hover");
+    if (item.pinned || hasFocus || isHovering) return;
+    closeJudgeRubricPopover();
+  }, 80);
+}
+
+function initJudgeRubricPopover() {
+  const wrap = document.querySelector(".judge-rubric-info-wrap");
+  const btn = document.getElementById("judge-rubric-info-btn");
+  const pop = document.getElementById("judge-rubric-popover");
+  if (!wrap || !btn || !pop || btn.dataset.bound === "1") return;
+  btn.dataset.bound = "1";
+  if (pop.parentElement !== document.body) {
+    document.body.appendChild(pop);
+  }
+  _judgeRubricPopover = { wrap, btn, pop, pinned: false };
+
+  btn.addEventListener("mouseenter", () => {
+    if (!_judgeRubricPopover.pinned) openJudgeRubricPopover(false);
+  });
+  btn.addEventListener("focus", () => {
+    if (!_judgeRubricPopover.pinned) openJudgeRubricPopover(false);
+  });
+  wrap.addEventListener("mouseleave", () => maybeCloseJudgeRubricPopover());
+  pop.addEventListener("mouseenter", () => {
+    if (!_judgeRubricPopover.pinned) openJudgeRubricPopover(false);
+  });
+  pop.addEventListener("mouseleave", () => maybeCloseJudgeRubricPopover());
+  pop.addEventListener("click", (e) => e.stopPropagation());
+  pop.addEventListener("focusout", () => maybeCloseJudgeRubricPopover());
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (_judgeRubricPopover.pinned) {
+      closeJudgeRubricPopover();
+    } else {
+      openJudgeRubricPopover(true);
+    }
+  });
+
+  if (!document.documentElement.dataset.judgeRubricPopoverBound) {
+    document.documentElement.dataset.judgeRubricPopoverBound = "1";
+    document.addEventListener("click", (e) => {
+      const t = e.target;
+      if (
+        t &&
+        typeof t.closest === "function" &&
+        (t.closest(".judge-rubric-info-wrap") || t.closest("#judge-rubric-popover"))
+      ) {
+        return;
+      }
+      closeJudgeRubricPopover();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape") return;
+      const openBtn = _judgeRubricPopover?.btn;
+      closeJudgeRubricPopover();
+      if (openBtn && document.activeElement?.closest("#judge-rubric-popover")) {
+        openBtn.focus();
+      }
+    });
+    window.addEventListener("resize", () => {
+      if (_judgeRubricPopover?.pop.classList.contains("subtrack-sdk-popover--open")) {
+        positionJudgeRubricPopover(_judgeRubricPopover.btn, _judgeRubricPopover.pop);
+      }
+    });
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (_judgeRubricPopover?.pop.classList.contains("subtrack-sdk-popover--open")) {
+          positionJudgeRubricPopover(_judgeRubricPopover.btn, _judgeRubricPopover.pop);
+        }
+      },
+      true
+    );
+  }
+}
+
+function onJudgeModalOpened() {
+  restoreJudgeRailWidth();
+  startJudgeCoopPolling();
+  _judgeScoreFingerprint = buildJudgeScoreFingerprint();
+}
+
+function onJudgeModalClosed() {
+  stopJudgeCoopPolling();
+  closeEagleView();
 }
 
 function clampJudgeScore(value) {
   if (value === "" || value == null) return null;
   const n = Number(value);
   if (Number.isNaN(n)) return null;
-  return Math.round(Math.max(0, Math.min(10, n)) * 10) / 10;
+  return Math.round(Math.max(0, Math.min(judgeScoreTotalCap(), n)));
+}
+
+/** Integer for Supabase judge_responses (Postgres rejects 3.0-style floats on int columns). */
+function judgePayloadInt(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return 0;
+  return Math.max(0, Math.min(judgeScoreTotalCap(), Math.round(n)));
+}
+
+function judgePayloadScoreMap(scores) {
+  if (!scores || typeof scores !== "object" || Array.isArray(scores)) return {};
+  const out = {};
+  for (const [key, value] of Object.entries(scores)) {
+    if (key == null) continue;
+    out[String(key)] = judgePayloadInt(value);
+  }
+  return out;
+}
+
+/** Coerce every numeric judge field to integer before POST /api/judges. */
+function judgeBuildSavePayload(raw) {
+  const total = judgePayloadInt(raw.total_score ?? raw.core_total ?? 0);
+  const coreTotal = judgePayloadInt(raw.core_total ?? total);
+  return {
+    ...raw,
+    core_scores: judgePayloadScoreMap(raw.core_scores || { overall: coreTotal }),
+    bonus_bucket_scores: judgePayloadScoreMap(raw.bonus_bucket_scores || {}),
+    core_total: coreTotal,
+    bonus_total_raw: judgePayloadInt(raw.bonus_total_raw ?? 0),
+    bonus_total_capped: judgePayloadInt(raw.bonus_total_capped ?? 0),
+    total_score: total,
+  };
 }
 
 function formatJudgeScore(value) {
@@ -2856,13 +3640,8 @@ function getJudgeReviewEntries() {
   });
 }
 
-function refreshJudgeSubmissionSelect() {
-  const select = document.getElementById("judge-submission-select");
-  if (!select) return;
-  const picker = document.getElementById("judge-submission-picker");
-  const previous = select.value;
+function getJudgeQueueEntries() {
   const allEntries = getJudgeReviewEntries();
-
   const judgeIdx = getJudgeIndex(getJudgeNameForUi());
   const hasAssignment = judgeIdx !== -1;
   const mineOnly = hasAssignment && isJudgeMineOnlyChecked();
@@ -2870,6 +3649,36 @@ function refreshJudgeSubmissionSelect() {
     ? allEntries.filter((e) => isAssignedToCurrentJudge(e))
     : allEntries;
   const entries = mineOnly ? mineEntries : allEntries;
+  return { allEntries, mineEntries, entries, hasAssignment, mineOnly };
+}
+
+function syncJudgeIdentityQueueChip() {
+  const { allEntries, mineEntries, entries, hasAssignment, mineOnly } =
+    getJudgeQueueEntries();
+  const selectedId =
+    document.getElementById("judge-submission-select")?.value || "";
+  let currentPos = entries.length ? judgeCurrentIndex : -1;
+  if (selectedId && entries.length) {
+    const bySelection = entries.findIndex((e) => e.id === selectedId);
+    if (bySelection >= 0) currentPos = bySelection;
+  }
+  updateJudgeQueueStatsUi({
+    totalAll: allEntries.length,
+    totalMine: mineEntries.length,
+    hasAssignment,
+    mineOnly,
+    currentPos,
+    queueTotal: entries.length,
+  });
+}
+
+function refreshJudgeSubmissionSelect() {
+  const select = document.getElementById("judge-submission-select");
+  if (!select) return;
+  const picker = document.getElementById("judge-submission-picker");
+  const previous = select.value;
+  const { allEntries, mineEntries, entries, hasAssignment, mineOnly } =
+    getJudgeQueueEntries();
 
   const total = entries.length;
   const totalAll = allEntries.length;
@@ -2924,96 +3733,54 @@ function refreshJudgeSubmissionSelect() {
     judgeCurrentIndex = 0;
   }
   if (picker) picker.value = select.value;
-  updateJudgeQueueStatsUi({ totalAll, totalMine, hasAssignment, mineOnly });
-  renderJudgeCoverageChips(allEntries);
+  syncJudgeIdentityQueueChip();
   renderJudgeSubmissionSummary();
   syncJudgeFullViewFromSelection();
 }
 
-function renderJudgeCoverageChips(allEntries) {
-  const host = document.getElementById("judge-coverage-chips");
-  if (!host) return;
-  const select = document.getElementById("judge-submission-select");
-  const selectedId = select && select.value ? select.value : "";
-  const selected = selectedId ? allEntries.find((e) => e.id === selectedId) : null;
-  updateJudgeCoverageSummaryLine(allEntries, selected);
+function formatJudgeQueueChip({
+  totalAll,
+  totalMine,
+  hasAssignment,
+  mineOnly,
+  currentPos,
+  queueTotal,
+}) {
+  const n = queueTotal ?? 0;
+  if (n === 0) return totalAll === 0 ? "" : "0 of 0";
 
-  const pool = getJudgePool();
-  const chips = [];
+  const posLabel =
+    currentPos >= 0 && currentPos < n
+      ? `${currentPos + 1} of ${n}`
+      : `${n} submission${n === 1 ? "" : "s"}`;
 
-  if (selected) {
-    const scorers = selected.scoredBy || [];
-    pool.forEach((j) => {
-      const has = scorers.some((nm) => judgeMatchesPool(nm, j.name));
-      chips.push(
-        `<span class="judge-cov-chip ${has ? "is-scored" : "is-pending"}" title="${escapeAttr(
-          (has ? "Scored: " : "Awaiting: ") + j.name
-        )}">${has ? "✓ " : ""}${escapeHtml(j.name)}</span>`
-      );
-    });
-    // Walk-in scorers: nobody in the panel matches this name
-    scorers.forEach((name) => {
-      const matches = pool.some((j) => judgeMatchesPool(name, j.name));
-      if (!matches) {
-        chips.push(
-          `<span class="judge-cov-chip is-extra" title="${escapeAttr(
-            "Scored (walk-in): " + name
-          )}">+ ${escapeHtml(name)}</span>`
-        );
-      }
-    });
-    const totalConfigured = pool.length;
-    const scoredFromPool = pool.filter((j) =>
-      scorers.some((nm) => judgeMatchesPool(nm, j.name))
-    ).length;
-    host.innerHTML = `<span class="judge-cov-meta">${escapeHtml(selected.name)} · ${scoredFromPool}/${totalConfigured} of panel scored</span>${chips.join(
-      ""
-    )}`;
-  } else {
-    // Aggregate coverage across the whole queue
-    const totalSubs = allEntries.length;
-    if (!totalSubs) {
-      host.innerHTML = "";
-      return;
-    }
-    const poolCounts = pool.map(() => 0);
-    const walkInCounts = new Map();
-    allEntries.forEach((e) => {
-      (e.scoredBy || []).forEach((nm) => {
-        const matchedIdx = pool.findIndex((j) => judgeMatchesPool(nm, j.name));
-        if (matchedIdx !== -1) {
-          poolCounts[matchedIdx] += 1;
-        } else {
-          walkInCounts.set(nm, (walkInCounts.get(nm) || 0) + 1);
-        }
-      });
-    });
-    pool.forEach((j, i) => {
-      const c = poolCounts[i];
-      chips.push(
-        `<span class="judge-cov-chip ${c > 0 ? "is-scored" : "is-pending"}" title="${escapeAttr(
-          `${j.name}: ${c}/${totalSubs} scored`
-        )}">${escapeHtml(j.name)} <em>${c}/${totalSubs}</em></span>`
-      );
-    });
-    Array.from(walkInCounts.entries()).forEach(([nm, c]) => {
-      chips.push(
-        `<span class="judge-cov-chip is-extra" title="${escapeAttr(
-          `${nm}: ${c}/${totalSubs} scored (walk-in)`
-        )}">+ ${escapeHtml(nm)} <em>${c}/${totalSubs}</em></span>`
-      );
-    });
-    host.innerHTML = `<span class="judge-cov-meta">Pick a submission to see who scored it. Across ${totalSubs}:</span>${chips.join(
-      ""
-    )}`;
-  }
+  if (hasAssignment && mineOnly) return `${posLabel} · mine`;
+  if (hasAssignment) return `${posLabel} · all`;
+  return posLabel;
 }
 
-function updateJudgeQueueStatsUi({ totalAll, totalMine, hasAssignment, mineOnly }) {
+function updateJudgeQueueStatsUi({
+  totalAll,
+  totalMine,
+  hasAssignment,
+  mineOnly,
+  currentPos = -1,
+  queueTotal = 0,
+}) {
   const stats = document.getElementById("judge-queue-stats");
   const wrap = document.getElementById("judge-mine-toggle-wrap");
   const cb = document.getElementById("judge-mine-only");
+  const identity = document.getElementById("judge-rail-identity");
   const judgeName = getJudgeNameForUi();
+  const chip = formatJudgeQueueChip({
+    totalAll,
+    totalMine,
+    hasAssignment,
+    mineOnly,
+    currentPos,
+    queueTotal,
+  });
+
   if (wrap) {
     if (hasAssignment) {
       wrap.hidden = false;
@@ -3024,16 +3791,34 @@ function updateJudgeQueueStatsUi({ totalAll, totalMine, hasAssignment, mineOnly 
     }
   }
   if (cb && !hasAssignment) cb.checked = false;
+
+  const mineLabel = document.querySelector(
+    "#judge-mine-toggle-wrap .judge-mine-toggle__label"
+  );
+  if (mineLabel) {
+    mineLabel.textContent = hasAssignment
+      ? `Mine only (${totalMine})`
+      : "Mine only";
+  }
+
   if (stats) {
+    stats.textContent = chip;
     if (hasAssignment && mineOnly) {
-      stats.textContent = `${judgeName}: viewing your assigned slice (${totalMine} of ${totalAll}). Untick to see everyone's queue.`;
-    } else if (hasAssignment) {
-      stats.textContent = `${judgeName} · viewing all ${totalAll}. (Your suggested slice would be ${totalMine}.)`;
-    } else if (judgeName) {
-      stats.textContent = `${judgeName} · viewing all ${totalAll}.`;
+      stats.title = `Assigned slice · ${totalMine} of ${totalAll} total`;
+    } else if (hasAssignment && totalMine < totalAll) {
+      stats.title = `${totalMine} in your slice · ${totalAll} total`;
     } else {
-      stats.textContent = "";
+      stats.removeAttribute("title");
     }
+  }
+
+  if (identity) {
+    const label = judgeName
+      ? chip
+        ? `Judging as ${judgeName}, ${chip}`
+        : `Judging as ${judgeName}`
+      : chip || "Judge session";
+    identity.setAttribute("aria-label", label);
   }
 }
 
@@ -3069,16 +3854,17 @@ function buildMergedScoreEntries(submissionId, judgeInfo) {
         String(r.judge).trim()
           ? String(r.judge).trim()
           : `Panel import #${idx + 1}`;
+      const displayTotal = judgeInfo.legacy_mode
+        ? r.total_score
+        : normalizeStoredJudgeScore(r.total_score);
       const detail = judgeInfo.legacy_mode
         ? `${r.total_score}`
-        : `${r.total_score}/10 (core ${r.core_total ?? "—"}, bonus ${
-            r.bonus_total_capped ?? "—"
-          })`;
+        : `${displayTotal === null ? "—" : formatJudgeScore(displayTotal)}/${judgeScoreTotalCap()}`;
       out.push({
         source: "imported",
         judge: jLabel,
         at: r.timestamp || null,
-        total: r.total_score,
+        total: displayTotal,
         detail,
       });
     });
@@ -3242,7 +4028,19 @@ function demoEmbedUrl(url) {
   return "";
 }
 
-function setJudgeDemoStageMode(mode, { iframe, videoEl, fallback, embed, demoUrl, demoOpenHref }) {
+/** Force cross-origin embeds (YouTube, etc.) to reload when src changes. */
+function applyJudgeDemoEmbed(iframe, embedUrl) {
+  if (!iframe) return;
+  const target = String(embedUrl || "").trim();
+  iframe.removeAttribute("src");
+  void iframe.offsetWidth;
+  if (target) iframe.setAttribute("src", target);
+}
+
+function setJudgeDemoStageMode(
+  mode,
+  { iframe, videoEl, fallback, embed, demoUrl, demoOpenHref, embedKey }
+) {
   if (!iframe || !fallback) return;
   const msgEl = fallback.querySelector(".judge-demo-fallback__msg");
   const fallbackLink = fallback.querySelector(".judge-demo-fallback__link");
@@ -3254,6 +4052,7 @@ function setJudgeDemoStageMode(mode, { iframe, videoEl, fallback, embed, demoUrl
 
   if (mode === "video" && videoEl) {
     const abs = normalizeDemoUrlForParse(demoUrl);
+    delete iframe.dataset.judgeEmbedKey;
     iframe.removeAttribute("src");
     iframe.setAttribute("hidden", "");
     fallback.setAttribute("hidden", "");
@@ -3276,9 +4075,15 @@ function setJudgeDemoStageMode(mode, { iframe, videoEl, fallback, embed, demoUrl
     fallback.setAttribute("hidden", "");
     iframe.removeAttribute("hidden");
     if (msgEl) msgEl.textContent = "No embeddable demo URL";
-    if (iframe.getAttribute("src") !== embed) iframe.setAttribute("src", embed);
+    const key = embedKey || embed || "";
+    if (iframe.dataset.judgeEmbedKey !== key || !iframe.getAttribute("src")) {
+      iframe.dataset.judgeEmbedKey = key;
+      applyJudgeDemoEmbed(iframe, embed);
+    }
     return;
   }
+
+  delete iframe.dataset.judgeEmbedKey;
 
   if (videoEl) {
     try {
@@ -3305,37 +4110,13 @@ function setJudgeDemoStageMode(mode, { iframe, videoEl, fallback, embed, demoUrl
   }
 }
 
-function updateJudgeCoverageSummaryLine(allEntries, selected) {
-  const line = document.getElementById("judge-coverage-line");
-  if (!line) return;
-  const pool = getJudgePool();
-  if (!pool.length) {
-    line.textContent = "";
-    return;
-  }
-  if (selected) {
-    const scorers = selected.scoredBy || [];
-    const scoredFromPool = pool.filter((j) =>
-      scorers.some((nm) => judgeMatchesPool(nm, j.name))
-    ).length;
-    line.textContent = `${scoredFromPool}/${pool.length} panel scored`;
-    return;
-  }
-  const totalSubs = allEntries.length;
-  if (!totalSubs) {
-    line.textContent = "";
-    return;
-  }
-  const done = allEntries.filter((e) => (e.scoredBy || []).length > 0).length;
-  line.textContent = `${done}/${totalSubs} have scores`;
-}
-
 function setJudgeSubmissionByIndex(index) {
-  const entries = getJudgeReviewEntries();
+  const { entries } = getJudgeQueueEntries();
   if (!entries.length) {
     judgeCurrentIndex = 0;
     const select = document.getElementById("judge-submission-select");
     if (select) select.value = "";
+    syncJudgeIdentityQueueChip();
     renderJudgeSubmissionSummary();
     syncJudgeFullViewFromSelection();
     return;
@@ -3346,8 +4127,10 @@ function setJudgeSubmissionByIndex(index) {
   if (select) select.value = current.id;
   const picker = document.getElementById("judge-submission-picker");
   if (picker) picker.value = current.id;
+  syncJudgeIdentityQueueChip();
   renderJudgeSubmissionSummary();
   syncJudgeFullViewFromSelection();
+  syncJudgeScoreFormFromExisting();
 }
 
 function moveJudgeSubmission(delta) {
@@ -3498,6 +4281,7 @@ const JUDGE_TECH_KEYWORDS = [
   { id: "specter", label: "Specter", patterns: [/\bspecter\b/i] },
   { id: "tavily", label: "Tavily", patterns: [/\btavily\b/i, /tavily-python/i] },
   { id: "overmind", label: "Overmind", patterns: [/\bovermind\b/i] },
+  { id: "alpic", label: "Alpic", patterns: [/\balpic\b/i, /\bskybridge\b/i] },
   { id: "openai", label: "OpenAI", patterns: [/\bopen[\s-]?ai\b/i] },
   {
     id: "anthropic",
@@ -3645,107 +4429,6 @@ function summarizeRepoSignals({ submission, row, analysis } = {}) {
 
 /** Cache parsed metrics+commits responses so we don't refetch per tab switch. */
 const _stageCache = new Map();
-/** Plain-text AI body for tech narrative (mirrors HTML panel). */
-const _judgeSideAiPlainByRepo = new Map();
-
-function stripMarkdownishPlain(text) {
-  let s = String(text || "");
-  s = s.replace(/^#{1,6}\s+/gm, "");
-  s = s.replace(/\*\*([^*]+)\*\*/g, "$1");
-  s = s.replace(/\*([^*]+)\*/g, "$1");
-  s = s.replace(/`{1,3}[^`\n]*`{1,3}/g, " ");
-  s = s.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
-  return s.replace(/\s+/g, " ").trim();
-}
-
-function extractTechRelevantExcerptFromPlain(plain, keywords) {
-  const kws = (keywords || [])
-    .map((k) => String(k).trim().toLowerCase())
-    .filter(Boolean);
-  if (!plain || !kws.length) return "";
-  const sentences = plain
-    .split(/(?<=[.!?])\s+/)
-    .map((x) => x.trim())
-    .filter(Boolean);
-  for (const sent of sentences) {
-    const sl = sent.toLowerCase();
-    if (kws.some((k) => sl.includes(k))) return sent;
-  }
-  return "";
-}
-
-function buildJudgeTechnologyUsageInnerHtml(submission, repoId, aiPlain) {
-  const label =
-    '<span class="judge-rail-mini-label" id="judge-tech-usage-label">Technology usage</span>';
-  const summaryRow = findSummaryRowForRepoId(repoId);
-  const analysis = _stageCache.get(repoId);
-  const partnerLabels = submissionPartnerLabels(submission);
-  const { stack } = summarizeRepoSignals({
-    submission,
-    row: summaryRow,
-    analysis,
-  });
-  const detectedLabels = stack.map((s) => s.label);
-  const techOrdered = [];
-  const seen = new Set();
-  for (const t of [...partnerLabels, ...detectedLabels]) {
-    const k = String(t).trim();
-    if (!k) continue;
-    const lower = k.toLowerCase();
-    if (seen.has(lower)) continue;
-    seen.add(lower);
-    techOrdered.push(k);
-  }
-
-  const stripped = stripMarkdownishPlain(aiPlain || "");
-  let excerpt = "";
-  if (stripped.length >= 40) {
-    const kwForMatch =
-      techOrdered.length > 0
-        ? techOrdered
-        : JUDGE_TECH_KEYWORDS.map((x) => x.label);
-    excerpt = extractTechRelevantExcerptFromPlain(stripped, kwForMatch);
-    if (!excerpt) excerpt = stripped.slice(0, 500).trim();
-  }
-
-  const hasTechNames = techOrdered.length > 0;
-  const hasExcerpt = excerpt.length > 0;
-
-  if (!hasTechNames && !hasExcerpt) {
-    return `${label}<div class="judge-tech-usage-body judge-tech-usage-body--empty"><p>No AI technology summary yet. Declare partner technologies on the submission and run repo analysis plus <code class="judge-inline-code">python3 ai/run_ai.py --work-dir work</code> so notes can describe how the stack shows up in the repo.</p></div>`;
-  }
-
-  let paragraph = "";
-  if (hasTechNames) {
-    paragraph = `Technologies in play include ${techOrdered.join(
-      ", "
-    )} (submission picks and repo signals).`;
-  }
-  if (hasExcerpt) {
-    paragraph +=
-      (paragraph ? " " : "") +
-      excerpt +
-      (stripped.length > excerpt.length ? " …" : "");
-  }
-
-  return `${label}<div class="judge-tech-usage-body"><p>${escapeHtml(
-    paragraph
-  )}</p></div>`;
-}
-
-function refreshJudgeTechnologyUsagePane(repoId) {
-  const el = document.getElementById("judge-side-tech-usage");
-  if (!el) return;
-  const rid = String(repoId || "").trim();
-  if (!rid) {
-    el.innerHTML = "";
-    return;
-  }
-  const summaryRow = findSummaryRowForRepoId(rid);
-  const submission = getSubmissionInfoForRow(summaryRow);
-  const aiPlain = _judgeSideAiPlainByRepo.get(rid) ?? "";
-  el.innerHTML = buildJudgeTechnologyUsageInnerHtml(submission, rid, aiPlain);
-}
 
 async function loadStagePayload(repoId) {
   if (!repoId) return null;
@@ -3851,7 +4534,6 @@ function renderJudgeCodeSignal(submissionId) {
     : "";
 
   host.innerHTML = statBlock + stackBlock + flagBlock + commitsBlock;
-  refreshJudgeTechnologyUsagePane(repoId);
 }
 function shortSourceLabel(source) {
   if (!source) return "";
@@ -4023,8 +4705,11 @@ function renderJudgeVideoStage() {
   const chips = document.getElementById("judge-stage-chips");
   const entries = getJudgeReviewEntries();
   const selectedId = document.getElementById("judge-submission-select")?.value || "";
-  const index = Math.max(0, entries.findIndex((e) => e.id === selectedId));
-  if (selectedId && entries[index]) judgeCurrentIndex = index;
+  const bySelect = selectedId ? entries.findIndex((e) => e.id === selectedId) : -1;
+  if (bySelect >= 0) judgeCurrentIndex = bySelect;
+  else if (judgeCurrentIndex >= entries.length) {
+    judgeCurrentIndex = Math.max(0, entries.length - 1);
+  }
   const current = entries[judgeCurrentIndex];
 
   if (!current) {
@@ -4039,6 +4724,7 @@ function renderJudgeVideoStage() {
     const fallback = document.getElementById("judge-demo-fallback");
     if (demoCard) demoCard.classList.add("is-empty");
     if (iframe) {
+      delete iframe.dataset.judgeEmbedKey;
       iframe.removeAttribute("src");
       iframe.setAttribute("hidden", "");
     }
@@ -4102,6 +4788,7 @@ function renderJudgeVideoStage() {
   const directVideo = Boolean(demoUrl) && !embed && isLikelyDirectVideoUrl(demoUrl);
   const demoOpenHref =
     normalizeDemoUrlForParse(demoUrl) || String(demoUrl || "").trim();
+  const embedKey = `${current.id}|${embed || demoUrl || ""}`;
   const iframe = document.querySelector("#judge-demo-stage iframe");
   const videoEl = document.getElementById("judge-demo-video");
   const fallback = document.getElementById("judge-demo-fallback");
@@ -4114,6 +4801,7 @@ function renderJudgeVideoStage() {
         embed,
         demoUrl,
         demoOpenHref,
+        embedKey,
       });
     } else if (embed) {
       setJudgeDemoStageMode("embed", {
@@ -4123,6 +4811,7 @@ function renderJudgeVideoStage() {
         embed,
         demoUrl,
         demoOpenHref,
+        embedKey,
       });
     } else {
       setJudgeDemoStageMode("fallback", {
@@ -4132,9 +4821,292 @@ function renderJudgeVideoStage() {
         embed,
         demoUrl,
         demoOpenHref,
+        embedKey,
       });
     }
     if (demoCard) demoCard.dataset.demoPlaying = "false";
+  }
+}
+
+const JUDGE_QUEUE_CHIP_VISIBLE_MAX = 5;
+
+function judgeQueueChipLabel(name) {
+  const n = String(name || "").trim();
+  const first = n.split(/\s+/)[0];
+  return first || n;
+}
+
+function judgeResponseForPoolName(responses, poolName) {
+  if (!responses?.length) return null;
+  return (
+    responses.find((r) => judgeMatchesPool(r.judge_name || r.judge, poolName)) ||
+    null
+  );
+}
+
+/** Panel + walk-in judges with score state for one queue row. */
+function getJudgeQueueChipStates(entry) {
+  const pool = getJudgePool();
+  const scorers = entry?.scoredBy || [];
+  const currentJudge = getJudgeNameForUi();
+  const info = entry?.row ? getJudgeInfoForRow(entry.row) : null;
+  const responses = info?.responses || [];
+  const chips = [];
+
+  pool.forEach((j) => {
+    const scored = scorers.some((nm) => judgeMatchesPool(nm, j.name));
+    const resp = scored ? judgeResponseForPoolName(responses, j.name) : null;
+    const score = resp ? normalizeStoredJudgeScore(resp.total_score) : null;
+    const isMine =
+      scored && currentJudge && judgeMatchesPool(j.name, currentJudge);
+    chips.push({
+      name: j.name,
+      scored,
+      isMine,
+      score,
+      kind: "panel",
+    });
+  });
+
+  scorers.forEach((name) => {
+    if (pool.some((j) => judgeMatchesPool(name, j.name))) return;
+    const resp = responses.find(
+      (r) =>
+        normalizeJudgeName(r.judge_name || r.judge) === normalizeJudgeName(name)
+    );
+    const score = resp ? normalizeStoredJudgeScore(resp.total_score) : null;
+    const isMine = currentJudge && judgeMatchesPool(name, currentJudge);
+    chips.push({
+      name,
+      scored: true,
+      isMine,
+      score,
+      kind: "extra",
+    });
+  });
+
+  return chips;
+}
+
+function judgeQueueChipTitle(chip) {
+  if (chip.scored && chip.score != null) {
+    return `${chip.name}: ${formatJudgeScore(chip.score)}`;
+  }
+  if (chip.scored) return `${chip.name}: scored`;
+  return `${chip.name}: not scored yet`;
+}
+
+function renderJudgeQueueChipHtml(chip) {
+  const classes = ["judge-queue-chip"];
+  if (!chip.scored) classes.push("is-pending");
+  else if (chip.isMine) classes.push("is-mine");
+  else classes.push("is-scored");
+  if (chip.kind === "extra") classes.push("is-extra");
+  const prefix = chip.kind === "extra" ? "+ " : "";
+  return `<span class="${classes.join(" ")}" title="${escapeAttr(
+    judgeQueueChipTitle(chip)
+  )}">${prefix}${escapeHtml(judgeQueueChipLabel(chip.name))}</span>`;
+}
+
+function renderJudgeQueueChipsHtml(entry) {
+  const chips = getJudgeQueueChipStates(entry);
+  if (!chips.length) return "";
+  const visible = chips.slice(0, JUDGE_QUEUE_CHIP_VISIBLE_MAX);
+  const hidden = chips.slice(JUDGE_QUEUE_CHIP_VISIBLE_MAX);
+  const parts = visible.map((c) => renderJudgeQueueChipHtml(c));
+  if (hidden.length) {
+    parts.push(
+      `<button type="button" class="judge-queue-chip judge-queue-chip--more" data-judge-queue-overflow="${escapeAttr(
+        entry.id
+      )}" aria-expanded="false" aria-haspopup="dialog" title="${escapeAttr(
+        `Show ${hidden.length} more judge${hidden.length === 1 ? "" : "s"}`
+      )}">+${hidden.length}</button>`
+    );
+  }
+  return `<div class="judge-rail-queue__chips">${parts.join("")}</div>`;
+}
+
+let _judgeQueueJudgesPopoverBound = false;
+let _judgeQueueJudgesPopover = null;
+
+function positionJudgeQueueJudgesPopover(trigger, popover) {
+  const gap = 6;
+  const margin = 12;
+  const rect = trigger.getBoundingClientRect();
+  const width = Math.min(264, window.innerWidth - margin * 2);
+  popover.style.width = `${width}px`;
+  let left = rect.left + rect.width / 2 - width / 2;
+  left = Math.min(Math.max(margin, left), window.innerWidth - width - margin);
+  popover.style.left = `${left}px`;
+
+  const height = popover.offsetHeight || 0;
+  const below = rect.bottom + gap;
+  const above = rect.top - height - gap;
+  if (below + height <= window.innerHeight - margin) {
+    popover.style.top = `${below}px`;
+    popover.classList.remove("is-above");
+  } else if (above >= margin) {
+    popover.style.top = `${above}px`;
+    popover.classList.add("is-above");
+  } else {
+    popover.style.top = `${Math.min(below, window.innerHeight - height - margin)}px`;
+    popover.classList.remove("is-above");
+  }
+}
+
+function closeJudgeQueueJudgesPopover() {
+  const popover = document.getElementById("judge-queue-judges-popover");
+  if (!popover) return;
+  _judgeQueueJudgesPopover?.trigger?.setAttribute("aria-expanded", "false");
+  popover.hidden = true;
+  popover.setAttribute("aria-hidden", "true");
+  popover.classList.remove("is-open", "is-above");
+  popover.style.top = "";
+  popover.style.left = "";
+  popover.style.width = "";
+  _judgeQueueJudgesPopover = null;
+}
+
+function openJudgeQueueJudgesPopover(entryId, trigger) {
+  const popover = document.getElementById("judge-queue-judges-popover");
+  const list = document.getElementById("judge-queue-judges-popover-list");
+  const title = document.getElementById("judge-queue-judges-popover-title");
+  if (!popover || !list || !trigger) return;
+
+  if (
+    _judgeQueueJudgesPopover?.trigger === trigger &&
+    popover.classList.contains("is-open")
+  ) {
+    closeJudgeQueueJudgesPopover();
+    return;
+  }
+
+  closeJudgeQueueJudgesPopover();
+
+  const entry = getJudgeReviewEntries().find((e) => e.id === entryId);
+  if (!entry) return;
+  const chips = getJudgeQueueChipStates(entry);
+  if (title) title.textContent = entry.name;
+  list.innerHTML = chips
+    .map((chip) => {
+      const status = !chip.scored
+        ? "Not scored"
+        : chip.score != null
+          ? formatJudgeScore(chip.score)
+          : "Scored";
+      const rowCls = [
+        "judge-queue-judges-popover__item",
+        !chip.scored ? "is-pending" : chip.isMine ? "is-mine" : "is-scored",
+      ].join(" ");
+      return `<li class="${rowCls}"><span class="judge-queue-judges-popover__name">${escapeHtml(
+        chip.name
+      )}</span><span class="judge-queue-judges-popover__score">${escapeHtml(
+        status
+      )}</span></li>`;
+    })
+    .join("");
+
+  popover.hidden = false;
+  popover.setAttribute("aria-hidden", "false");
+  popover.classList.add("is-open");
+  trigger.setAttribute("aria-expanded", "true");
+  _judgeQueueJudgesPopover = { popover, trigger, entryId };
+  positionJudgeQueueJudgesPopover(trigger, popover);
+}
+
+function initJudgeQueueJudgesPopover() {
+  if (_judgeQueueJudgesPopoverBound) return;
+  const popover = document.getElementById("judge-queue-judges-popover");
+  const queue = document.getElementById("judge-score-queue");
+  if (!popover || !queue) return;
+  _judgeQueueJudgesPopoverBound = true;
+
+  if (popover.parentElement !== document.body) {
+    document.body.appendChild(popover);
+  }
+
+  popover.addEventListener("click", (e) => e.stopPropagation());
+
+  queue.addEventListener("click", (e) => {
+    const overflow = e.target.closest("[data-judge-queue-overflow]");
+    if (overflow) {
+      e.preventDefault();
+      e.stopPropagation();
+      openJudgeQueueJudgesPopover(
+        overflow.getAttribute("data-judge-queue-overflow"),
+        overflow
+      );
+      return;
+    }
+    const row = e.target.closest("[data-judge-queue-index]");
+    if (!row || e.target.closest(".judge-queue-chip--more")) return;
+    setJudgeSubmissionByIndex(Number(row.getAttribute("data-judge-queue-index")));
+  });
+
+  queue.addEventListener("keydown", (e) => {
+    const overflow = e.target.closest("[data-judge-queue-overflow]");
+    if (overflow && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      e.stopPropagation();
+      openJudgeQueueJudgesPopover(
+        overflow.getAttribute("data-judge-queue-overflow"),
+        overflow
+      );
+      return;
+    }
+    const row = e.target.closest("[data-judge-queue-index]");
+    if (!row || (e.key !== "Enter" && e.key !== " ")) return;
+    if (e.target.closest("[data-judge-queue-overflow]")) return;
+    e.preventDefault();
+    setJudgeSubmissionByIndex(Number(row.getAttribute("data-judge-queue-index")));
+  });
+
+  if (!document.documentElement.dataset.judgeQueueJudgesPopoverBound) {
+    document.documentElement.dataset.judgeQueueJudgesPopoverBound = "1";
+
+    document.addEventListener("click", (e) => {
+      const t = e.target;
+      if (
+        t &&
+        typeof t.closest === "function" &&
+        (t.closest("[data-judge-queue-overflow]") ||
+          t.closest("#judge-queue-judges-popover"))
+      ) {
+        return;
+      }
+      closeJudgeQueueJudgesPopover();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape") return;
+      const pop = document.getElementById("judge-queue-judges-popover");
+      if (!pop?.classList.contains("is-open")) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const trigger = _judgeQueueJudgesPopover?.trigger;
+      closeJudgeQueueJudgesPopover();
+      trigger?.focus();
+    });
+
+    window.addEventListener("resize", () => {
+      if (!_judgeQueueJudgesPopover) return;
+      positionJudgeQueueJudgesPopover(
+        _judgeQueueJudgesPopover.trigger,
+        _judgeQueueJudgesPopover.popover
+      );
+    });
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!_judgeQueueJudgesPopover) return;
+        positionJudgeQueueJudgesPopover(
+          _judgeQueueJudgesPopover.trigger,
+          _judgeQueueJudgesPopover.popover
+        );
+      },
+      true
+    );
   }
 }
 
@@ -4142,6 +5114,8 @@ function renderJudgeScoreQueue() {
   const target = document.getElementById("judge-score-queue");
   const countEl = document.getElementById("judge-rail-queue-count");
   if (!target) return;
+  closeJudgeQueueJudgesPopover();
+  initJudgeQueueJudgesPopover();
   const entries = getJudgeReviewEntries();
   const selectedId =
     document.getElementById("judge-submission-select")?.value || "";
@@ -4174,7 +5148,8 @@ function renderJudgeScoreQueue() {
       } else if (otherCount > 0) {
         scoreLabel = `·${otherCount}`;
       }
-      return `<button type="button" class="${cls}" data-judge-queue-id="${escapeAttr(
+      const chipsHtml = renderJudgeQueueChipsHtml(e);
+      return `<div class="${cls}" role="button" tabindex="0" data-judge-queue-id="${escapeAttr(
         e.id
       )}" data-judge-queue-index="${idx}" title="${escapeAttr(
         `${idx + 1} / ${entries.length} · ${e.name} · ${
@@ -4183,16 +5158,16 @@ function renderJudgeScoreQueue() {
       )}">
         <span class="judge-rail-queue__idx">${String(idx + 1).padStart(width, "0")}</span>
         <span class="judge-rail-queue__dot" aria-hidden="true"></span>
-        <span class="judge-rail-queue__name">${escapeHtml(e.name)}</span>
-        <span class="judge-rail-queue__score">${escapeHtml(scoreLabel)}</span>
-      </button>`;
+        <div class="judge-rail-queue__body">
+          <div class="judge-rail-queue__top">
+            <span class="judge-rail-queue__name">${escapeHtml(e.name)}</span>
+            <span class="judge-rail-queue__score">${escapeHtml(scoreLabel)}</span>
+          </div>
+          ${chipsHtml}
+        </div>
+      </div>`;
     })
     .join("");
-  target.querySelectorAll("[data-judge-queue-index]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      setJudgeSubmissionByIndex(Number(btn.getAttribute("data-judge-queue-index")));
-    });
-  });
 }
 
 function yourScoreForEntry(entry) {
@@ -4203,8 +5178,7 @@ function yourScoreForEntry(entry) {
     (r) => (r.judge_name || r.judge || "").trim().toLowerCase() === judgeName.trim().toLowerCase()
   );
   if (!mine) return null;
-  const v = Number(mine.total_score);
-  return Number.isFinite(v) ? v : null;
+  return normalizeStoredJudgeScore(mine.total_score);
 }
 function otherScoreCountForEntry(entry) {
   const judgeName = getJudgeNameForUi();
@@ -4351,25 +5325,19 @@ async function handleJudgeForm(e) {
   }
   const enteredScore = clampJudgeScore(data.judge_score);
   if (enteredScore === null) {
-    toast("Add a score between 0 and 10");
-    setJudgeSaveStatus("Score must be between 0 and 10", "is-error");
+    toast(`Add a score between 0 and ${judgeScoreTotalCap()}`);
+    setJudgeSaveStatus(`Score must be between 0 and ${judgeScoreTotalCap()}`, "is-error");
     return;
   }
   writeStoredJudgeName(data.judge_name);
   setJudgeSaveBusy(true);
   setJudgeSaveStatus("Saving…", "is-saving");
 
-  const coreMax = Number(eventFormat?.rubric?.core_max_points ?? 7);
-  const bonusCap = Number(eventFormat?.judge_bonus_bucket?.max_points ?? 3);
-  const coreTotal = Math.min(enteredScore, coreMax);
-  const bonusCapped = Math.min(Math.max(enteredScore - coreMax, 0), bonusCap);
-  const coreScores = { overall: coreTotal };
-  const bonusScores = {};
-  const bonusTotal = bonusCapped;
-  (eventFormat?.side_quests || []).forEach((q) => {
-    bonusScores[q.id] = 0;
-  });
-  const grandTotal = enteredScore;
+  const grandTotal = judgePayloadInt(enteredScore);
+  const coreScores = { overall: grandTotal };
+  const bonusScores = judgePayloadScoreMap(
+    Object.fromEntries((eventFormat?.side_quests || []).map((q) => [q.id, 0]))
+  );
   const found = findSubmissionById(data.submission_id);
   const sub = found?.sub || {};
   const row = found?.row || {};
@@ -4379,7 +5347,7 @@ async function handleJudgeForm(e) {
     return;
   }
 
-  const entry = {
+  const entry = judgeBuildSavePayload({
     scored_at: new Date().toISOString(),
     hack_id: getActiveHackId(),
     judge_name: data.judge_name,
@@ -4389,14 +5357,14 @@ async function handleJudgeForm(e) {
     chosen_track: sub.chosen_track || row.chosen_track || "",
     scored_track: sub.chosen_track || row.chosen_track || "",
     core_scores: coreScores,
-    core_total: coreTotal,
+    core_total: grandTotal,
     bonus_bucket_scores: bonusScores,
-    bonus_total: bonusTotal,
-    bonus_total_capped: bonusCapped,
+    bonus_total_raw: 0,
+    bonus_total_capped: 0,
     total_score: grandTotal,
     thoughts: data.thoughts || "",
     notes: data.thoughts || "",
-  };
+  });
 
   try {
     const res = await fetch("/api/judges", {
@@ -4407,6 +5375,8 @@ async function handleJudgeForm(e) {
     const payload = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(payload.error || "Failed to save score");
     await loadJudgeData();
+    _judgeScoreFingerprint = buildJudgeScoreFingerprint();
+    if (isEagleViewOpen()) renderEagleView();
   } catch (err) {
     setJudgeSaveBusy(false);
     setJudgeSaveStatus(err.message || "Save failed — try again", "is-error");
@@ -4414,7 +5384,7 @@ async function handleJudgeForm(e) {
     return;
   }
   setJudgeSaveBusy(false);
-  startJudgeSavedTimer(`Saved · ${formatJudgeScore(grandTotal)}/10`);
+  startJudgeSavedTimer(`Saved · ${formatJudgeScore(grandTotal)}/${judgeScoreTotalCap()}`);
 
   // Reset score only — keep judge name cached for next submission
   const scoredId = entry.submission_id;
@@ -4446,7 +5416,7 @@ async function handleJudgeForm(e) {
       if (r) loadDetails(r, detailElsForJudgeSidePanel());
     }
   }
-  toast(`Score saved — ${formatJudgeScore(grandTotal)}/10.`);
+  toast(`Score saved — ${formatJudgeScore(grandTotal)}/${judgeScoreTotalCap()}.`);
 }
 
 let _judgeSavedTimer = null;
@@ -5197,7 +6167,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   initJudgePanelToggle();
-  document.querySelectorAll("[data-judge-stage-tab]").forEach((b) => {
+  restoreJudgeRailWidth();
+  initJudgeRailResize();
+  initEagleView();
+  initJudgeQueueJudgesPopover();
+  judgeStageTabRoot().querySelectorAll("[data-judge-stage-tab]").forEach((b) => {
     b.addEventListener("click", () => {
       setActiveJudgeStageTab(
         b.getAttribute("data-judge-stage-tab") || "overview"
@@ -5205,7 +6179,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     b.addEventListener("keydown", (e) => {
       const tabs = [
-        ...document.querySelectorAll("[data-judge-stage-tab]"),
+        ...judgeStageTabRoot().querySelectorAll("[data-judge-stage-tab]"),
       ];
       const i = tabs.indexOf(document.activeElement);
       if (i < 0) return;
@@ -5308,6 +6282,11 @@ document.addEventListener("DOMContentLoaded", () => {
       activeTag === "INPUT" || activeTag === "TEXTAREA" || activeTag === "SELECT";
 
     if (e.key === "Escape") {
+      if (isEagleViewOpen()) {
+        e.preventDefault();
+        closeEagleView();
+        return;
+      }
       closeDrawer();
       document
         .querySelectorAll(".modal:not(.hidden)")

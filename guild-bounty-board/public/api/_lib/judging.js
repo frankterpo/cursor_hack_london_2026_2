@@ -23,8 +23,8 @@ const JUDGE_CONFIG = {
   ],
   rubric: {
     core_max_points: 7,
-    side_bonus_cap: 3,
-    total_cap: 10,
+    side_bonus_cap: 4,
+    total_cap: 100,
     criteria: [
       {
         id: "concrete_workflow_value",
@@ -65,30 +65,38 @@ const JUDGE_CONFIG = {
   },
   judge_bonus_bucket: {
     name: "Judge Bonus Bucket",
-    max_points: 3,
+    max_points: 4,
     description:
-      "Three sponsor-aligned buckets (1 + 1 + 1 points). Judges score each bucket independently — 3 bonus total.",
+      "Four sponsor-aligned buckets (1 + 1 + 1 + 1 points). Judges score each bucket independently — 4 bonus total.",
   },
   side_quests: [
     {
-      id: "best_use_cursor",
+      id: "best_use_tavily",
+      name: "Best use of Tavily",
+      points: 1,
+      blurb:
+        "Standout use of Tavily for agent-grade search, retrieval, or live research in the product.",
+    },
+    {
+      id: "best_use_overmind",
+      name: "Best use of Overmind",
+      points: 1,
+      blurb:
+        "Clearest integration or workflow where Overmind does real work — not a surface-level mention.",
+    },
+    {
+      id: "best_use_cursor_sdk",
       name: "Best use of Cursor",
       points: 1,
       blurb:
-        "How effectively the build used Cursor — editor, agents, and workflow — end to end.",
+        "Strong use of the Cursor SDK — programmatic agents, tools, and patterns judges can reproduce from docs or the examples repo.",
     },
     {
-      id: "best_use_specter",
-      name: "Best use of Specter",
+      id: "best_use_alpic",
+      name: "Best use of Alpic",
       points: 1,
       blurb:
-        "Standout use of Specter's API, MCP, or data for market intelligence in the product.",
-    },
-    {
-      id: "best_use_llm_models",
-      name: "Best use of LLM models",
-      points: 1,
-      blurb: "Smart or effective use of models — APIs, routing, evals, or multi-model design.",
+        "Standout use of Alpic for hosting, deploying, or routing MCP servers and agent tools in the product.",
     },
   ],
 };
@@ -109,7 +117,81 @@ function clampInteger(value, minimum, maximum) {
   return Math.max(minimum, Math.min(maximum, parsed));
 }
 
+function clampJudgeTotal(value) {
+  const cap = JUDGE_CONFIG.rubric.total_cap;
+  const n = Number(value);
+  if (!Number.isFinite(n)) {
+    return 0;
+  }
+  return Math.round(Math.max(0, Math.min(cap, n)) * 10) / 10;
+}
+
+/** Postgres judge_responses score columns are integer — never send 3.0-style floats. */
+function judgeDbInteger(value, minimum = 0, maximum = JUDGE_CONFIG.rubric.total_cap) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) {
+    return minimum;
+  }
+  return Math.max(minimum, Math.min(maximum, Math.round(n)));
+}
+
+/** Workbench single-slider saves: one 0–100 score, no per-criterion breakdown. */
+function isHolisticJudgePayload(input) {
+  if (JUDGE_CONFIG.rubric.total_cap <= 15) {
+    return false;
+  }
+  const rawTotal = Number(input.total_score);
+  if (!Number.isFinite(rawTotal)) {
+    return false;
+  }
+  const buckets = input.bonus_bucket_scores || {};
+  const bucketSum = Object.values(buckets).reduce(
+    (sum, value) => sum + Number(value || 0),
+    0,
+  );
+  if (bucketSum > 0) {
+    return false;
+  }
+  const criteria = JUDGE_CONFIG.rubric.criteria || [];
+  const detailedCore = criteria.some(
+    (criterion) => Number(input.core_scores?.[criterion.id] || 0) > 0,
+  );
+  if (detailedCore) {
+    return false;
+  }
+  return true;
+}
+
 function normalizeJudgeResponse(input) {
+  if (isHolisticJudgePayload(input)) {
+    const raw =
+      input.total_score !== undefined && input.total_score !== null && input.total_score !== ""
+        ? input.total_score
+        : input.core_total;
+    const total = judgeDbInteger(raw);
+    const sideQuests = JUDGE_CONFIG.side_quests || [];
+    const bonusBucketScores = {};
+    for (const quest of sideQuests) {
+      bonusBucketScores[quest.id] = 0;
+    }
+    return {
+      judge_name: String(input.judge_name || "").trim(),
+      repo_url: String(input.repo_url || "").trim(),
+      repo_key: String(input.repo_key || "").trim(),
+      project_name: String(input.project_name || "").trim(),
+      chosen_track: String(input.chosen_track || "").trim(),
+      scored_track: String(input.scored_track || input.chosen_track || "").trim(),
+      notes: String(input.notes || "").trim(),
+      timestamp: new Date().toISOString(),
+      core_scores: { overall: total },
+      bonus_bucket_scores: bonusBucketScores,
+      core_total: total,
+      bonus_total_raw: 0,
+      bonus_total_capped: 0,
+      total_score: total,
+    };
+  }
+
   const criteria = JUDGE_CONFIG.rubric.criteria;
   const sideQuests = JUDGE_CONFIG.side_quests;
   const directCoreTotal = input.core_total;
@@ -166,7 +248,7 @@ function normalizeJudgeResponse(input) {
     }
   }
 
-  const total_score = coreTotal + bonusCapped;
+  const total_score = judgeDbInteger(coreTotal + bonusCapped);
 
   return {
     judge_name: String(input.judge_name || "").trim(),
@@ -177,11 +259,15 @@ function normalizeJudgeResponse(input) {
     scored_track: String(input.scored_track || input.chosen_track || "").trim(),
     notes: String(input.notes || "").trim(),
     timestamp: new Date().toISOString(),
-    core_scores: coreScores,
-    bonus_bucket_scores: bonusBucketScores,
-    core_total: coreTotal,
-    bonus_total_raw: bonusRaw,
-    bonus_total_capped: bonusCapped,
+    core_scores: Object.fromEntries(
+      Object.entries(coreScores).map(([key, value]) => [key, judgeDbInteger(value)]),
+    ),
+    bonus_bucket_scores: Object.fromEntries(
+      Object.entries(bonusBucketScores).map(([key, value]) => [key, judgeDbInteger(value)]),
+    ),
+    core_total: judgeDbInteger(coreTotal),
+    bonus_total_raw: judgeDbInteger(bonusRaw),
+    bonus_total_capped: judgeDbInteger(bonusCapped),
     total_score,
   };
 }
@@ -250,6 +336,7 @@ function aggregateJudgeResponses(responses) {
 
 module.exports = {
   JUDGE_CONFIG,
+  judgeDbInteger,
   normalizeJudgeResponse,
   aggregateJudgeResponses,
 };

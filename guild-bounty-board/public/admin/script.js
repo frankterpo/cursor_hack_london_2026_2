@@ -138,7 +138,7 @@ function renderJudgeCell(info) {
     return '<span class="judge-chip judge-chip--empty">No scores</span>';
   }
   const avg = Number((info.averages && info.averages.grand_total) ?? info.average_score ?? 0).toFixed(1);
-  const maxScore = info.legacy_mode ? "" : '<span class="judge-chip-max">/10</span>';
+  const maxScore = info.legacy_mode ? "" : '<span class="judge-chip-max">/100</span>';
   const judgeNames = info.responses.map(r => escapeHtml(r.judge_name || "?")).join(", ");
   const judgeLabel = info.responses.length === 1 ? "1 judge" : `${info.responses.length} judges`;
   return `
@@ -338,15 +338,13 @@ function renderJudgeDetails(info) {
   const responses = info.responses.map((response, index) => {
     const scoreLine = info.legacy_mode
       ? `#${index + 1} • ${response.total_score}`
-      : `#${index + 1} • ${response.total_score}/10 (core ${response.core_total}, bonus ${response.bonus_total_capped})`;
+      : `#${index + 1} • ${response.total_score}/100`;
     return `<div class="judge-row"><div class="judge-score-pill">${scoreLine}</div>${response.notes ? `<div class="judge-thought">${escapeHtml(response.notes)}</div>` : ""}</div>`;
   }).join("");
 
   container.innerHTML = `
     <div class="judge-summary">
-      <div class="judge-score-pill highlight">${grandAvg}${info.legacy_mode ? "" : "/10"}</div>
-      <div class="judge-score-pill">Core ${coreAvg}/7</div>
-      <div class="judge-score-pill">Bonus ${bonusAvg}/3</div>
+      <div class="judge-score-pill highlight">${grandAvg}${info.legacy_mode ? "" : "/100"}</div>
     </div>
     ${criteria ? `<div class="judge-list">${criteria}</div>` : ""}
     ${bonus ? `<div class="judge-list">${bonus}</div>` : ""}
@@ -507,7 +505,7 @@ function openDemosModal() {
         ${demoUrl ? `<a href="${escapeHtml(demoUrl)}" target="_blank" rel="noreferrer" style="color:#3dffa3;border:1px solid #3dffa3;padding:4px 10px;text-decoration:none;font-size:0.8rem;font-family:'VT323',monospace;">DEMO &rarr;</a>` : '<span style="color:#555;font-size:0.8rem;">No demo</span>'}
       </div>
       <div style="flex:0 0 auto;text-align:center;min-width:100px;">
-        <div style="color:#f1c40f;font-size:1.1rem;font-family:'VT323',monospace;">${avg}/10</div>
+        <div style="color:#f1c40f;font-size:1.1rem;font-family:'VT323',monospace;">${avg}/100</div>
         <div style="color:#666;font-size:0.75rem;">${judgeCount} judge${judgeCount !== 1 ? "s" : ""}</div>
         ${judgeNames ? `<div style="color:#555;font-size:0.65rem;margin-top:2px;">${judgeNames}</div>` : ""}
       </div>
@@ -539,7 +537,7 @@ async function submitDemoScore(btn) {
     const coreTotal = Math.min(score, 7);
     const bonusRaw = Math.max(0, score - 7);
     const bonus_bucket_scores = {};
-    ["best_use_cursor", "best_use_specter", "best_use_llm_models"].forEach((key, index) => {
+    ["best_use_tavily", "best_use_overmind", "best_use_cursor_sdk", "best_use_alpic"].forEach((key, index) => {
       bonus_bucket_scores[key] = index < bonusRaw ? 1 : 0;
     });
     const res = await fetch("/api/judges", {

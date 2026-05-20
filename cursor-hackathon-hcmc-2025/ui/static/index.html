@@ -10,7 +10,7 @@
       name="description"
       content="Cursor × Thrad London 2026 — agentic builds on conversational ad infrastructure: buy-side, sell-side, and measurement inside LLM-native channels."
     />
-    <link rel="stylesheet" href="style.css?v=164" />
+    <link rel="stylesheet" href="style.css?v=184" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -607,7 +607,7 @@
       <div id="bonus-buckets" class="subtracks" aria-labelledby="subtracks-heading">
         <p class="subtracks-eyebrow" id="subtracks-heading">Bonus prizes</p>
         <p class="subtracks-intro">
-          Three sponsor-aligned buckets — judges award up to one point each (see rubric).
+          Four sponsor-aligned buckets — judges award up to one point each (see rubric).
         </p>
         <ul class="subtracks-grid">
           <li class="subtrack-card subtrack-card--with-sub">
@@ -700,7 +700,15 @@
             <div class="subtrack-sub">
               <p class="subtrack-sub-lead subtrack-sub-lead--sdk">
                 <span class="subtrack-sub-lead-text"
-                  >Standout use of the
+                  >Standout use of
+                  <a
+                    class="subtrack-access-link"
+                    href="https://cursor.com/blog/composer-2-5"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Composer 2.5</a
+                  >
+                  and the
                   <a
                     class="subtrack-access-link"
                     href="https://cursor.com/docs"
@@ -708,13 +716,14 @@
                     rel="noopener noreferrer"
                     >Cursor SDK</a
                   >
-                  — programmatic agents, tools, and patterns from the examples repo.</span
+                  — agentic coding in the IDE plus programmatic agents, tools, and patterns from
+                  the examples repo.</span
                 >
                 <span class="subtrack-info-wrap">
                   <button
                     type="button"
                     class="subtrack-info-btn"
-                    aria-label="About Cursor SDK (details on hover, focus, or click)"
+                    aria-label="About Composer 2.5 and Cursor SDK (details on hover, focus, or click)"
                     aria-expanded="false"
                     aria-controls="cursor-sdk-popover"
                   >
@@ -728,8 +737,21 @@
                 role="tooltip"
               >
                 <div class="subtrack-sdk-popover__inner">
-                  <p class="subtrack-sdk-popover__title">Cursor SDK</p>
-                  <p class="subtrack-sdk-popover__subtitle">Agents outside the editor</p>
+                  <p class="subtrack-sdk-popover__title">Composer 2.5 &amp; Cursor SDK</p>
+                  <p class="subtrack-sdk-popover__subtitle">IDE agents and programmatic SDK</p>
+                  <p class="subtrack-sdk-popover__section-title">Composer 2.5 (new)</p>
+                  <p class="subtrack-sdk-popover__p">
+                    Cursor&rsquo;s latest agentic model for fast, high-quality multi-file work in the
+                    editor.
+                    <a
+                      class="subtrack-access-link"
+                      href="https://cursor.com/blog/composer-2-5"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >Composer 2.5 announcement →</a
+                    >
+                  </p>
+                  <p class="subtrack-sdk-popover__section-title">Cursor SDK</p>
                   <p class="subtrack-sdk-popover__p">
                     Run Cursor-backed agents from your own code and infra: CI jobs, internal tools,
                     or product surfaces — with the same agent loop, tools, and guardrails you use in
@@ -745,16 +767,52 @@
               <div class="subtrack-sub-ctas">
                 <a
                   class="btn btn-ghost btn-small subtrack-sub-cta"
-          href="https://cursor.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          >Cursor →</a>
+                  href="https://cursor.com/blog/composer-2-5"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Composer 2.5 →</a>
                 <a
                   class="btn btn-ghost btn-small subtrack-sub-cta"
                   href="https://cursor.com/docs"
                   target="_blank"
                   rel="noopener noreferrer"
                   >SDK docs →</a>
+              </div>
+            </div>
+          </li>
+          <li class="subtrack-card subtrack-card--with-sub">
+            <div class="subtrack-card-main">
+              <div class="subtrack-logo-wrap">
+                <img
+                  class="subtrack-img partner-logo--alpic"
+                  src="partners/alpic-logo.png"
+                  width="40"
+                  height="40"
+                  alt="Alpic"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <h3 class="subtrack-title">Best use of Alpic</h3>
+            </div>
+            <div class="subtrack-sub">
+              <p class="subtrack-sub-lead">
+                Host, deploy, or route MCP servers and agent tools with Alpic — show a real
+                integration judges can trace from your repo to a live endpoint.
+              </p>
+              <div class="subtrack-sub-ctas">
+                <a
+                  class="btn btn-ghost btn-small subtrack-sub-cta"
+                  href="https://alpic.ai/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Alpic →</a>
+                <a
+                  class="btn btn-ghost btn-small subtrack-sub-cta"
+                  href="https://docs.skybridge.tech/quickstart/create-new-app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Docs →</a>
               </div>
             </div>
           </li>
@@ -1202,18 +1260,20 @@
                     />
                   </label>
                   <label class="field field--inline">
-                    <span class="field-label">Luma profile</span>
+                    <span class="field-label">Luma profile <em>*</em></span>
                     <input
                       type="url"
                       data-tm-field="luma_profile"
+                      required
                       placeholder="https://lu.ma/u/alice"
                     />
                   </label>
                   <label class="field field--inline">
-                    <span class="field-label">LinkedIn or X URL</span>
+                    <span class="field-label">LinkedIn or X URL <em>*</em></span>
                     <input
                       type="url"
                       data-tm-field="social_url"
+                      required
                       placeholder="https://linkedin.com/in/alice"
                     />
                   </label>
@@ -1396,12 +1456,6 @@
             </div>
           </div>
 
-          <footer class="judge-stage-foot judge-stage-foot--subtle" aria-hidden="true">
-            <span><kbd>↑</kbd> / <kbd>↓</kbd> prev · next</span>
-            <span><kbd>←</kbd> / <kbd>→</kbd> prev · next</span>
-            <span><kbd>⌘</kbd> + <kbd>↵</kbd> save</span>
-            <span><kbd>Esc</kbd> close</span>
-          </footer>
         </section>
 
         <!-- Right column: sticky scoring rail -->
@@ -1410,34 +1464,110 @@
           id="judge-rail"
           aria-label="Scoring rail"
         >
+          <div
+            class="judge-rail-resize"
+            id="judge-rail-resize"
+            role="separator"
+            aria-orientation="vertical"
+            aria-label="Resize scoring rail"
+            aria-valuemin="280"
+            aria-valuemax="480"
+            aria-valuenow="380"
+            tabindex="0"
+          ></div>
           <header class="judge-rail-head">
-            <span id="judge-modal-title" class="judge-rail-eyebrow"
-              >Judge panel</span
-            >
-            <button
-              type="button"
-              class="close-btn judge-rail-close"
-              data-close-modal
-              aria-label="Close judge modal"
-            >
-              &times;
-            </button>
+            <h2 id="judge-modal-title" class="judge-rail-head__label">Judge</h2>
+            <div class="judge-rail-head__actions">
+              <button
+                type="button"
+                class="judge-eagle-open-btn"
+                id="judge-eagle-open"
+                aria-haspopup="dialog"
+                aria-controls="judge-eagle-overlay"
+                aria-expanded="false"
+                title="Eagle view — grid overview of all entries"
+                aria-label="Eagle view"
+              >
+                <svg
+                  class="judge-eagle-open-btn__icon"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 16 16"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M2 2h5v5H2V2zm7 0h5v5H9V2zM2 9h5v5H2V9zm7 0h5v5H9V9z"
+                  />
+                </svg>
+                <span class="judge-eagle-open-btn__label">Eagle</span>
+              </button>
+              <button
+                type="button"
+                class="close-btn judge-rail-close"
+                data-close-modal
+                aria-label="Close judge modal"
+              >
+                &times;
+              </button>
+            </div>
           </header>
 
           <div
+            id="judge-rail-identity"
             class="judge-rail-identity judge-rail-identity--compact"
             aria-live="polite"
-            aria-label="Judging as"
+            aria-label="Judge session"
           >
             <div class="judge-rail-identity__row">
               <p id="judge-display-name" class="judge-rail-identity__name">—</p>
               <span
                 id="judge-queue-stats"
                 class="judge-rail-identity__chip"
+                role="status"
               ></span>
             </div>
           </div>
 
+          <nav
+            class="judge-rail-tabs"
+            role="tablist"
+            aria-label="Judge rail"
+          >
+            <button
+              type="button"
+              class="judge-rail-tab is-active"
+              id="judge-rail-tab-score"
+              role="tab"
+              aria-selected="true"
+              aria-controls="judge-rail-panel-score"
+              data-judge-rail-tab="score"
+            >
+              Score
+            </button>
+            <button
+              type="button"
+              class="judge-rail-tab"
+              id="judge-rail-tab-submission"
+              role="tab"
+              aria-selected="false"
+              aria-controls="judge-rail-panel-submission"
+              tabindex="-1"
+              data-judge-rail-tab="submission"
+            >
+              Submission
+            </button>
+          </nav>
+
+          <div class="judge-rail-panels">
+          <div
+            id="judge-rail-panel-submission"
+            class="judge-rail-panel"
+            role="tabpanel"
+            aria-labelledby="judge-rail-tab-submission"
+            hidden
+          >
           <nav
             class="judge-stage-tabs judge-stage-tabs--rail"
             role="tablist"
@@ -1491,6 +1621,11 @@
               role="tabpanel"
               aria-labelledby="judge-tab-overview-rail"
             >
+              <div
+                id="judge-overview-meta"
+                class="judge-overview-meta"
+                aria-live="polite"
+              ></div>
               <p
                 class="judge-side-repo-pill"
                 id="judge-side-detail-title"
@@ -1583,45 +1718,6 @@
                 id="judge-side-ai-output"
                 aria-live="polite"
               ></div>
-              <div
-                class="judge-side-block judge-side-block--tech-usage"
-                id="judge-side-tech-usage"
-                role="region"
-                aria-labelledby="judge-tech-usage-label"
-              ></div>
-              <div
-                class="judge-side-block judge-side-block--scores"
-                id="judge-side-scores-aggregate"
-                aria-label="Imported judge scores summary"
-              ></div>
-              <h4
-                class="judge-side-section-h"
-                id="judge-side-judge-responses-heading"
-              >
-                Judge responses
-              </h4>
-              <div
-                class="judge-side-block"
-                id="judge-side-judge-output"
-                aria-labelledby="judge-side-judge-responses-heading"
-              ></div>
-              <h4 class="judge-side-section-h">All scores (merged)</h4>
-              <div class="judge-prior-scroll">
-                <table
-                  class="judge-prior-table"
-                  id="judge-side-merged-scores"
-                >
-                  <thead>
-                    <tr>
-                      <th scope="col">Judge</th>
-                      <th scope="col">When</th>
-                      <th scope="col">Total</th>
-                      <th scope="col">Breakdown</th>
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
-              </div>
             </section>
           </div>
 
@@ -1631,27 +1727,23 @@
             hidden
             aria-hidden="true"
           >
-            <summary class="judge-mine-toggle-summary">
-              Filter to my assigned slice
-            </summary>
+            <summary class="judge-mine-toggle-summary">Slice filter</summary>
             <label class="judge-mine-toggle">
               <input type="checkbox" id="judge-mine-only" />
-              <span>Show only my assigned 12</span>
+              <span class="judge-mine-toggle__label">Mine only</span>
             </label>
           </details>
 
-          <details class="judge-rubric-card judge-rubric-card--side">
-            <summary class="judge-rubric-summary">
-              <span>Rubric</span>
-              <span class="judge-rubric-summary__hint">7 core + 3 bonus = 10</span>
-            </summary>
-            <div
-              id="judge-rubric-reminder-side"
-              class="judge-rubric-reminder"
-            ></div>
-          </details>
+          </div>
           </div>
 
+          <div
+            id="judge-rail-panel-score"
+            class="judge-rail-panel is-active"
+            role="tabpanel"
+            aria-labelledby="judge-rail-tab-score"
+          >
+          <div class="judge-rail-scroll judge-rail-scroll--score">
           <div class="judge-rail-pin">
           <form id="judge-form" class="judge-rail-form" novalidate>
             <input
@@ -1670,18 +1762,41 @@
 
             <div class="judge-rail-score-row">
               <label class="judge-rail-score-input">
-                <span class="judge-rail-mini-label">Score · 0–10</span>
+                <span class="judge-rail-score-label-row">
+                  <span class="judge-rail-mini-label" id="judge-score-label"
+                    >Score · 0–100</span
+                  >
+                  <span class="judge-rubric-info-wrap">
+                    <button
+                      type="button"
+                      class="judge-rubric-info-btn"
+                      id="judge-rubric-info-btn"
+                      aria-label="Scoring rubric (details on hover, focus, or click)"
+                      aria-expanded="false"
+                      aria-controls="judge-rubric-popover"
+                      title="Scoring rubric"
+                    >
+                      ?
+                    </button>
+                  </span>
+                </span>
                 <input
                   type="number"
                   name="judge_score"
                   id="judge-score-input"
                   min="0"
-                  max="10"
+                  max="100"
                   step="0.1"
                   inputmode="decimal"
                   required
-                  placeholder="8.4"
+                  placeholder="85"
+                  aria-describedby="judge-score-scale-hint"
                 />
+                <span
+                  id="judge-score-scale-hint"
+                  class="judge-score-scale-hint"
+                  aria-live="polite"
+                ></span>
               </label>
               <button
                 type="submit"
@@ -1714,25 +1829,14 @@
             />
           </form>
 
-          <details class="judge-rail-coverage" id="judge-coverage-wrap">
-            <summary class="judge-rail-coverage__summary">
-              <span class="judge-rail-mini-label">Coverage</span>
-              <span
-                class="judge-rail-coverage__line"
-                id="judge-coverage-line"
-              ></span>
-            </summary>
-            <div id="judge-coverage-chips" class="judge-coverage-chips"></div>
-          </details>
-
-          <details class="judge-rail-queue" aria-label="Submission queue">
-            <summary class="judge-rail-queue__head judge-rail-queue__summary">
+          <section class="judge-rail-queue" aria-label="Submission queue">
+            <div class="judge-rail-queue__head">
               <span class="judge-rail-mini-label">Queue</span>
               <span
                 class="judge-rail-queue__count"
                 id="judge-rail-queue-count"
               ></span>
-            </summary>
+            </div>
             <select
               id="judge-submission-picker"
               class="judge-submission-select--hidden"
@@ -1741,7 +1845,48 @@
               tabindex="-1"
             ></select>
             <div id="judge-score-queue" class="judge-rail-queue__list"></div>
-          </details>
+          </section>
+          </div>
+
+          <div
+            id="judge-queue-judges-popover"
+            class="judge-queue-judges-popover"
+            role="dialog"
+            aria-labelledby="judge-queue-judges-popover-title"
+            hidden
+            aria-hidden="true"
+          >
+            <p id="judge-queue-judges-popover-title" class="judge-queue-judges-popover__title"></p>
+            <ul
+              id="judge-queue-judges-popover-list"
+              class="judge-queue-judges-popover__list"
+            ></ul>
+          </div>
+
+          <div
+            id="judge-rubric-popover"
+            class="judge-rubric-popover subtrack-sdk-popover"
+            role="dialog"
+            aria-labelledby="judge-rubric-popover-title"
+          >
+            <div class="subtrack-sdk-popover__inner">
+              <p class="subtrack-sdk-popover__title" id="judge-rubric-popover-title">
+                Scoring rubric
+              </p>
+              <p
+                class="subtrack-sdk-popover__subtitle"
+                id="judge-rubric-cap-hint"
+              >
+                Overall score · 0–100
+              </p>
+              <div
+                id="judge-rubric-reminder-side"
+                class="judge-rubric-reminder"
+              ></div>
+            </div>
+          </div>
+          </div>
+          </div>
           </div>
 
           <!-- Preserved but visually hidden — kept so existing renderers stay wired -->
@@ -1768,6 +1913,48 @@
             >0</span
           >
         </aside>
+
+        <div
+          id="judge-eagle-overlay"
+          class="judge-eagle hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="judge-eagle-title"
+          hidden
+        >
+          <header class="judge-eagle__head">
+            <div class="judge-eagle__head-text">
+              <h2 id="judge-eagle-title" class="judge-eagle__title">Eagle view</h2>
+              <p class="judge-eagle__hint" id="judge-eagle-hint">
+                Submissions × judges · latest scores
+              </p>
+            </div>
+            <button
+              type="button"
+              class="close-btn"
+              id="judge-eagle-close"
+              aria-label="Close Eagle view"
+            >
+              &times;
+            </button>
+          </header>
+          <div class="judge-eagle__scroll" id="judge-eagle-scroll">
+            <table class="judge-eagle__table" id="judge-eagle-table">
+              <thead id="judge-eagle-thead"></thead>
+              <tbody id="judge-eagle-tbody"></tbody>
+            </table>
+          </div>
+          <footer class="judge-eagle__foot">
+            <span id="judge-eagle-updated" class="judge-eagle__updated"></span>
+            <button
+              type="button"
+              class="btn btn-ghost btn-small"
+              id="judge-eagle-refresh"
+            >
+              Refresh
+            </button>
+          </footer>
+        </div>
       </div>
     </div>
 
@@ -2163,7 +2350,7 @@
                       <th
                         scope="col"
                         class="th-judge"
-                        data-tooltip="Average total score using the 7 core + 3 judge bonus bucket model"
+                        data-tooltip="Average total score using the 7 core + 4 judge bonus bucket model"
                       >
                         Judge Total
                       </th>
@@ -2350,11 +2537,17 @@
             "slug": "cursor-sdk",
             "name": "Cursor SDK",
             "sort_order": 30
+          },
+          {
+            "id": "c7d4e8f1-2a3b-4c5d-9e6f-708192a3b4c5",
+            "slug": "alpic",
+            "name": "Alpic",
+            "sort_order": 40
           }
         ]
       }
     </script>
 
-    <script src="script.js?v=164"></script>
+    <script src="script.js?v=185"></script>
   </body>
 </html>

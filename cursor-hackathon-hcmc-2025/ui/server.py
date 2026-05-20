@@ -13,7 +13,11 @@ and returns **501 Unsupported method ('POST')** for POST. Run instead::
     python3 cursor-hackathon-hcmc-2025/ui/server.py --work-dir work --port 8765
 
 Set ``SUPABASE_PROJECT_URL`` and ``SUPABASE_SERVICE_ROLE_SECRET`` (and optionally
-``DEFAULT_HACKATHON_ID``) for Supabase-backed submits, matching production.
+``DEFAULT_HACKATHON_ID``) for Supabase-backed submits, matching production. On startup,
+loads ``guild-bounty-board/.env.local`` then repo-root ``.env.local`` (root overrides
+shared keys; existing shell exports win). Resolves ``hackathon_id`` from ``ACTIVE_HACK_SLUG``
+/ ``hacks.json`` via Supabase when configured. ``SUPABASE_SERVICE_ROLE_KEY`` is accepted as
+an alias for the secret.
 """
 
 import argparse
@@ -28,6 +32,55 @@ from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote, unquote, urlparse
 from urllib.request import Request, urlopen
+
+
+def _parse_dotenv_line(line: str) -> tuple[str, str] | None:
+    line = line.strip()
+    if not line or line.startswith("#"):
+        return None
+    if line.startswith("export "):
+        line = line[7:].strip()
+    if "=" not in line:
+        return None
+    key, _, raw = line.partition("=")
+    key = key.strip()
+    if not key:
+        return None
+    value = raw.strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+        value = value[1:-1]
+    return key, value
+
+
+def _load_dotenv_file(path: Path, *, override: bool = False) -> None:
+    if not path.is_file():
+        return
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return
+    for line in text.splitlines():
+        parsed = _parse_dotenv_line(line)
+        if not parsed:
+            continue
+        key, value = parsed
+        if override or key not in os.environ:
+            os.environ[key] = value
+
+
+def load_local_env() -> None:
+    """Load guild then repo-root .env.local; root overrides shared keys (e.g. DEFAULT_HACKATHON_ID)."""
+    ui_dir = Path(__file__).resolve().parent
+    repo_root = ui_dir.parent.parent
+    _load_dotenv_file(repo_root / "guild-bounty-board" / ".env.local", override=False)
+    _load_dotenv_file(repo_root / ".env.local", override=True)
+    if not (os.environ.get("SUPABASE_SERVICE_ROLE_SECRET") or "").strip():
+        alt = (os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or "").strip()
+        if alt:
+            os.environ["SUPABASE_SERVICE_ROLE_SECRET"] = alt
+
+
+load_local_env()
 
 
 class SupabaseNetworkError(RuntimeError):
@@ -172,6 +225,36 @@ def supabase_rest(path, method="GET", body=None, prefer="return=representation")
     return json.loads(text) if text else None
 
 
+_resolved_hackathon_id: str | None = None
+
+
+def resolve_hackathon_id() -> str:
+    """UUID for this deployment: slug lookup in hackathons, else DEFAULT_HACKATHON_ID env."""
+    global _resolved_hackathon_id
+    if _resolved_hackathon_id is not None:
+        return _resolved_hackathon_id
+    env_id = (os.environ.get("DEFAULT_HACKATHON_ID") or "").strip()
+    if not supabase_configured():
+        _resolved_hackathon_id = env_id or DEFAULT_HACKATHON_ID
+        return _resolved_hackathon_id
+    slug = (os.environ.get("ACTIVE_HACK_SLUG") or active_hack_slug() or "").strip()
+    if slug:
+        try:
+            slug_q = quote(slug, safe="")
+            rows = supabase_rest(f"/hackathons?slug=eq.{slug_q}&select=id&limit=1") or []
+            if rows and rows[0].get("id"):
+                _resolved_hackathon_id = str(rows[0]["id"])
+                return _resolved_hackathon_id
+        except Exception as exc:
+            print(
+                f"[hackathon-ui] hackathon slug lookup failed ({slug!r}): {exc}",
+                file=sys.stderr,
+                flush=True,
+            )
+    _resolved_hackathon_id = env_id or DEFAULT_HACKATHON_ID
+    return _resolved_hackathon_id
+
+
 def supabase_submission_to_client(row):
     repo_url = row.get("repo_url") or row.get("repo_key") or ""
     repo_id = row.get("repo_id") or repo_id_from_url(repo_url)
@@ -223,7 +306,7 @@ SUBMISSION_AI_FIELDS = (
 
 
 def get_supabase_submissions():
-    hid = quote(DEFAULT_HACKATHON_ID, safe="")
+    hid = quote(resolve_hackathon_id(), safe="")
     rows = supabase_rest(f"/submissions?hackathon_id=eq.{hid}&order=submitted_at.desc.nullsfirst") or []
     _attach_technologies_to_submission_rows(rows, hid)
     _attach_team_to_submission_rows(rows)
@@ -494,6 +577,25 @@ def persist_submission_ai(submission_uuid, payload):
     )
 
 
+def _team_member_validation_error(members_raw):
+    """Return an error message if any roster member is missing required fields."""
+    if not isinstance(members_raw, list):
+        return None
+    for m in members_raw:
+        if not isinstance(m, dict):
+            continue
+        full_name = str(m.get("full_name") or "").strip()
+        if not full_name:
+            continue
+        if not str(m.get("cursor_email") or "").strip():
+            return "Each team member needs an email for Cursor."
+        if not str(m.get("luma_profile") or "").strip():
+            return "Each team member needs a Luma profile URL."
+        if not str(m.get("social_url") or "").strip():
+            return "Each team member needs a LinkedIn or X URL."
+    return None
+
+
 def _normalize_team_payload(payload):
     """Pull ``team`` from a submit payload and return a sanitized dict or ``None``."""
     team_raw = payload.get("team") if isinstance(payload, dict) else None
@@ -505,14 +607,19 @@ def _normalize_team_payload(payload):
         if not isinstance(m, dict):
             continue
         full_name = str(m.get("full_name") or "").strip()
+        cursor_email = str(m.get("cursor_email") or "").strip()
+        luma_profile = str(m.get("luma_profile") or "").strip()
+        social_url = str(m.get("social_url") or "").strip()
         if not full_name:
+            continue
+        if not cursor_email or not luma_profile or not social_url:
             continue
         members.append(
             {
                 "full_name": full_name,
-                "cursor_email": str(m.get("cursor_email") or "").strip(),
-                "luma_profile": str(m.get("luma_profile") or "").strip(),
-                "social_url": str(m.get("social_url") or "").strip(),
+                "cursor_email": cursor_email,
+                "luma_profile": luma_profile,
+                "social_url": social_url,
             }
         )
     name = str(team_raw.get("name") or "").strip()
@@ -661,7 +768,7 @@ def upsert_supabase_submission(payload):
         "notes": str(payload.get("notes") or "").strip(),
         "submitted_at": payload.get("submitted_at") or payload.get("timestamp") or "",
         "analysis_status": payload.get("analysis_status") or "pending",
-        "hackathon_id": DEFAULT_HACKATHON_ID,
+        "hackathon_id": resolve_hackathon_id(),
     }
     if not row["submitted_at"]:
         from datetime import datetime, timezone
@@ -715,9 +822,43 @@ def aggregate_judge_responses(rows):
 
 
 def get_supabase_judges():
-    hid = quote(DEFAULT_HACKATHON_ID, safe="")
+    hid = quote(resolve_hackathon_id(), safe="")
     rows = supabase_rest(f"/judge_responses?hackathon_id=eq.{hid}&order=submitted_at.desc") or []
     return aggregate_judge_responses(rows)
+
+
+def judge_db_int(value, minimum=0, maximum=100):
+    """Postgres judge_responses score columns are integer — coerce before REST upsert."""
+    try:
+        n = float(value if value is not None and value != "" else 0)
+    except (TypeError, ValueError):
+        n = 0.0
+    return int(max(minimum, min(maximum, round(n))))
+
+
+def judge_sanitize_score_map(scores, maximum=100):
+    """Coerce jsonb score maps to integer values (never 3.0 floats/strings)."""
+    if not isinstance(scores, dict):
+        return {}
+    out = {}
+    for key, value in scores.items():
+        if key is None:
+            continue
+        out[str(key)] = judge_db_int(value, 0, maximum)
+    return out
+
+
+def judge_sanitize_supabase_row(row, score_cap=100):
+    """Defense-in-depth: coerce all judge_responses score columns/maps to int before REST."""
+    sanitized = dict(row)
+    for key in ("core_total", "bonus_total_raw", "bonus_total_capped", "total_score"):
+        if key in sanitized:
+            sanitized[key] = judge_db_int(sanitized[key], 0, score_cap)
+    sanitized["core_scores"] = judge_sanitize_score_map(sanitized.get("core_scores"), score_cap)
+    sanitized["bonus_bucket_scores"] = judge_sanitize_score_map(
+        sanitized.get("bonus_bucket_scores"), score_cap
+    )
+    return sanitized
 
 
 def upsert_supabase_judge(payload):
@@ -726,25 +867,56 @@ def upsert_supabase_judge(payload):
     judge_name = str(payload.get("judge_name") or "").strip()
     if not repo_key or not judge_name:
         raise ValueError("repo_url and judge_name are required")
-    total_score = round(max(0, min(10, float(payload.get("total_score") or 0))) * 10) / 10
-    core_total = min(total_score, 7)
-    bonus_total = min(max(total_score - 7, 0), 3)
-    row = {
-        "judge_name": judge_name,
-        "repo_key": repo_key,
-        "repo_url": repo_url or repo_key,
-        "project_name": str(payload.get("project_name") or "").strip(),
-        "chosen_track": str(payload.get("chosen_track") or "").strip(),
-        "scored_track": str(payload.get("scored_track") or payload.get("chosen_track") or "").strip(),
-        "notes": str(payload.get("notes") or payload.get("thoughts") or "").strip(),
-        "core_scores": payload.get("core_scores") or {"overall": core_total},
-        "bonus_bucket_scores": payload.get("bonus_bucket_scores") or {},
-        "core_total": core_total,
-        "bonus_total_raw": bonus_total,
-        "bonus_total_capped": bonus_total,
-        "total_score": total_score,
-        "hackathon_id": DEFAULT_HACKATHON_ID,
-    }
+    score_cap = 100
+    raw_total = payload.get("total_score")
+    if raw_total is None or raw_total == "":
+        raw_total = payload.get("core_total")
+    total_score = judge_db_int(raw_total, 0, score_cap)
+    core_scores = judge_sanitize_score_map(payload.get("core_scores"), score_cap)
+    bonus_bucket_scores = judge_sanitize_score_map(payload.get("bonus_bucket_scores"), score_cap)
+    # 0–100 holistic slider: keep the entered total as-is (never cap at legacy 0–11).
+    if total_score > 11:
+        core_total = judge_db_int(payload.get("core_total"), 0, score_cap)
+        if core_total <= 0:
+            core_total = core_scores.get("overall", total_score)
+        bonus_total = judge_db_int(
+            payload.get("bonus_total_capped")
+            if payload.get("bonus_total_capped") not in (None, "")
+            else payload.get("bonus_total_raw"),
+            0,
+            score_cap,
+        )
+    else:
+        # Legacy 0–11 imports / old CSV rows
+        core_total = min(total_score, 7)
+        bonus_total = min(max(total_score - 7, 0), 4)
+    if not core_scores:
+        core_scores = {"overall": core_total}
+    row = judge_sanitize_supabase_row(
+        {
+            "judge_name": judge_name,
+            "repo_key": repo_key,
+            "repo_url": repo_url or repo_key,
+            "project_name": str(payload.get("project_name") or "").strip(),
+            "chosen_track": str(payload.get("chosen_track") or "").strip(),
+            "scored_track": str(payload.get("scored_track") or payload.get("chosen_track") or "").strip(),
+            "notes": str(payload.get("notes") or payload.get("thoughts") or "").strip(),
+            "core_scores": core_scores,
+            "bonus_bucket_scores": bonus_bucket_scores,
+            "core_total": core_total,
+            "bonus_total_raw": bonus_total,
+            "bonus_total_capped": bonus_total,
+            "total_score": total_score,
+            "hackathon_id": resolve_hackathon_id(),
+        },
+        score_cap=score_cap,
+    )
+    print(
+        f"[judge-save] {judge_name!r} repo={repo_key!r} "
+        f"total_score={row['total_score']} ({type(row['total_score']).__name__})",
+        file=sys.stderr,
+        flush=True,
+    )
     result = supabase_rest(
         "/judge_responses?on_conflict=judge_name,repo_key,hackathon_id",
         method="POST",
@@ -896,10 +1068,20 @@ class UiHandler(SimpleHTTPRequestHandler):
         if supabase_configured() and len(technology_ids) == 0:
             return self._send_json(
                 {
-                    "error": "Pick at least one technology you used (Overmind, Tavily, or Cursor SDK).",
+                    "error": "Pick at least one technology partner you used.",
                 },
                 status=400,
             )
+
+        team_raw = payload.get("team") if isinstance(payload, dict) else None
+        members_raw = (
+            team_raw.get("members")
+            if isinstance(team_raw, dict) and isinstance(team_raw.get("members"), list)
+            else []
+        )
+        team_err = _team_member_validation_error(members_raw)
+        if team_err:
+            return self._send_json({"error": team_err}, status=400)
 
         try:
             if supabase_configured():
@@ -1201,7 +1383,11 @@ def run_server(work_dir: Path, static_dir: Path, port: int):
     httpd = HTTPServer(("0.0.0.0", port), handler)
     print(f"Serving UI at http://localhost:{port} (work dir: {work_dir})")
     if supabase_configured():
-        print(f"Persistence: Supabase (DEFAULT_HACKATHON_ID={DEFAULT_HACKATHON_ID})")
+        resolved = resolve_hackathon_id()
+        print(
+            f"Persistence: Supabase (hackathon_id={resolved}, "
+            f"slug={os.environ.get('ACTIVE_HACK_SLUG') or active_hack_slug()})"
+        )
         host = supabase_project_url_parsed_host()
         if host:
             print(f"Supabase endpoint host: {host}")

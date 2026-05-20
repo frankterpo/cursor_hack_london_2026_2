@@ -39,8 +39,8 @@
   ],
   "rubric": {
     "core_max_points": 7,
-    "side_bonus_cap": 3,
-    "total_cap": 10,
+    "side_bonus_cap": 4,
+    "total_cap": 100,
     "criteria": [
       {
         "id": "concrete_workflow_value",
@@ -76,8 +76,8 @@
   },
   "judge_bonus_bucket": {
     "name": "Judge Bonus Bucket",
-    "max_points": 3,
-    "description": "Three sponsor-aligned buckets (1 + 1 + 1 points). Judges score each bucket independently — 3 bonus total."
+    "max_points": 4,
+    "description": "Four sponsor-aligned buckets (1 + 1 + 1 + 1 points). Judges score each bucket independently — 4 bonus total."
   },
   "side_quests": [
     {
@@ -97,7 +97,14 @@
       "id": "best_use_cursor_sdk",
       "name": "Best use of Cursor",
       "points": 1,
-      "blurb": "Strong use of the Cursor SDK — programmatic agents, tools, and patterns judges can reproduce from docs or the examples repo."
+      "blurb": "Strong use of Composer 2.5 and the Cursor SDK — agentic coding in the IDE plus programmatic agents, tools, and patterns judges can reproduce from docs or the examples repo."
+    },
+    {
+      "id": "best_use_alpic",
+      "name": "Best use of Alpic",
+      "points": 1,
+      "blurb": "Standout use of Alpic for hosting, deploying, or routing MCP servers and agent tools in the product.",
+      "logo_path": "partners/alpic-logo.png"
     }
   ],
   "prizes": [
@@ -201,6 +208,12 @@
       "slug": "cursor-sdk",
       "name": "Cursor SDK",
       "sort_order": 30
+    },
+    {
+      "id": "c7d4e8f1-2a3b-4c5d-9e6f-708192a3b4c5",
+      "slug": "alpic",
+      "name": "Alpic",
+      "sort_order": 40
     }
   ],
   "sponsors": [

@@ -69,12 +69,22 @@ function setFieldValues(selector, scores) {
   });
 }
 
+function judgeTotalCap() {
+  return Number(judgeConfig?.rubric?.total_cap ?? 100);
+}
+
+function judgeBonusCap() {
+  return Number(judgeConfig?.judge_bonus_bucket?.max_points ?? 4);
+}
+
 function renderRubric() {
   const target = document.getElementById("rubric-summary");
   const criteria = judgeConfig.rubric.criteria || [];
   const bonuses = judgeConfig.side_quests || [];
+  const totalCap = judgeTotalCap();
+  const bonusCap = judgeBonusCap();
   target.innerHTML = `
-    <div class="rubric-total">Total = 10 points</div>
+    <div class="rubric-total">Total = ${totalCap} points</div>
     <div class="rubric-group">
       <div class="rubric-heading">Core: 7 pts</div>
       ${criteria.map((criterion) => `
@@ -85,7 +95,7 @@ function renderRubric() {
       `).join("")}
     </div>
     <div class="rubric-group">
-      <div class="rubric-heading">Bonus: 3 pts</div>
+      <div class="rubric-heading">Bonus: ${bonusCap} pts</div>
       ${bonuses.map((quest) => `
         <div class="rubric-line">
           <strong>${escapeHtml(quest.points)} · ${escapeHtml(quest.name)}</strong>
@@ -129,8 +139,10 @@ function getValidationState() {
 function updateTotals() {
   const { coreRaw, bonusRaw, coreValid, bonusValid, total } = getValidationState();
   const totalEl = document.getElementById("totals-output");
-  totalEl.textContent = `Core ${coreRaw}/7 · Bonus ${bonusRaw}/3 · Total ${total}/10`;
-  totalEl.classList.toggle("totals-output--error", !coreValid || !bonusValid || total > 10);
+  const totalCap = judgeTotalCap();
+  const bonusCap = judgeBonusCap();
+  totalEl.textContent = `Core ${coreRaw}/7 · Bonus ${bonusRaw}/${bonusCap} · Total ${total}/${totalCap}`;
+  totalEl.classList.toggle("totals-output--error", !coreValid || !bonusValid || total > totalCap);
 }
 
 function setSubmitStatus(message, isError = false) {
@@ -187,7 +199,7 @@ function renderDemo(submission) {
 }
 
 function responseScoreLine(response) {
-  return `${escapeHtml(response.judge_name || "?")} · ${Number(response.total_score || 0)}/10 (core ${Number(response.core_total || 0)}, bonus ${Number(response.bonus_total_capped || 0)})`;
+  return `${escapeHtml(response.judge_name || "?")} · ${Number(response.total_score || 0)}/${judgeTotalCap()} (core ${Number(response.core_total || 0)}, bonus ${Number(response.bonus_total_capped || 0)})`;
 }
 
 async function loadAnalysisFor(submission) {
@@ -334,11 +346,11 @@ async function submitJudgeScore() {
     return;
   }
   if (!bonusValid) {
-    setSubmitStatus(`Bonus score cannot exceed 3. Current value: ${bonusRaw}.`, true);
+    setSubmitStatus(`Bonus score cannot exceed ${judgeBonusCap()}. Current value: ${bonusRaw}.`, true);
     return;
   }
-  if (total > judgeConfig.rubric.total_cap) {
-    setSubmitStatus(`Total score cannot exceed 10. Current value: ${total}.`, true);
+  if (total > judgeTotalCap()) {
+    setSubmitStatus(`Total score cannot exceed ${judgeTotalCap()}. Current value: ${total}.`, true);
     return;
   }
 
