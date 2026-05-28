@@ -5161,6 +5161,48 @@ body.is-judge-rail-resizing {
   text-transform: uppercase;
   color: var(--muted);
   font-weight: 600;
+  padding: 0;
+}
+.judge-eagle__sort-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  min-height: 100%;
+  padding: 6px 10px;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.judge-eagle__sort-btn:hover,
+.judge-eagle__sort-btn:focus-visible {
+  color: var(--text-strong);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  outline: none;
+}
+.judge-eagle__table th.is-sorted .judge-eagle__sort-btn {
+  color: var(--accent);
+}
+.judge-eagle__sort {
+  display: inline-block;
+  width: 0.75em;
+  opacity: 0.35;
+  font-size: 0.9em;
+}
+.judge-eagle__sort.is-active {
+  opacity: 1;
+  color: var(--accent);
+}
+.judge-eagle__table thead .judge-eagle__project .judge-eagle__sort-btn {
+  justify-content: flex-start;
 }
 .judge-eagle__table .judge-eagle__project {
   position: sticky;

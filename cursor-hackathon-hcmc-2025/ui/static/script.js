@@ -2826,6 +2826,9 @@ const JUDGE_EAGLE_REFRESH_MS = 30000;
 
 let _judgeCoopTimer = null;
 let _judgeEagleTimer = null;
+/** Eagle table sort: "project" | "avg" | judge column index as string. */
+let _eagleSortKey = "avg";
+let _eagleSortDir = "desc";
 let _judgeScoreFingerprint = null;
 let _judgeCoopToastTimer = null;
 
@@ -3194,6 +3197,78 @@ function navigateToJudgeSubmission(submissionId, options = {}) {
   focusJudgeScoreInput();
 }
 
+function compareEagleNumericValues(a, b, dir) {
+  const mult = dir === "asc" ? 1 : -1;
+  if (a === null && b === null) return 0;
+  if (a === null) return 1;
+  if (b === null) return -1;
+  if (a !== b) return (a - b) * mult;
+  return 0;
+}
+
+function sortEagleEntries(entries, judges, sortKey, sortDir) {
+  return [...entries].sort((a, b) => {
+    let cmp = 0;
+    if (sortKey === "project") {
+      const nameA = String(a.name || a.id || "").toLowerCase();
+      const nameB = String(b.name || b.id || "").toLowerCase();
+      cmp = nameA.localeCompare(nameB);
+      if (cmp !== 0) return sortDir === "asc" ? cmp : -cmp;
+    } else if (sortKey === "avg") {
+      const avgA = a.row ? averageJudgeScoresOnRow(a.row, judges) : null;
+      const avgB = b.row ? averageJudgeScoresOnRow(b.row, judges) : null;
+      cmp = compareEagleNumericValues(avgA, avgB, sortDir);
+    } else {
+      const judgeIdx = Number(sortKey);
+      const judgeName = Number.isFinite(judgeIdx) ? judges[judgeIdx] : "";
+      const scoreA =
+        judgeName && a.row ? latestJudgeScoreOnRow(a.row, judgeName) : null;
+      const scoreB =
+        judgeName && b.row ? latestJudgeScoreOnRow(b.row, judgeName) : null;
+      const numA =
+        scoreA === null || scoreA === undefined || scoreA === ""
+          ? null
+          : Number(scoreA);
+      const numB =
+        scoreB === null || scoreB === undefined || scoreB === ""
+          ? null
+          : Number(scoreB);
+      cmp = compareEagleNumericValues(
+        Number.isFinite(numA) ? numA : null,
+        Number.isFinite(numB) ? numB : null,
+        sortDir
+      );
+    }
+    if (cmp !== 0) return cmp;
+    return entryAssignmentKey(a).localeCompare(entryAssignmentKey(b));
+  });
+}
+
+function eagleSortIndicator(sortKey) {
+  if (_eagleSortKey !== sortKey) {
+    return '<span class="judge-eagle__sort" aria-hidden="true"></span>';
+  }
+  const arrow = _eagleSortDir === "asc" ? "↑" : "↓";
+  return `<span class="judge-eagle__sort is-active" aria-hidden="true">${arrow}</span>`;
+}
+
+function renderEagleSortHeader(sortKey, label, extraClass, title) {
+  const isActive = _eagleSortKey === sortKey;
+  const ariaSort = isActive
+    ? _eagleSortDir === "asc"
+      ? "ascending"
+      : "descending"
+    : "none";
+  const cls = ["judge-eagle__sortable", extraClass, isActive ? "is-sorted" : ""]
+    .filter(Boolean)
+    .join(" ");
+  return `<th scope="col" class="${cls}"><button type="button" class="judge-eagle__sort-btn" data-eagle-sort="${escapeAttr(
+    sortKey
+  )}" title="${escapeAttr(title || `Sort by ${label}`)}" aria-sort="${ariaSort}">${escapeHtml(
+    label
+  )}${eagleSortIndicator(sortKey)}</button></th>`;
+}
+
 function renderEagleView() {
   const thead = document.getElementById("judge-eagle-thead");
   const tbody = document.getElementById("judge-eagle-tbody");
@@ -3201,23 +3276,27 @@ function renderEagleView() {
   if (!thead || !tbody) return;
 
   const judges = collectEagleJudgeColumns();
-  const entries = [...getJudgeReviewEntries()].sort((a, b) => {
-    const avgA = a.row ? averageJudgeScoresOnRow(a.row, judges) : null;
-    const avgB = b.row ? averageJudgeScoresOnRow(b.row, judges) : null;
-    if (avgA === null && avgB === null) {
-      return entryAssignmentKey(a).localeCompare(entryAssignmentKey(b));
-    }
-    if (avgA === null) return 1;
-    if (avgB === null) return -1;
-    if (avgB !== avgA) return avgB - avgA;
-    return entryAssignmentKey(a).localeCompare(entryAssignmentKey(b));
-  });
+  const entries = sortEagleEntries(
+    getJudgeReviewEntries(),
+    judges,
+    _eagleSortKey,
+    _eagleSortDir
+  );
   const currentId = document.getElementById("judge-submission-select")?.value || "";
 
   const colCount = judges.length + 2;
-  thead.innerHTML = `<tr><th scope="col" class="judge-eagle__project">Project</th>${judges
-    .map((j) => `<th scope="col">${escapeHtml(j)}</th>`)
-    .join("")}<th scope="col" class="judge-eagle__avg" title="Average of judges who scored">Avg</th></tr>`;
+  thead.innerHTML = `<tr>${renderEagleSortHeader(
+    "project",
+    "Project",
+    "judge-eagle__project"
+  )}${judges
+    .map((j, idx) => renderEagleSortHeader(String(idx), j))
+    .join("")}${renderEagleSortHeader(
+    "avg",
+    "Avg",
+    "judge-eagle__avg",
+    "Average of judges who scored"
+  )}</tr>`;
 
   if (!entries.length) {
     tbody.innerHTML = `<tr><td class="judge-eagle__project" colspan="${colCount}">No submissions</td></tr>`;
@@ -3330,6 +3409,24 @@ function initEagleView() {
       pollJudgeCoopOnce()
         .then(() => renderEagleView())
         .catch(() => renderEagleView());
+    });
+  }
+  const thead = document.getElementById("judge-eagle-thead");
+  if (thead && thead.dataset.bound !== "1") {
+    thead.dataset.bound = "1";
+    thead.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-eagle-sort]");
+      if (!btn) return;
+      e.preventDefault();
+      const key = btn.getAttribute("data-eagle-sort");
+      if (!key) return;
+      if (_eagleSortKey === key) {
+        _eagleSortDir = _eagleSortDir === "asc" ? "desc" : "asc";
+      } else {
+        _eagleSortKey = key;
+        _eagleSortDir = key === "project" ? "asc" : "desc";
+      }
+      renderEagleView();
     });
   }
   const tbody = document.getElementById("judge-eagle-tbody");
