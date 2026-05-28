@@ -8,6 +8,7 @@ const {
   clearJudgeNameCookie,
   getJudgeNameFromCookies,
 } = require("./_lib/auth");
+const { resolveCanonicalJudgeName } = require("./_lib/judging");
 
 function getBody(req) {
   if (!req.body) return {};
@@ -70,15 +71,21 @@ module.exports = async (req, res) => {
         });
       }
       setAuthCookie(res, token);
+      let cookieName = "";
+      let panelJudge = false;
       if (judgeProvided) {
-        setJudgeNameCookie(res, judgeName);
+        const canonical = resolveCanonicalJudgeName(judgeName);
+        cookieName = canonical || judgeName;
+        panelJudge = !!canonical;
+        setJudgeNameCookie(res, cookieName);
       } else {
         clearJudgeNameCookie(res);
       }
       return sendJson(res, 200, {
         ok: true,
         token,
-        judge_name: judgeProvided ? judgeName : "",
+        judge_name: cookieName,
+        panel_judge: panelJudge,
       });
     }
 

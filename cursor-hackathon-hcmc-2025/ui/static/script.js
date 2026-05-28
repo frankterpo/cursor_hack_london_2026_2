@@ -294,10 +294,22 @@ function judgeScoreTotalCap() {
   return Number(eventFormat?.rubric?.total_cap ?? 100);
 }
 
-/** Map stored 0–11 scores to 0–100 for display and editing; leave 100-scale values as-is. */
-function normalizeStoredJudgeScore(value) {
+/** True when this event/repo still uses the old 0–11 judge scale (HCMC-era imports). */
+function usesLegacyJudgeScoreScale(info) {
+  if (info && info.legacy_mode) return true;
+  return judgeScoreTotalCap() <= 15;
+}
+
+/**
+ * Map stored scores for display/editing.
+ * London Q3 uses 0–100 in the DB — do not upscale low values (10 → 90.9 was a bug).
+ */
+function normalizeStoredJudgeScore(value, info) {
   const n = Number(value);
   if (!Number.isFinite(n)) return null;
+  if (!usesLegacyJudgeScoreScale(info)) {
+    return Math.round(n * 10) / 10;
+  }
   if (n <= JUDGE_LEGACY_SCALE_MAX) {
     return Math.round((n * 100) / JUDGE_LEGACY_TOTAL_CAP * 10) / 10;
   }
@@ -543,7 +555,9 @@ function encodeRepoApiSegment(repoId) {
 
 async function loadJudgeData() {
   try {
-    const data = await fetchJSON("/api/judges");
+    const res = await fetch("/api/judges", { credentials: "include" });
+    if (!res.ok) throw new Error(`Failed to fetch /api/judges: ${res.status}`);
+    const data = await res.json();
     const map = new Map();
     if (data && data.by_repo) {
       for (const [repoUrl, info] of Object.entries(data.by_repo)) {
@@ -554,6 +568,9 @@ async function loadJudgeData() {
       }
     }
     judgeMap = map;
+    if (data?.panel_audit) {
+      window.__judgePanelAudit = data.panel_audit;
+    }
   } catch (err) {
     console.error("Failed to load judge data", err);
     judgeMap = new Map();
@@ -845,7 +862,7 @@ function judgeInfoAverageNumeric(info) {
     );
   }
   const vals = info.responses
-    .map((r) => normalizeStoredJudgeScore(r.total_score))
+    .map((r) => normalizeStoredJudgeScore(r.total_score, info))
     .filter((v) => v !== null);
   if (!vals.length) return 0;
   return vals.reduce((sum, v) => sum + v, 0) / vals.length;
@@ -868,7 +885,7 @@ function buildJudgeTooltip(info) {
     if (info.legacy_mode) {
       return `#${idx + 1}: ${r.total_score}${thought}`;
     }
-    const score = normalizeStoredJudgeScore(r.total_score);
+    const score = normalizeStoredJudgeScore(r.total_score, info);
     const scoreLabel = score === null ? "—" : formatJudgeScore(score);
     return `#${idx + 1}: ${scoreLabel}/${cap}${thought}`;
   });
@@ -900,7 +917,7 @@ function judgeImportResponsesListHtml(info) {
       const scoreLine = info.legacy_mode
         ? `#${idx + 1} • ${r.total_score}`
         : (() => {
-            const score = normalizeStoredJudgeScore(r.total_score);
+            const score = normalizeStoredJudgeScore(r.total_score, info);
             const label = score === null ? "—" : formatJudgeScore(score);
             return `#${idx + 1} • ${label}/${judgeScoreTotalCap()}`;
           })();
@@ -2010,6 +2027,7 @@ async function syncAuthFromServer() {
     if (data.authenticated) {
       sessionStorage.setItem(AUTH_KEY, AUTH_SESSION_VALUE);
       if (data.judge_name) writeStoredJudgeName(data.judge_name);
+      await loadJudgeData();
       return true;
     }
     sessionStorage.removeItem(AUTH_KEY);
@@ -2941,7 +2959,7 @@ function buildJudgeScoreFingerprint() {
       const project = String(r.project_name || "").trim() || repoKey;
       const subId = String(r.submission_id || "").trim();
       const key = `${normalizeJudgeName(judge)}|${subId || normalizeRepoKey(r.repo_url || repoKey)}|${slugify(project)}`;
-      const score = normalizeStoredJudgeScore(r.total_score);
+      const score = normalizeStoredJudgeScore(r.total_score, info);
       const at = r.scored_at || r.timestamp || "";
       const prev = fp.get(key);
       if (!prev || String(at) >= String(prev.at)) {
@@ -3041,8 +3059,9 @@ function collectEagleJudgeColumns() {
 }
 
 function latestJudgeScoreOnRow(row, judgeName) {
+  const info = getJudgeInfoForRow(row);
   const response = latestJudgeResponseOnRow(row, judgeName);
-  return response ? normalizeStoredJudgeScore(response.total_score) : null;
+  return response ? normalizeStoredJudgeScore(response.total_score, info) : null;
 }
 
 /** Mean of latest judge scores on a row (only judges with a score). */
@@ -3063,11 +3082,15 @@ function averageJudgeScoresOnRow(row, judgeNames) {
 function latestJudgeResponseOnRow(row, judgeName) {
   const info = getJudgeInfoForRow(row);
   if (!info?.responses?.length) return null;
-  const target = normalizeJudgeName(judgeName);
   let best = null;
   for (const r of info.responses) {
-    const j = normalizeJudgeName(r.judge_name || r.judge || "");
-    if (j !== target) continue;
+    const raw = r.judge_name || r.judge || "";
+    if (
+      !judgeMatchesPool(raw, judgeName) &&
+      normalizeJudgeName(raw) !== normalizeJudgeName(judgeName)
+    ) {
+      continue;
+    }
     const at = r.scored_at || r.timestamp || "";
     if (!best || String(at) >= String(best.at)) {
       best = { response: r, at };
@@ -3088,9 +3111,11 @@ function syncJudgeScoreFormFromExisting() {
     return;
   }
   const found = findSubmissionById(submissionId);
-  const mine = found?.row ? latestJudgeResponseOnRow(found.row, judgeName) : null;
+  const row = found?.row;
+  const judgeInfo = row ? getJudgeInfoForRow(row) : null;
+  const mine = row ? latestJudgeResponseOnRow(row, judgeName) : null;
   if (mine) {
-    const score = normalizeStoredJudgeScore(mine.total_score);
+    const score = normalizeStoredJudgeScore(mine.total_score, judgeInfo);
     if (scoreInput) {
       scoreInput.value = score === null ? "" : formatJudgeScore(score);
     }
@@ -3898,7 +3923,7 @@ function buildMergedScoreEntries(submissionId, judgeInfo) {
       if (isTestJudgeName(jLabel)) return;
       const displayTotal = judgeInfo.legacy_mode
         ? r.total_score
-        : normalizeStoredJudgeScore(r.total_score);
+        : normalizeStoredJudgeScore(r.total_score, judgeInfo);
       const detail = judgeInfo.legacy_mode
         ? `${r.total_score}`
         : `${displayTotal === null ? "—" : formatJudgeScore(displayTotal)}/${judgeScoreTotalCap()}`;
@@ -4898,7 +4923,7 @@ function getJudgeQueueChipStates(entry) {
   pool.forEach((j) => {
     const scored = scorers.some((nm) => judgeMatchesPool(nm, j.name));
     const resp = scored ? judgeResponseForPoolName(responses, j.name) : null;
-    const score = resp ? normalizeStoredJudgeScore(resp.total_score) : null;
+    const score = resp ? normalizeStoredJudgeScore(resp.total_score, info) : null;
     const isMine =
       scored && currentJudge && judgeMatchesPool(j.name, currentJudge);
     chips.push({
@@ -4917,7 +4942,7 @@ function getJudgeQueueChipStates(entry) {
       (r) =>
         normalizeJudgeName(r.judge_name || r.judge) === normalizeJudgeName(name)
     );
-    const score = resp ? normalizeStoredJudgeScore(resp.total_score) : null;
+    const score = resp ? normalizeStoredJudgeScore(resp.total_score, info) : null;
     const isMine = currentJudge && judgeMatchesPool(name, currentJudge);
     chips.push({
       name,
@@ -5427,11 +5452,15 @@ async function handleJudgeForm(e) {
   try {
     const res = await fetch("/api/judges", {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(entry),
     });
     const payload = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(payload.error || "Failed to save score");
+    if (payload.response?.judge_name) {
+      writeStoredJudgeName(payload.response.judge_name);
+    }
     await loadJudgeData();
     _judgeScoreFingerprint = buildJudgeScoreFingerprint();
     if (isEagleViewOpen()) renderEagleView();
@@ -6287,7 +6316,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const payload = await res.json().catch(() => ({}));
         if (res.ok && payload.ok) {
           sessionStorage.setItem(AUTH_KEY, AUTH_SESSION_VALUE);
-          writeStoredJudgeName(nameVal);
+          const lockedName = String(payload.judge_name || nameVal).trim();
+          writeStoredJudgeName(lockedName);
           passwordForm.reset();
           applyAuthState();
           closeModal("password-modal");
@@ -6297,7 +6327,13 @@ document.addEventListener("DOMContentLoaded", () => {
           renderJudgeSubmissionToolbar();
           renderJudgeSubmissionSummary();
           if (next) setTimeout(() => openModal(next), 80);
-          toast("Unlocked — judge + manager panels available");
+          if (payload.panel_judge === false) {
+            toast(
+              "Unlocked, but your name did not match a panel judge — scores must use names like David Gelberg or Rohit Gupta."
+            );
+          } else {
+            toast(`Unlocked as ${lockedName}`);
+          }
         } else {
           if (errorEl) {
             errorEl.textContent =

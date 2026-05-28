@@ -101,6 +101,85 @@ const JUDGE_CONFIG = {
   ],
 };
 
+/** Panel for London Q3 — keep in sync with `cursor-hackathon-hcmc-2025/data/event-format.json` judges (+ cohost). */
+const JUDGE_PANEL = [
+  "Pritam Soni",
+  "Rohit Gupta",
+  "Giorgio Toledo",
+  "David Gelberg",
+  "John Sergeant",
+  "Umberto Belluzzo",
+  "Will Lewis",
+];
+
+function normalizeJudgeNameKey(name) {
+  return String(name || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
+function isTestJudgeNameKey(name) {
+  const n = normalizeJudgeNameKey(name);
+  if (!n) return false;
+  if (n === "test" || n === "restarttest") return true;
+  if (n.startsWith("test") && /^test\d*$/.test(n)) return true;
+  return false;
+}
+
+/** Map typed unlock name → canonical panel name (one column per person). */
+function resolveCanonicalJudgeName(typedName) {
+  const target = normalizeJudgeNameKey(typedName);
+  if (!target || isTestJudgeNameKey(target)) return null;
+  for (const panelName of JUDGE_PANEL) {
+    const key = normalizeJudgeNameKey(panelName);
+    if (target === key) return panelName;
+  }
+  for (const panelName of JUDGE_PANEL) {
+    const key = normalizeJudgeNameKey(panelName);
+    if (target.includes(key) || key.includes(target)) return panelName;
+  }
+  return null;
+}
+
+function getJudgePanel() {
+  return [...JUDGE_PANEL];
+}
+
+/** Read-only audit: which stored judge_name values map to each panel column. */
+function buildJudgeNameAudit(responses) {
+  const panel = getJudgePanel();
+  const slotCounts = Object.fromEntries(panel.map((name) => [name, 0]));
+  const rawBySlot = Object.fromEntries(panel.map((name) => [name, new Set()]));
+  const offPanel = new Map();
+
+  for (const response of responses || []) {
+    const raw = String(response.judge_name || "").trim();
+    if (!raw || isTestJudgeNameKey(raw)) continue;
+    const canonical = resolveCanonicalJudgeName(raw);
+    if (canonical) {
+      slotCounts[canonical] += 1;
+      rawBySlot[canonical].add(raw);
+      continue;
+    }
+    if (!offPanel.has(raw)) offPanel.set(raw, 0);
+    offPanel.set(raw, offPanel.get(raw) + 1);
+  }
+
+  return {
+    panel,
+    slots: panel.map((panel_name) => ({
+      panel_name,
+      score_count: slotCounts[panel_name],
+      raw_names: [...rawBySlot[panel_name]].sort((a, b) => a.localeCompare(b)),
+    })),
+    off_panel: [...offPanel.entries()]
+      .map(([raw_name, score_count]) => ({ raw_name, score_count }))
+      .sort((a, b) => b.score_count - a.score_count),
+  };
+}
+
 function bonusMaxForQuest(quest) {
   const p = quest && quest.points;
   if (typeof p === "number" && Number.isFinite(p) && p > 0) {
@@ -336,6 +415,11 @@ function aggregateJudgeResponses(responses) {
 
 module.exports = {
   JUDGE_CONFIG,
+  JUDGE_PANEL,
+  getJudgePanel,
+  normalizeJudgeNameKey,
+  resolveCanonicalJudgeName,
+  buildJudgeNameAudit,
   judgeDbInteger,
   normalizeJudgeResponse,
   aggregateJudgeResponses,
