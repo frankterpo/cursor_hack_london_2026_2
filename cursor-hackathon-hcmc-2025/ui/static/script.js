@@ -294,19 +294,22 @@ function judgeScoreTotalCap() {
   return Number(eventFormat?.rubric?.total_cap ?? 100);
 }
 
-/** True when this event/repo still uses the old 0–11 judge scale (HCMC-era imports). */
+/** True only for HCMC-era 0–11 imports. London Q3 (total_cap 100) never upscales. */
 function usesLegacyJudgeScoreScale(info) {
-  if (info && info.legacy_mode) return true;
-  return judgeScoreTotalCap() <= 15;
+  if (judgeScoreTotalCap() > 15) return false;
+  return !!(info && info.legacy_mode);
 }
 
 /**
  * Map stored scores for display/editing.
- * London Q3 uses 0–100 in the DB — do not upscale low values (10 → 90.9 was a bug).
+ * London Q3 uses 0–100 in the DB — never upscale (10 must not become 90.9).
  */
 function normalizeStoredJudgeScore(value, info) {
   const n = Number(value);
   if (!Number.isFinite(n)) return null;
+  if (judgeScoreTotalCap() > 15) {
+    return Math.round(n * 10) / 10;
+  }
   if (!usesLegacyJudgeScoreScale(info)) {
     return Math.round(n * 10) / 10;
   }

@@ -395,6 +395,23 @@ function aggregateJudgeResponses(responses) {
       project_name: base.project_name,
       chosen_track: base.chosen_track,
       judge_count: repoResponses.length,
+      legacy_mode: repoResponses.every((response) => {
+        const total = Number(response.total_score);
+        const core = response.core_scores || {};
+        const hasHolisticOverall =
+          core.overall !== undefined &&
+          core.overall !== null &&
+          Number(core.overall) > 0;
+        const hasDetailedCore = Object.keys(core).some(
+          (key) => key !== "overall" && Number(core[key]) > 0,
+        );
+        return (
+          !hasHolisticOverall &&
+          !hasDetailedCore &&
+          Number.isFinite(total) &&
+          total <= 11.5
+        );
+      }),
       responses: repoResponses,
       averages: {
         core_scores: coreAverages,
