@@ -1951,7 +1951,8 @@ let lastFocusedBeforeModal = null;
 const GATED_MODALS = new Set(["judge-modal", "manager-modal"]);
 const AUTH_KEY = "bfa_auth";
 const AUTH_JUDGE_NAME_KEY = "bfa_auth_judge_name";
-const AUTH_CODE = "BCFTW123!";
+/** Set in sessionStorage after successful POST /api/auth (matches SITE_PASSWORD on server). */
+const AUTH_SESSION_VALUE = "1";
 let pendingGatedModalId = null;
 
 function readStoredJudgeName() {
@@ -1996,10 +1997,26 @@ function getJudgeNameForUi() {
 
 function isAuthed() {
   try {
-    return sessionStorage.getItem(AUTH_KEY) === AUTH_CODE;
+    return sessionStorage.getItem(AUTH_KEY) === AUTH_SESSION_VALUE;
   } catch {
     return false;
   }
+}
+
+async function syncAuthFromServer() {
+  try {
+    const res = await fetch("/api/auth", { credentials: "include" });
+    const data = await res.json().catch(() => ({}));
+    if (data.authenticated) {
+      sessionStorage.setItem(AUTH_KEY, AUTH_SESSION_VALUE);
+      if (data.judge_name) writeStoredJudgeName(data.judge_name);
+      return true;
+    }
+    sessionStorage.removeItem(AUTH_KEY);
+  } catch (_) {
+    /* offline or static-only preview */
+  }
+  return false;
 }
 
 function applyAuthState() {
@@ -6223,15 +6240,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Password gate
-  applyAuthState();
+  // Password gate (validates against SITE_PASSWORD via POST /api/auth)
+  syncAuthFromServer().finally(() => applyAuthState());
   const passwordForm = document.getElementById("password-form");
   if (passwordForm) {
-    passwordForm.addEventListener("submit", (e) => {
+    passwordForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const pwInput = passwordForm.querySelector("input[name=password]");
       const gateNameInput = passwordForm.querySelector("#password-judge-name");
       const errorEl = document.getElementById("password-error");
+      const submitBtn = passwordForm.querySelector('button[type="submit"]');
       const nameVal = (gateNameInput && gateNameInput.value.trim()) || "";
       const value = (pwInput && pwInput.value) || "";
       if (nameVal.length < 2) {
@@ -6242,28 +6260,46 @@ document.addEventListener("DOMContentLoaded", () => {
         if (gateNameInput) gateNameInput.focus();
         return;
       }
-      if (value === AUTH_CODE) {
-        try {
-          sessionStorage.setItem(AUTH_KEY, AUTH_CODE);
-        } catch {}
-        writeStoredJudgeName(nameVal);
-        passwordForm.reset();
-        if (errorEl) errorEl.textContent = "";
-        applyAuthState();
-        closeModal("password-modal");
-        const next = pendingGatedModalId;
-        pendingGatedModalId = null;
-        renderJudgeScoreQueue();
-        renderJudgeSubmissionToolbar();
-        renderJudgeSubmissionSummary();
-        if (next) setTimeout(() => openModal(next), 80);
-        toast("Unlocked — judge + manager panels available");
-      } else {
-        if (errorEl) errorEl.textContent = "Wrong code. Try again.";
-        if (pwInput) {
-          pwInput.value = "";
-          pwInput.focus();
+      if (submitBtn) submitBtn.disabled = true;
+      if (errorEl) errorEl.textContent = "";
+      try {
+        const res = await fetch("/api/auth", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: value, judge_name: nameVal }),
+        });
+        const payload = await res.json().catch(() => ({}));
+        if (res.ok && payload.ok) {
+          sessionStorage.setItem(AUTH_KEY, AUTH_SESSION_VALUE);
+          writeStoredJudgeName(nameVal);
+          passwordForm.reset();
+          applyAuthState();
+          closeModal("password-modal");
+          const next = pendingGatedModalId;
+          pendingGatedModalId = null;
+          renderJudgeScoreQueue();
+          renderJudgeSubmissionToolbar();
+          renderJudgeSubmissionSummary();
+          if (next) setTimeout(() => openModal(next), 80);
+          toast("Unlocked — judge + manager panels available");
+        } else {
+          if (errorEl) {
+            errorEl.textContent =
+              res.status === 503
+                ? "Access gate not configured on server."
+                : "Wrong code. Try again.";
+          }
+          if (pwInput) {
+            pwInput.value = "";
+            pwInput.focus();
+          }
         }
+      } catch (_) {
+        if (errorEl) errorEl.textContent = "Could not reach server. Try again.";
+        if (pwInput) pwInput.focus();
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
       }
     });
   }
