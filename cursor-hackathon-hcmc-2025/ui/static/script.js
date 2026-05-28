@@ -3173,7 +3173,17 @@ function renderEagleView() {
   if (!thead || !tbody) return;
 
   const judges = collectEagleJudgeColumns();
-  const entries = getJudgeReviewEntries();
+  const entries = [...getJudgeReviewEntries()].sort((a, b) => {
+    const avgA = a.row ? averageJudgeScoresOnRow(a.row, judges) : null;
+    const avgB = b.row ? averageJudgeScoresOnRow(b.row, judges) : null;
+    if (avgA === null && avgB === null) {
+      return entryAssignmentKey(a).localeCompare(entryAssignmentKey(b));
+    }
+    if (avgA === null) return 1;
+    if (avgB === null) return -1;
+    if (avgB !== avgA) return avgB - avgA;
+    return entryAssignmentKey(a).localeCompare(entryAssignmentKey(b));
+  });
   const currentId = document.getElementById("judge-submission-select")?.value || "";
 
   const colCount = judges.length + 2;
@@ -3660,8 +3670,13 @@ function getJudgeReviewEntries() {
     console.warn("Judge assignment failed; falling back to no-assignment view", err);
   }
 
+  // Fixed queue order for judges: same stable key as round-robin assignment.
+  // Do not move scored rows — reshuffling on submit was confusing the panel.
   return deduped.sort((a, b) => {
-    if (a.scored !== b.scored) return a.scored ? 1 : -1;
+    const keyA = entryAssignmentKey(a);
+    const keyB = entryAssignmentKey(b);
+    if (keyA < keyB) return -1;
+    if (keyA > keyB) return 1;
     return a.name.localeCompare(b.name, undefined, { sensitivity: "base" });
   });
 }
