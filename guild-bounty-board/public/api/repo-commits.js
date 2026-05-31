@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { sendJson } = require("./_lib/storage");
+const { verifyAuth } = require("./_lib/auth");
 const { getSubmissions, getAnalysis } = require("./_lib/db");
 const { normalizeRepoUrl } = require("./_lib/storage");
 
@@ -76,6 +77,11 @@ module.exports = async (req, res) => {
 
   if (req.method !== "GET") {
     return sendJson(res, 405, { error: "Method not allowed" });
+  }
+
+  const auth = verifyAuth(req);
+  if (!auth.valid) {
+    return sendJson(res, 401, { error: "Unauthorized" });
   }
 
   const repoId = decodeRepoIdParam(req.query.repoId);

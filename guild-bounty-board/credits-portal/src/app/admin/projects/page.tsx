@@ -56,7 +56,7 @@ export default function AdminProjects() {
   const loadProjects = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('/credits/api/admin/projects');
+      const response = await fetch('/credits/api/admin/projects', { credentials: 'include' });
       const result = await response.json();
 
       if (result.success) {
@@ -109,6 +109,7 @@ export default function AdminProjects() {
     try {
       const response = await fetch('/credits/api/admin/projects', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: createForm.name.trim(),
@@ -164,6 +165,7 @@ export default function AdminProjects() {
     try {
       const response = await fetch(`/credits/api/admin/projects/${deleteConfirmation.projectId}`, {
         method: 'DELETE',
+        credentials: 'include',
       });
 
       const result = await response.json();
@@ -201,8 +203,11 @@ export default function AdminProjects() {
     setError('');
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('admin_authenticated');
+  const handleLogout = async () => {
+    await fetch('/credits/api/admin/auth', {
+      method: 'DELETE',
+      credentials: 'include',
+    }).catch(() => {});
     localStorage.removeItem('admin_selected_project');
     router.push('/admin');
   };

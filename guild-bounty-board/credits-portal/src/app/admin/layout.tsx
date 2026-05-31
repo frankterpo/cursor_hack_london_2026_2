@@ -10,6 +10,16 @@ interface SelectedProject {
   slug: string;
 }
 
+async function fetchAdminSession(): Promise<boolean> {
+  try {
+    const res = await fetch('/credits/api/admin/auth', { credentials: 'include' });
+    const data = await res.json().catch(() => ({}));
+    return Boolean(data.authenticated);
+  } catch {
+    return false;
+  }
+}
+
 export default function AdminLayout({
   children,
 }: {
@@ -23,8 +33,8 @@ export default function AdminLayout({
   const normalizedPathname = pathname.replace(/^\/credits(?=\/|$)/, '') || '/';
 
   useEffect(() => {
-    const checkAuth = () => {
-      const authenticated = localStorage.getItem('admin_authenticated') === 'true';
+    const checkAuth = async () => {
+      const authenticated = await fetchAdminSession();
       setIsAuthenticated(authenticated);
 
       const projectData = localStorage.getItem('admin_selected_project');
@@ -49,8 +59,11 @@ export default function AdminLayout({
     checkAuth();
   }, [router, normalizedPathname]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('admin_authenticated');
+  const handleLogout = async () => {
+    await fetch('/credits/api/admin/auth', {
+      method: 'DELETE',
+      credentials: 'include',
+    }).catch(() => {});
     localStorage.removeItem('admin_selected_project');
     setIsAuthenticated(false);
     setSelectedProject(null);

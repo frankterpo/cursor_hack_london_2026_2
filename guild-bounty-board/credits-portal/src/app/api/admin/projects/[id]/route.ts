@@ -13,12 +13,16 @@ import {
   Timestamp 
 } from 'firebase/firestore';
 import { UpdateProjectSchema } from '@/features/projects/model';
+import { requireAdminAuth } from '@/lib/verify-admin-auth';
 
 /**
  * API routes for individual project operations (GET, PUT, DELETE)
  */
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+  const unauthorized = requireAdminAuth(request);
+  if (unauthorized) return unauthorized;
+
   try {
     const projectId = params.id;
     const projectDoc = await getDoc(doc(db, 'projects', projectId));
@@ -51,6 +55,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 }
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+  const unauthorized = requireAdminAuth(request);
+  if (unauthorized) return unauthorized;
+
   try {
     const projectId = params.id;
     const body = await request.json();
@@ -87,6 +94,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
  * This provides the natural data cleanup functionality
  */
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  const unauthorized = requireAdminAuth(request);
+  if (unauthorized) return unauthorized;
+
   try {
     const projectId = params.id;
 

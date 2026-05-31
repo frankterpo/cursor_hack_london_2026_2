@@ -4,6 +4,16 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { CreditsPortalHeader } from '@/components/credits/CreditsPortalHeader';
 
+async function fetchAdminSession(): Promise<boolean> {
+  try {
+    const res = await fetch('/credits/api/admin/auth', { credentials: 'include' });
+    const data = await res.json().catch(() => ({}));
+    return Boolean(data.authenticated);
+  } catch {
+    return false;
+  }
+}
+
 export default function AdminPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -11,15 +21,19 @@ export default function AdminPage() {
   const router = useRouter();
 
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem('admin_authenticated') === 'true';
-    if (isAuthenticated) {
+    const redirectIfAuthed = async () => {
+      const isAuthenticated = await fetchAdminSession();
+      if (!isAuthenticated) return;
+
       const selectedProject = localStorage.getItem('admin_selected_project');
       if (selectedProject) {
         router.push('/admin/dashboard');
       } else {
         router.push('/admin/projects');
       }
-    }
+    };
+
+    redirectIfAuthed();
   }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,6 +44,7 @@ export default function AdminPage() {
     try {
       const response = await fetch('/credits/api/admin/auth', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password }),
       });
@@ -37,7 +52,6 @@ export default function AdminPage() {
       const result = await response.json();
 
       if (result.success) {
-        localStorage.setItem('admin_authenticated', 'true');
         router.push('/admin/projects');
       } else {
         setError('Invalid password');

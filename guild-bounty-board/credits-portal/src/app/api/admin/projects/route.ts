@@ -10,13 +10,17 @@ import {
   Timestamp 
 } from 'firebase/firestore';
 import { CreateProjectSchema, generateProjectSlug } from '@/features/projects/model';
+import { requireAdminAuth } from '@/lib/verify-admin-auth';
 
 /**
  * GET /api/admin/projects
  * 
  * Fetches all projects with their basic stats
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const unauthorized = requireAdminAuth(request);
+  if (unauthorized) return unauthorized;
+
   try {
     // Fetch projects
     const projectsRef = collection(db, 'projects');
@@ -72,6 +76,9 @@ export async function GET() {
  * Creates a new project
  */
 export async function POST(request: NextRequest) {
+  const unauthorized = requireAdminAuth(request);
+  if (unauthorized) return unauthorized;
+
   try {
     const body = await request.json();
     

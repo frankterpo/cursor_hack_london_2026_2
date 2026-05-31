@@ -1,3 +1,4 @@
+const { verifyAuth } = require("./_lib/auth");
 const { getSubmissions, getAnalysis } = require("./_lib/db");
 const { normalizeRepoUrl } = require("./_lib/storage");
 
@@ -33,6 +34,12 @@ module.exports = async (req, res) => {
 
   if (req.method !== "GET") {
     res.status(405).send("Method not allowed");
+    return;
+  }
+
+  const auth = verifyAuth(req);
+  if (!auth.valid) {
+    res.status(401).send("Unauthorized");
     return;
   }
 

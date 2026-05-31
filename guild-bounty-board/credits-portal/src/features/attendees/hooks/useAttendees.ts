@@ -10,7 +10,7 @@ import { useState, useEffect } from 'react';
 export interface AttendeeForSuggestion {
   id: string;
   name: string;
-  email: string;
+  email?: string;
   projectId?: string;
   hasRedeemed: boolean;
   /** From API: only checked-in guests are eligible for the redeem name picker */

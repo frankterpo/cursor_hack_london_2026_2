@@ -81,9 +81,9 @@ module.exports = async (req, res) => {
       } else {
         clearJudgeNameCookie(res);
       }
+      // Session is stored in HttpOnly auth_token cookie; do not expose bearer token in body.
       return sendJson(res, 200, {
         ok: true,
-        token,
         judge_name: cookieName,
         panel_judge: panelJudge,
       });

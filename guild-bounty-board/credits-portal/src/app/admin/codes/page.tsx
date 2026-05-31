@@ -63,7 +63,9 @@ export default function AdminCodes() {
       }
 
       const selectedProject = JSON.parse(selectedProjectData);
-      const response = await fetch(`/credits/api/admin/codes?projectId=${selectedProject.id}`);
+      const response = await fetch(`/credits/api/admin/codes?projectId=${selectedProject.id}`, {
+        credentials: 'include',
+      });
       if (!response.ok) throw new Error('Failed to fetch codes');
       
       const data = await response.json();

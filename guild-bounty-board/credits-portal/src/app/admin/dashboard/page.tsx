@@ -41,7 +41,9 @@ export default function AdminDashboard() {
       }
 
       const selectedProject = JSON.parse(selectedProjectData) as { id: string };
-      const response = await fetch(`/credits/api/admin/dashboard?projectId=${selectedProject.id}`);
+      const response = await fetch(`/credits/api/admin/dashboard?projectId=${selectedProject.id}`, {
+        credentials: 'include',
+      });
       if (!response.ok) throw new Error('Failed to fetch data');
 
       const data = await response.json();

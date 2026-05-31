@@ -10,10 +10,26 @@ const LONDON_2026_FIRESTORE_PROJECT_ID = 'nynsjuhYRTQhxTNZgywQ';
 interface PublicAttendee {
   id: string;
   name: string;
-  email: string;
   projectId: string | null;
   hasRedeemed: boolean;
   hasCheckedIn: boolean;
+}
+
+function toPublicAttendee(row: {
+  id: string;
+  name: string;
+  email?: string;
+  projectId: string | null;
+  hasRedeemed: boolean;
+  hasCheckedIn: boolean;
+}): PublicAttendee {
+  return {
+    id: row.id,
+    name: row.name,
+    projectId: row.projectId,
+    hasRedeemed: row.hasRedeemed,
+    hasCheckedIn: row.hasCheckedIn,
+  };
 }
 
 /**
@@ -25,8 +41,8 @@ const responseCache = new Map<string, { at: number; rows: PublicAttendee[] }>();
 const RESPONSE_TTL_MS = 30_000;
 
 /**
- * Public API route for fetching attendees during redemption flow
- * This is separate from the admin attendees API and handles the public redemption process
+ * Public API for redeem name autocomplete only — no email addresses exposed.
+ * Email verification happens via POST /api/attendees/validate.
  */
 export async function GET(request: NextRequest) {
   try {
@@ -58,7 +74,7 @@ export async function GET(request: NextRequest) {
         if (legacyAttendees.length > 0) {
           return NextResponse.json({ 
             success: true, 
-            attendees: legacyAttendees 
+            attendees: legacyAttendees.map(toPublicAttendee),
           });
         }
       } catch {
@@ -81,14 +97,14 @@ export async function GET(request: NextRequest) {
 
     if (snapshot.rows.length === 0) {
       const rows: PublicAttendee[] = LONDON_CREDIT_ASSIGNMENTS.map(
-        (attendee) => ({
-          id: attendee.attendeeId,
-          name: attendee.name,
-          email: attendee.email,
-          projectId: attendee.projectId,
-          hasRedeemed: Boolean(attendee.cursorUrl || attendee.code),
-          hasCheckedIn: true,
-        })
+        (attendee) =>
+          toPublicAttendee({
+            id: attendee.attendeeId,
+            name: attendee.name,
+            projectId: attendee.projectId,
+            hasRedeemed: Boolean(attendee.cursorUrl || attendee.code),
+            hasCheckedIn: true,
+          })
       );
       responseCache.set(projectId, { at: Date.now(), rows });
       return NextResponse.json({ success: true, attendees: rows });
@@ -97,17 +113,16 @@ export async function GET(request: NextRequest) {
     const attendees: PublicAttendee[] = snapshot.rows
       .map((row) => {
         const data = row.data;
-        return {
+        return toPublicAttendee({
           id: row.id,
           name: String(data.name ?? ''),
-          email: String(data.email ?? ''),
           projectId: String(data.projectId ?? projectId),
           hasRedeemed: Boolean(data.hasRedeemedCode),
           hasCheckedIn:
             hasMeaningfulCheckedIn(data) || Boolean(data.hasRedeemedCode),
-        };
+        });
       })
-      .filter((attendee) => attendee.name && attendee.email);
+      .filter((attendee) => attendee.name);
 
     responseCache.set(projectId, { at: Date.now(), rows: attendees });
     return NextResponse.json({ success: true, attendees });

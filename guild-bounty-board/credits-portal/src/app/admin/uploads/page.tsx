@@ -42,6 +42,7 @@ export default function AdminUploads() {
 
       const response = await fetch('/credits/api/admin/upload', {
         method: 'POST',
+        credentials: 'include',
         body: formData
       });
 
