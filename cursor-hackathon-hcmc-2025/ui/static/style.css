@@ -1868,10 +1868,12 @@ th {
   white-space: nowrap;
 }
 
-/* Tooltip on headers */
+/* Tooltip on headers — keep sticky so manager/Eagle tables freeze thead on scroll */
 th[data-tooltip] {
   cursor: help;
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 6;
 }
 
 th[data-tooltip]::after {
@@ -3748,6 +3750,11 @@ img.judge-avatar {
   width: 100%;
   max-width: 100%;
 }
+.judge-demo-card.is-switching .judge-demo-stage iframe,
+.judge-demo-card.is-switching .judge-demo-stage video.judge-demo-video {
+  opacity: 0.72;
+  transition: opacity 0.18s ease;
+}
 .judge-demo-card.is-empty .judge-demo-stage iframe,
 .judge-demo-card.is-empty .judge-demo-stage video {
   /* Iframe is hidden in empty state, but keep the rule scoped so reels
@@ -4045,9 +4052,14 @@ img.judge-avatar {
 @media (prefers-reduced-motion: reduce) {
   .judge-reels-counter.is-flash,
   .judge-reels-btn--refresh.is-loading > span,
-  .judge-reels-caption {
+  .judge-reels-caption,
+  .judge-demo-card.is-switching .judge-demo-stage iframe,
+  .judge-demo-card.is-switching .judge-demo-stage video.judge-demo-video {
     animation: none !important;
     transition: none !important;
+  }
+  .judge-rail-queue__list {
+    scroll-behavior: auto;
   }
 }
 
@@ -5500,13 +5512,22 @@ body.is-judge-rail-resizing {
   opacity: 0.7;
   cursor: progress;
 }
+.judge-panel-loading {
+  margin: 0;
+  padding: 12px 4px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.judge-side-block--ai .judge-panel-loading {
+  padding: 16px 6px;
+}
 .judge-save-status {
   margin: 0;
   font-family: var(--font-mono);
   font-size: 0.68rem;
   letter-spacing: 0.04em;
   color: var(--muted);
-  min-height: 14px;
+  min-height: 1.25rem;
 }
 .judge-save-status.is-saving {
   color: var(--text-secondary);
@@ -5598,6 +5619,7 @@ body.is-judge-rail-resizing {
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;
+  scroll-behavior: smooth;
 }
 .judge-rail-queue__list:empty::after {
   content: "Queue is empty.";
@@ -5619,9 +5641,7 @@ body.is-judge-rail-resizing {
   cursor: pointer;
   text-align: left;
   font-size: 0.82rem;
-  transition: background 0.12s ease, color 0.12s ease,
-    transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-  will-change: transform;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 .judge-rail-queue__body {
   min-width: 0;
@@ -5910,6 +5930,32 @@ body.is-judge-rail-resizing {
   border-top: none;
   padding-top: 0;
   margin-top: 0;
+}
+.manager-section__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.manager-section__head-text {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+.manager-section__head .btn {
+  flex-shrink: 0;
+  align-self: center;
+}
+.manager-integrity-status {
+  margin: 0 0 10px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+.manager-integrity-status[hidden] {
+  display: none;
 }
 .manager-dash-divider {
   border: none;
@@ -6496,6 +6542,71 @@ body.is-judge-rail-resizing {
 #panel-mgr-submissions {
   padding-top: 2px;
 }
+
+/* Manager submissions: scroll the table body only; freeze column headers inside the wrap */
+.modal-card.manager-card .modal-body {
+  overflow: hidden;
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-card.manager-card [data-manager-dashboard] {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-card.manager-card #panel-mgr-submissions {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-card.manager-card #panel-mgr-submissions .manager-stats {
+  flex-shrink: 0;
+}
+
+.modal-card.manager-card .manager-submissions-host {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-card.manager-card .manager-submissions-panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-card.manager-card .manager-submissions-panel .panel-header {
+  flex-shrink: 0;
+}
+
+.modal-card.manager-card .manager-summary-table-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  max-height: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.modal-card.manager-card #summary-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 12;
+  background: var(--bg-subtle);
+  box-shadow: 0 1px 0 var(--border);
+}
 #panel-mgr-submissions .manager-submissions-panel .panel-header {
   padding: 10px 14px;
   flex-wrap: wrap;
@@ -6584,6 +6695,13 @@ body.is-judge-rail-resizing {
   color: var(--muted);
   font-size: 0.78rem;
 }
+.leaderboard li .lb-name-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+}
 .leaderboard li .lb-name {
   color: var(--text-strong);
   font-weight: 500;
@@ -6598,6 +6716,46 @@ body.is-judge-rail-resizing {
 .leaderboard li .lb-name--link:hover {
   color: var(--primary-800);
   border-bottom-color: color-mix(in srgb, var(--primary-700) 40%, transparent);
+}
+.leaderboard li .lb-name--detail {
+  font: inherit;
+  font-weight: 600;
+  color: var(--primary-700);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--primary-700) 35%, transparent);
+  text-underline-offset: 2px;
+}
+.leaderboard li .lb-name--detail:hover {
+  color: var(--primary-800);
+}
+.leaderboard li .lb-aux {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+}
+.leaderboard li .lb-aux-link {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+}
+.leaderboard li .lb-aux-link:hover {
+  color: var(--text-secondary);
+}
+.leaderboard li .lb-aux-link--btn {
+  font: inherit;
+  font-family: var(--font-mono);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
 }
 .leaderboard li .lb-score {
   font-family: var(--font-mono);

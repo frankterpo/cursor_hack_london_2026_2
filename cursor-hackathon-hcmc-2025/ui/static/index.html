@@ -2106,19 +2106,37 @@
               hidden
             >
               <section class="manager-section manager-section--first">
-                <h3>Integrity watchlist</h3>
-                <p class="manager-hint">
-                  Projects with one or more integrity flags raised (Pre-T₀ / Bulk / Init / Merge / Fork).
-                </p>
+                <div class="manager-section__head">
+                  <div class="manager-section__head-text">
+                    <h3>Integrity watchlist</h3>
+                    <p class="manager-hint">
+                      Commit-history flags (Pre-T₀, bulk, large init, merge) plus forks.
+                      Use <strong>Run integrity scan</strong> to backfill this hackathon from GitHub.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-secondary btn-small"
+                    id="manager-integrity-scan-btn"
+                    title="Re-run GitHub metrics for all submissions and refresh fork detection (server: GITHUB_TOKEN)"
+                  >
+                    Run integrity scan
+                  </button>
+                </div>
+                <p
+                  id="manager-integrity-status"
+                  class="manager-integrity-status"
+                  hidden
+                  aria-live="polite"
+                ></p>
                 <ul id="flagged-list" class="flagged-list"></ul>
               </section>
 
               <section class="manager-section">
                 <h3>Suspicious repos · forks</h3>
                 <p class="manager-hint">
-                  Repos detected as forks via GitHub
-                  <code>/repos/&lt;owner&gt;/&lt;repo&gt;</code>. Unauthenticated requests
-                  are best-effort (60 req/h per IP). Results are cached for 24h in the browser.
+                  Fork detection uses the server GitHub token when you are logged in as
+                  manager; results are cached in this browser for 24 hours.
                 </p>
                 <ul id="forked-list" class="flagged-list"></ul>
               </section>
@@ -2321,6 +2339,14 @@
                       <option value="commits">Commits</option>
                     </select>
                   </div>
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="manager-reanalyze-btn"
+                    title="Re-run GitHub metrics and AI summaries for all submissions (server needs GITHUB_TOKEN and OPENCODE_API_KEY)"
+                  >
+                    Run AI analysis
+                  </button>
                 </div>
               </div>
               <div class="table-wrapper manager-summary-table-wrap">
@@ -2548,6 +2574,6 @@
       }
     </script>
 
-    <script src="script.js?v=189"></script>
+    <script src="script.js?v=195"></script>
   </body>
 </html>

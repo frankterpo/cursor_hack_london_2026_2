@@ -34,8 +34,8 @@ function hasAnyFlag(row) {
 // detection. Storage is browser-local: `__hackAdminFlags` (Set of repo URLs
 // flagged manually) and `__forkStatusCache` (24h cache of GitHub fork lookups).
 //
-// Fork detection hits the public GitHub REST API without auth (60 req/h/IP).
-// Failures degrade gracefully to "unknown" without blocking row render.
+// Fork detection: authenticated managers use /api/github-repo (server token);
+// otherwise best-effort public GitHub REST (60 req/h/IP). Cached 24h locally.
 
 const ADMIN_FLAGS_KEY = "hack-admin-flags-v1";
 const ADMIN_HIDDEN_KEY = "hack-admin-hidden-v1";
@@ -162,21 +162,53 @@ function getCachedForkStatus(repoUrl) {
  * deduplicated. If we hit the unauthenticated rate limit we stop trying for
  * the rest of the session.
  */
+function storeForkCacheEntry(repoUrl, { status, parent = null, created_at = null }) {
+  const k = normalizeRepoKey(repoUrl);
+  if (!k) return status;
+  const cache = loadForkCache();
+  cache[k] = {
+    status,
+    at: Date.now(),
+    parent: parent || null,
+    created_at: created_at || null,
+  };
+  persistForkCache();
+  return status;
+}
+
 async function fetchForkStatus(repoUrl) {
   const k = normalizeRepoKey(repoUrl);
   if (!k) return "unknown";
   const cache = loadForkCache();
   if (cache[k]) return cache[k].status;
   if (FORK_INFLIGHT.has(k)) return FORK_INFLIGHT.get(k);
-  if (_forkRateLimited) return "unknown";
   const parsed = parseGithubOwnerRepo(repoUrl);
   if (!parsed) {
-    cache[k] = { status: "unknown", at: Date.now() };
-    persistForkCache();
-    return "unknown";
+    return storeForkCacheEntry(repoUrl, { status: "unknown" });
   }
+
   const promise = (async () => {
     try {
+      if (isAuthed()) {
+        try {
+          const q = new URLSearchParams({ repo_url: repoUrl });
+          const res = await fetch(`/api/github-repo?${q}`, {
+            credentials: "include",
+          });
+          const data = await res.json().catch(() => ({}));
+          if (res.ok && data.status) {
+            return storeForkCacheEntry(repoUrl, {
+              status: data.status,
+              parent: data.parent_full_name,
+              created_at: data.created_at,
+            });
+          }
+        } catch (_err) {
+          /* fall through to direct GitHub */
+        }
+      }
+
+      if (_forkRateLimited) return "unknown";
       const res = await fetch(
         `https://api.github.com/repos/${encodeURIComponent(parsed.owner)}/${encodeURIComponent(parsed.repo)}`,
         { headers: { Accept: "application/vnd.github+json" } }
@@ -188,15 +220,12 @@ async function fetchForkStatus(repoUrl) {
       if (!res.ok) return "unknown";
       const data = await res.json();
       const status = data && data.fork === true ? "fork" : "new";
-      cache[k] = {
+      return storeForkCacheEntry(repoUrl, {
         status,
-        at: Date.now(),
         parent: data?.parent?.full_name || null,
         created_at: data?.created_at || null,
-      };
-      persistForkCache();
-      return status;
-    } catch (err) {
+      });
+    } catch (_err) {
       return "unknown";
     } finally {
       FORK_INFLIGHT.delete(k);
@@ -204,6 +233,34 @@ async function fetchForkStatus(repoUrl) {
   })();
   FORK_INFLIGHT.set(k, promise);
   return promise;
+}
+
+async function prefetchIntegrityForkStatuses(rows, { concurrency = 4 } = {}) {
+  const urls = [
+    ...new Set(
+      (rows || [])
+        .map((r) => r.repo || getSubmissionInfoForRow(r)?.repo_url || "")
+        .map((u) => String(u).trim())
+        .filter(Boolean)
+    ),
+  ];
+  const pending = urls.filter((u) => !getCachedForkStatus(u));
+  for (let i = 0; i < pending.length; i += concurrency) {
+    await Promise.all(
+      pending.slice(i, i + concurrency).map((url) => fetchForkStatus(url))
+    );
+  }
+}
+
+function summaryRowsLookAnalyzed(rows) {
+  return (rows || []).some(
+    (r) =>
+      String(r.analysis_status || "") === "analyzed" ||
+      Number(r.total_commits) > 0 ||
+      Number(r.has_commits_before_t0) > 0 ||
+      Number(r.has_bulk_commits) > 0 ||
+      Number(r.has_merge_commits) > 0
+  );
 }
 
 function forkChipHtml(status) {
@@ -274,6 +331,7 @@ function extractRepoName(repoUrl) {
 
 // Judge data cache
 let judgeMap = new Map();
+let _judgeLoadSeq = 0;
 let submissionMap = new Map();
 let judgeCurrentIndex = 0;
 
@@ -580,6 +638,87 @@ async function loadJudgeData() {
   }
 }
 
+async function runManagerIntegrityScan() {
+  if (!isAuthed()) {
+    toast("Unlock the manager with the site password first.");
+    return;
+  }
+  const btn = document.getElementById("manager-integrity-scan-btn");
+  const status = document.getElementById("manager-integrity-status");
+  if (btn?.disabled) return;
+  if (btn) btn.disabled = true;
+  if (status) {
+    status.textContent = "Running GitHub commit analysis…";
+    status.hidden = false;
+  }
+  try {
+    const res = await fetch("/api/reanalyze", {
+      method: "POST",
+      credentials: "include",
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    if (status) status.textContent = "Checking fork status…";
+    await loadSummary();
+    await prefetchIntegrityForkStatuses(window.__summaryRows || []);
+    renderManagerPanel();
+    maybeRenderSummaryTable();
+    const ok = Number(data.analyzed) || 0;
+    const fail = Number(data.failed) || 0;
+    const rows = window.__summaryRows || [];
+    const flagged = rows.filter((r) => hasAnyFlagWithAdmin(r)).length;
+    const forks = rows.filter((r) => {
+      const url = r.repo || getSubmissionInfoForRow(r)?.repo_url || "";
+      return getCachedForkStatus(url) === "fork";
+    }).length;
+    if (status) {
+      status.textContent = `Done · ${ok} analyzed${fail ? ` · ${fail} failed` : ""} · ${flagged} flagged · ${forks} forks`;
+    }
+    toast(
+      fail
+        ? `Integrity scan: ${ok} repos analyzed, ${fail} failed (check GITHUB_TOKEN on server)`
+        : `Integrity scan complete — ${flagged} flagged, ${forks} forks`
+    );
+  } catch (err) {
+    if (status) status.textContent = `Failed: ${err.message}`;
+    toast(`Integrity scan failed: ${err.message}`);
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function runManagerReanalyze() {
+  if (!isAuthed()) {
+    toast("Unlock the manager with the site password first.");
+    return;
+  }
+  const btn = document.getElementById("manager-reanalyze-btn");
+  if (btn?.disabled) return;
+  if (btn) btn.disabled = true;
+  try {
+    const res = await fetch("/api/reanalyze", {
+      method: "POST",
+      credentials: "include",
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    aiCache.clear();
+    await loadSubmissionData();
+    maybeRenderSummaryTable();
+    const ok = Number(data.analyzed) || 0;
+    const fail = Number(data.failed) || 0;
+    toast(
+      fail
+        ? `Re-analyzed ${ok} repos · ${fail} failed (check Vercel env: GITHUB_TOKEN, OPENCODE_API_KEY)`
+        : `Re-analyzed ${ok} repos`
+    );
+  } catch (err) {
+    toast(`Re-analyze failed: ${err.message}`);
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
 async function loadSubmissionData() {
   try {
     const data = await fetchJSON("/api/submissions");
@@ -603,15 +742,91 @@ async function loadSubmissionData() {
 // Cache for AI summaries
 const aiCache = new Map();
 
-async function fetchAISummary(repoId) {
+function submissionAiText(sub) {
+  if (!sub) return "";
+  const inline = String(sub.ai_text || "").trim();
+  if (inline) return inline;
+  return String(sub.ai?.ai_text || "").trim();
+}
+
+function findSubmissionByRepoId(repoId) {
+  const row = findSummaryRowForRepoId(repoId);
+  const fromRow = row ? getSubmissionInfoForRow(row) : null;
+  if (fromRow) return fromRow;
+  const needle = slugify(String(repoId || "").trim());
+  if (!needle) return null;
+  for (const sub of submissionMap.values()) {
+    if (sub.repo_id && slugify(sub.repo_id) === needle) return sub;
+  }
+  return null;
+}
+
+function resolveAiPreviewMeta(row, repoId) {
+  const sub = row ? getSubmissionInfoForRow(row) : findSubmissionByRepoId(repoId);
+  if (!sub) return {};
+  if (submissionAiText(sub)) return {};
+  const error = String(sub.analysis_error || sub.ai_error || "").trim();
+  if (error) return { error };
+  if (sub.analysis_status === "pending") return { status: "pending" };
+  return {};
+}
+
+async function fetchAISummary(repoId, row) {
   if (aiCache.has(repoId)) return aiCache.get(repoId);
+  const stored = submissionAiText(
+    row ? getSubmissionInfoForRow(row) : findSubmissionByRepoId(repoId)
+  );
+  if (stored) {
+    aiCache.set(repoId, stored);
+    return stored;
+  }
   const seg = encodeRepoApiSegment(repoId);
   const text = await fetchText(`/api/repo/${seg}/ai`);
   aiCache.set(repoId, text);
   return text;
 }
 
-function getAIPreview(aiText) {
+async function fetchCommits(repoId, row) {
+  const seg = encodeRepoApiSegment(repoId);
+  try {
+    const data = await fetchJSON(`/api/repo/${seg}/commits`);
+    if (Array.isArray(data?.rows) && data.rows.length) return data.rows;
+  } catch (_err) {
+    // fall through to stored analysis
+  }
+
+  const summaryRow = row || findSummaryRowForRepoId(repoId);
+  const repoUrl =
+    summaryRow?.repo ||
+    summaryRow?.repo_url ||
+    findSubmissionByRepoId(repoId)?.repo_url ||
+    "";
+  if (!repoUrl) return [];
+
+  try {
+    const res = await fetch(
+      `/api/analysis?repo_url=${encodeURIComponent(repoUrl)}`,
+      { credentials: "include" }
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data?.analysis?.commits) ? data.analysis.commits : [];
+  } catch (_err) {
+    return [];
+  }
+}
+
+function getAIPreview(aiText, meta) {
+  if (meta?.error) {
+    const short =
+      meta.error.length > 72 ? `${meta.error.slice(0, 72)}…` : meta.error;
+    return `<span class="ai-preview no-data" title="${escapeAttr(
+      meta.error
+    )}">Failed: ${escapeHtml(short)}</span>`;
+  }
+  if (meta?.status === "pending") {
+    return '<span class="ai-preview no-data">Analysis pending</span>';
+  }
   if (!aiText) return '<span class="ai-preview no-data">No AI analysis</span>';
   // Get first two sentences or first 150 chars
   const sentences = aiText
@@ -846,15 +1061,65 @@ function repoUrlForRow(row) {
   return String(row.repo || sub?.repo_url || "").trim();
 }
 
+function leaderboardRepoId(row) {
+  if (!row) return "";
+  const sub = getSubmissionInfoForRow(row);
+  return String(
+    row.repo_id ||
+      row.submission_id ||
+      sub?.repo_id ||
+      extractRepoName(row.repo || sub?.repo_url || "")
+  ).trim();
+}
+
+/** Manager leaderboard name: demo first, else in-app details — not a blind GitHub link. */
 function lbNameCell(row, displayName) {
-  const url = repoUrlForRow(row);
   const safe = escapeHtml(displayName);
-  if (url) {
-    return `<a class="lb-name lb-name--link" href="${escapeAttr(
-      url
-    )}" target="_blank" rel="noreferrer">${safe}</a>`;
+  const sub = getSubmissionInfoForRow(row);
+  const demoRaw = submissionDemoUrl(sub, row);
+  const demoHref = demoRaw
+    ? normalizeDemoUrlForParse(demoRaw) || String(demoRaw).trim()
+    : "";
+  const repoUrl = repoUrlForRow(row);
+  const repoId = leaderboardRepoId(row);
+
+  let primary;
+  if (demoHref) {
+    primary = `<a class="lb-name lb-name--link" href="${escapeAttr(
+      demoHref
+    )}" target="_blank" rel="noopener noreferrer" title="Open demo recording">${safe}</a>`;
+  } else if (repoId) {
+    primary = `<button type="button" class="lb-name lb-name--detail" data-lb-open-detail="${escapeAttr(
+      repoId
+    )}" title="Open submission details">${safe}</button>`;
+  } else if (repoUrl) {
+    primary = `<a class="lb-name lb-name--link" href="${escapeAttr(
+      repoUrl
+    )}" target="_blank" rel="noreferrer" title="GitHub repository (may be private)">${safe}</a>`;
+  } else {
+    primary = `<span class="lb-name">${safe}</span>`;
   }
-  return `<span class="lb-name">${safe}</span>`;
+
+  const aux = [];
+  if (repoUrl) {
+    aux.push(
+      `<a class="lb-aux-link" href="${escapeAttr(
+        repoUrl
+      )}" target="_blank" rel="noreferrer" title="GitHub repository (may be private)">Repo</a>`
+    );
+  }
+  if (demoHref && repoId) {
+    aux.push(
+      `<button type="button" class="lb-aux-link lb-aux-link--btn" data-lb-open-detail="${escapeAttr(
+        repoId
+      )}">Details</button>`
+    );
+  }
+
+  if (!aux.length) return primary;
+  return `<span class="lb-name-wrap">${primary}<span class="lb-aux">${aux.join(
+    ""
+  )}</span></span>`;
 }
 
 function judgeInfoAverageNumeric(info) {
@@ -1113,11 +1378,12 @@ async function renderSummaryTable(rows) {
     });
     tbody.appendChild(tr);
 
-    // Fetch AI summary async
-    fetchAISummary(repoId).then((aiText) => {
+    // Fetch AI summary async (Supabase first, then /api/repo/.../ai)
+    fetchAISummary(repoId, row).then((aiText) => {
       const aiCell = tr.querySelector(".ai-cell");
       const verdictCell = tr.querySelector(".verdict-cell");
-      if (aiCell) aiCell.innerHTML = getAIPreview(aiText);
+      const meta = resolveAiPreviewMeta(row, repoId);
+      if (aiCell) aiCell.innerHTML = getAIPreview(aiText, meta);
       if (verdictCell) verdictCell.innerHTML = getVerdictBadge(aiText);
     });
   });
@@ -1201,6 +1467,43 @@ function pickMergedDemoUrl(submission, existingRow) {
   return fromRow || "";
 }
 
+function metricsFromSubmission(submission) {
+  const gh =
+    submission?.github && typeof submission.github === "object"
+      ? submission.github
+      : null;
+  const num = (key, fallback = 0) => {
+    if (submission && submission[key] != null && submission[key] !== "") {
+      const n = Number(submission[key]);
+      return Number.isFinite(n) ? n : fallback;
+    }
+    if (gh && gh[key] != null && gh[key] !== "") {
+      const n = Number(gh[key]);
+      return Number.isFinite(n) ? n : fallback;
+    }
+    return fallback;
+  };
+  const text = (key, fallback = "") => {
+    const v = submission?.[key] ?? gh?.[key];
+    return v == null ? fallback : String(v);
+  };
+  return {
+    total_commits: num("total_commits"),
+    total_commits_before_t0: num("total_commits_before_t0"),
+    total_commits_during_event: num("total_commits_during_event"),
+    total_commits_after_t1: num("total_commits_after_t1"),
+    total_loc_added: num("total_loc_added"),
+    total_loc_deleted: num("total_loc_deleted"),
+    has_commits_before_t0: num("has_commits_before_t0"),
+    has_bulk_commits: num("has_bulk_commits"),
+    has_large_initial_commit_after_t0: num("has_large_initial_commit_after_t0"),
+    has_merge_commits: num("has_merge_commits"),
+    default_branch: text("default_branch"),
+    analysis_status: text("analysis_status", "pending"),
+    analysis_error: text("analysis_error"),
+  };
+}
+
 function mergeRows(summaryRows, submissions) {
   const byRepo = new Map();
   const submissionsDedup = dedupeSubmissionsBySubmissionId(submissions);
@@ -1217,42 +1520,45 @@ function mergeRows(summaryRows, submissions) {
       ...row,
       repo_id: row.repo_id || extractRepoName(row.repo),
       submission_status: submissionMap.has(repoKey) ? "submitted" : "missing",
-      analysis_status: "analyzed",
+      analysis_status: row.analysis_status || "analyzed",
     });
   });
 
   submissionsDedup.forEach((submission) => {
     const repoKey = normalizeRepoKey(submission.repo_url || "");
     if (!repoKey) return;
+    const metrics = metricsFromSubmission(submission);
     if (byRepo.has(repoKey)) {
       const prev = byRepo.get(repoKey);
       byRepo.set(repoKey, {
         ...prev,
         ...submission,
+        ...metrics,
         demo_url: pickMergedDemoUrl(submission, prev),
         submission_status: "submitted",
+        repo_id:
+          prev.repo_id ||
+          submission.repo_id ||
+          submission.submission_id ||
+          extractRepoName(submission.repo_url),
       });
       return;
     }
 
     byRepo.set(repoKey, {
-      repo_id: submission.submission_id,
+      repo_id:
+        submission.repo_id ||
+        submission.submission_id ||
+        extractRepoName(submission.repo_url),
       repo: submission.repo_url,
       repo_url: submission.repo_url,
-      submission_id: submission.submission_id,
+      submission_id: submission.submission_id || submission.id,
       project_name: submission.project_name,
       team_name: submission.team_name,
       chosen_track: submission.chosen_track,
       demo_url: pickMergedDemoUrl(submission, {}),
       submission_status: "submitted",
-      analysis_status: "pending",
-      total_commits: 0,
-      total_loc_added: 0,
-      total_loc_deleted: 0,
-      has_commits_before_t0: 0,
-      has_bulk_commits: 0,
-      has_large_initial_commit_after_t0: 0,
-      has_merge_commits: 0,
+      ...metrics,
     });
   });
 
@@ -1378,22 +1684,39 @@ async function loadDetails(repoId, elsOrOverrides) {
     }
   }
 
-  if (submissionOutput) submissionOutput.textContent = "Loading...";
-  if (metricsSummary) metricsSummary.textContent = "Loading...";
-  if (metricsFlags) metricsFlags.textContent = "Loading...";
-  if (metricsTime) metricsTime.textContent = "Loading...";
-  if (aiOutput) aiOutput.textContent = "Loading...";
-  if (judgeOutput) judgeOutput.textContent = "Loading...";
+  const isJudgeRail =
+    submissionOutput?.id === "judge-side-submission-output";
+  const summaryRow = findSummaryRowForRepoId(repoId);
+  if (submissionOutput) {
+    if (summaryRow) renderSubmissionDetails(summaryRow, submissionOutput);
+    else if (!isJudgeRail) submissionOutput.textContent = "Loading...";
+    else {
+      submissionOutput.innerHTML =
+        '<p class="judge-panel-loading">Loading submission…</p>';
+    }
+  }
+  if (!isJudgeRail) {
+    if (metricsSummary) metricsSummary.textContent = "Loading...";
+    if (metricsFlags) metricsFlags.textContent = "Loading...";
+    if (metricsTime) metricsTime.textContent = "Loading...";
+    if (aiOutput) aiOutput.textContent = "Loading...";
+    if (judgeOutput) judgeOutput.textContent = "Loading...";
+  } else if (aiOutput) {
+    aiOutput.innerHTML =
+      '<p class="judge-panel-loading" aria-busy="true">Loading summary…</p>';
+  }
+
+  const loadSeq = isJudgeRail ? ++_judgeLoadSeq : 0;
 
   try {
     const apiSeg = encodeRepoApiSegment(repoId);
-    const summaryRow = findSummaryRowForRepoId(repoId);
-    renderSubmissionDetails(summaryRow, submissionOutput);
-    const [metrics, aiText, commitsData] = await Promise.all([
+    const [metrics, aiText, commitRows] = await Promise.all([
       fetchJSON(`/api/repo/${apiSeg}/metrics`),
-      fetchText(`/api/repo/${apiSeg}/ai`),
-      fetchJSON(`/api/repo/${apiSeg}/commits`).catch(() => ({ rows: [] })),
+      fetchAISummary(repoId, summaryRow),
+      fetchCommits(repoId, summaryRow),
     ]);
+
+    if (isJudgeRail && loadSeq !== _judgeLoadSeq) return;
 
     if (metricsSummary) {
       metricsSummary.textContent = formatJSON(metrics.summary || {});
@@ -1410,7 +1733,7 @@ async function loadDetails(repoId, elsOrOverrides) {
       if (aiText) {
         aiOutput.innerHTML = formatAIOutput(aiText);
       } else if (isJudgeRailAi) {
-        aiOutput.innerHTML = `<div class="judge-ai-empty" role="status"><p class="judge-ai-empty-lead">No AI repo narrative loaded.</p><p class="judge-ai-empty-hint">When present, this summarizes authenticity and how the team applied their declared technologies. Generate notes with <code class="judge-inline-code">python3 ai/run_ai.py --work-dir work</code> after metrics exist.</p></div>`;
+        aiOutput.innerHTML = `<div class="judge-ai-empty" role="status"><p class="judge-ai-empty-lead">No summary loaded.</p><p class="judge-ai-empty-hint">When available, this tab summarizes repo activity and declared technologies.</p></div>`;
       } else {
         aiOutput.textContent = "No AI analysis available for this submission.";
       }
@@ -1420,7 +1743,7 @@ async function loadDetails(repoId, elsOrOverrides) {
     renderJudgeDetails(judgeInfo, judgeOutput);
 
     const commitTargets = { tbody: commitsTbody, countEl: commitCountEl };
-    renderCommits(commitsData.rows || [], commitTargets);
+    renderCommits(commitRows || [], commitTargets);
   } catch (err) {
     const summaryRow = findSummaryRowForRepoId(repoId);
     renderSubmissionDetails(summaryRow, submissionOutput);
@@ -1443,7 +1766,7 @@ async function loadDetails(repoId, elsOrOverrides) {
             `Could not load AI notes: ${err.message}`
           )}</p>`;
         } else {
-          aiOutput.innerHTML = `<div class="judge-ai-empty" role="status"><p class="judge-ai-empty-lead">Repo analysis not ready.</p><p class="judge-ai-empty-hint">Run <code class="judge-inline-code">python3 scan.py …</code> then <code class="judge-inline-code">python3 ai/run_ai.py …</code> for stack-aware narrative in this tab.</p></div>`;
+          aiOutput.innerHTML = `<div class="judge-ai-empty" role="status"><p class="judge-ai-empty-lead">Summary not available yet.</p><p class="judge-ai-empty-hint">If you expected notes here, ask the organizer to refresh repo analysis.</p></div>`;
         }
       } else {
         aiOutput.textContent = rowHasAnalysis(summaryRow)
@@ -2082,6 +2405,13 @@ function setManagerTab(name) {
   } else {
     stopLeaderboardLiveUpdates();
   }
+  if (name === "integrity") {
+    void prefetchIntegrityForkStatuses(window.__summaryRows || []).then(() => {
+      renderFlaggedList();
+      renderForkedList();
+      renderManagerPanel();
+    });
+  }
 }
 
 let _leaderboardLiveTimer = null;
@@ -2157,7 +2487,7 @@ function openModal(id) {
   modal.classList.remove("hidden");
   const firstInput =
     id === "judge-modal"
-      ? modal.querySelector("#judge-submission-picker")
+      ? modal.querySelector("#judge-score-input")
       : modal.querySelector("input:not([type=hidden]), select, textarea, button");
   if (firstInput) setTimeout(() => firstInput.focus(), 60);
   if (id === "submit-modal") {
@@ -2181,9 +2511,9 @@ function openModal(id) {
     setActiveJudgeRailTab(getStoredJudgeRailTab(), { persist: false });
     setActiveJudgeStageTab("overview");
     setJudgeSaveStatus("", "");
-    refreshJudgeSubmissionSelect();
-    refreshJudgeSubmissions({ silent: false });
-    syncJudgeFullViewFromSelection();
+    void refreshJudgeSubmissions({ silent: true }).then(() => {
+      syncJudgeFullViewFromSelection();
+    });
     attachJudgeReelsHandlers();
     onJudgeModalOpened();
   }
@@ -2208,8 +2538,9 @@ async function refreshJudgeSubmissions({ silent = false } = {}) {
     updateSubmissionsCount(window.__summaryRows || []);
     if (!silent) {
       const delta = after - before;
-      if (delta > 0) toast(`+${delta} new submission${delta === 1 ? "" : "s"} loaded`);
-      else toast(`${after} submissions — list up to date`);
+      if (delta > 0) {
+        toast(`+${delta} new submission${delta === 1 ? "" : "s"} loaded`);
+      }
     }
   } catch (err) {
     if (!silent) toast("Could not refresh submissions");
@@ -2422,11 +2753,19 @@ function resetSubmitTeamRoster() {
   closeTeamRosterDrawer();
 }
 
+function normalizeExternalUrl(value) {
+  const s = String(value || "").trim();
+  if (!s) return "";
+  if (/^https?:\/\//i.test(s)) return s;
+  if (s.startsWith("//")) return `https:${s}`;
+  return `https://${s.replace(/^\/+/, "")}`;
+}
+
 function isValidUrlLenient(value) {
   const s = String(value || "").trim();
   if (!s) return true;
   try {
-    const u = new URL(s.startsWith("http") ? s : `https://${s}`);
+    const u = new URL(normalizeExternalUrl(s));
     return /^https?:$/.test(u.protocol);
   } catch {
     return false;
@@ -3025,7 +3364,21 @@ async function pollJudgeCoopOnce() {
   }
   const next = buildJudgeScoreFingerprint();
   diffJudgeCoopToasts(prev, next);
+  let scoresChanged = prev.size !== next.size;
+  if (!scoresChanged) {
+    for (const [key, val] of next.entries()) {
+      const p = prev.get(key);
+      if (!p || p.score !== val.score || p.at !== val.at) {
+        scoresChanged = true;
+        break;
+      }
+    }
+  }
   _judgeScoreFingerprint = next;
+  if (scoresChanged) {
+    refreshJudgeScoreQueue({ patchActiveOnly: true });
+    renderJudgeVideoStage({ metaOnly: true });
+  }
   if (!document.getElementById("judge-eagle-overlay")?.classList.contains("hidden")) {
     renderEagleView();
   }
@@ -4302,11 +4655,6 @@ function setJudgeSubmissionByIndex(index) {
 
 function moveJudgeSubmission(delta) {
   setJudgeSubmissionByIndex(judgeCurrentIndex + delta);
-  // Forward navigation also triggers a silent queue refresh so newly-landed
-  // submissions show up in the counter without a manual ↻ tap.
-  if (delta > 0) {
-    refreshJudgeSubmissions({ silent: true }).catch(() => {});
-  }
 }
 
 // ---------- Reels-style wheel + swipe navigation on the demo stage ----------
@@ -4602,11 +4950,12 @@ async function loadStagePayload(repoId) {
   if (_stageCache.has(repoId)) return _stageCache.get(repoId);
   const apiSeg = encodeRepoApiSegment(repoId);
   try {
-    const [metrics, commitsData] = await Promise.all([
+    const summaryRow = findSummaryRowForRepoId(repoId);
+    const [metrics, commitRows] = await Promise.all([
       fetchJSON(`/api/repo/${apiSeg}/metrics`).catch(() => ({})),
-      fetchJSON(`/api/repo/${apiSeg}/commits`).catch(() => ({ rows: [] })),
+      fetchCommits(repoId, summaryRow),
     ]);
-    const payload = { metrics, commits: commitsData.rows || [] };
+    const payload = { metrics, commits: commitRows || [] };
     _stageCache.set(repoId, payload);
     return payload;
   } catch (err) {
@@ -4721,13 +5070,11 @@ function countSubmissionMembers(submission) {
 }
 
 function memberSocialLink(member) {
-  const url = String(member?.social_url || "").trim();
+  const url = normalizeExternalUrl(member?.social_url);
   if (!url) return "";
   let label = "link";
   try {
-    const host = new URL(
-      url.startsWith("http") ? url : `https://${url}`
-    ).hostname.toLowerCase();
+    const host = new URL(url).hostname.toLowerCase();
     if (host.includes("linkedin")) label = "in";
     else if (host.includes("twitter") || host === "x.com" || host.endsWith(".x.com")) label = "𝕏";
     else if (host.includes("github")) label = "gh";
@@ -4743,7 +5090,7 @@ function memberSocialLink(member) {
 }
 
 function memberLumaLink(member) {
-  const url = String(member?.luma_profile || "").trim();
+  const url = normalizeExternalUrl(member?.luma_profile);
   if (!url) return "";
   return `<a class="judge-team-member__link" href="${escapeAttr(
     url
@@ -4866,11 +5213,11 @@ function setJudgeReelsCaptionVisible(visible) {
   caption.classList.toggle("is-hidden", !visible);
 }
 
-function renderJudgeVideoStage() {
+function renderJudgeVideoStage({ metaOnly = false } = {}) {
   const title = document.getElementById("judge-video-title");
   const meta = document.getElementById("judge-video-meta");
   const chips = document.getElementById("judge-stage-chips");
-  const entries = getJudgeReviewEntries();
+  const { entries } = getJudgeQueueEntries();
   const selectedId = document.getElementById("judge-submission-select")?.value || "";
   const bySelect = selectedId ? entries.findIndex((e) => e.id === selectedId) : -1;
   if (bySelect >= 0) judgeCurrentIndex = bySelect;
@@ -4878,6 +5225,36 @@ function renderJudgeVideoStage() {
     judgeCurrentIndex = Math.max(0, entries.length - 1);
   }
   const current = entries[judgeCurrentIndex];
+
+  if (metaOnly && current) {
+    if (title) title.textContent = current.name || "Untitled project";
+    setJudgeReelsCounter(
+      entries.length ? `${judgeCurrentIndex + 1} / ${entries.length}` : "0 / 0"
+    );
+    const sub = current.sub || {};
+    const team = (sub.team_name || "").trim();
+    if (meta) {
+      const parts = [];
+      if (team) parts.push(team);
+      parts.push(current.scored ? "Scored by you" : "Awaiting your score");
+      meta.textContent = parts.join(" · ");
+    }
+    if (chips) {
+      const cells = [];
+      if (current.trackLabel && current.trackLabel !== "unscored") {
+        cells.push(
+          `<span class="judge-stage-chip judge-stage-chip--track">${escapeHtml(current.trackLabel)}</span>`
+        );
+      }
+      if (current.scored) {
+        cells.push(
+          `<span class="judge-stage-chip judge-stage-chip--status-scored">Scored</span>`
+        );
+      }
+      chips.innerHTML = cells.join("");
+    }
+    return;
+  }
 
   if (!current) {
     if (title) title.textContent = "No submissions yet";
@@ -4932,7 +5309,7 @@ function renderJudgeVideoStage() {
   if (meta) {
     const parts = [];
     if (team) parts.push(team);
-    parts.push(current.scored ? "already scored" : "needs score");
+    parts.push(current.scored ? "Scored by you" : "Awaiting your score");
     meta.textContent = parts.join(" · ");
   }
   if (chips) {
@@ -4942,11 +5319,11 @@ function renderJudgeVideoStage() {
         `<span class="judge-stage-chip judge-stage-chip--track">${escapeHtml(current.trackLabel)}</span>`
       );
     }
-    cells.push(
-      current.scored
-        ? `<span class="judge-stage-chip judge-stage-chip--status-scored">● scored</span>`
-        : `<span class="judge-stage-chip judge-stage-chip--status-current">○ current</span>`
-    );
+    if (current.scored) {
+      cells.push(
+        `<span class="judge-stage-chip judge-stage-chip--status-scored">Scored</span>`
+      );
+    }
     chips.innerHTML = cells.join("");
   }
 
@@ -4959,6 +5336,11 @@ function renderJudgeVideoStage() {
   const iframe = document.querySelector("#judge-demo-stage iframe");
   const videoEl = document.getElementById("judge-demo-video");
   const fallback = document.getElementById("judge-demo-fallback");
+  if (demoCard && demoCard.dataset.embedKey !== embedKey) {
+    demoCard.classList.add("is-switching");
+    window.setTimeout(() => demoCard.classList.remove("is-switching"), 220);
+    demoCard.dataset.embedKey = embedKey;
+  }
   if (iframe && fallback) {
     if (directVideo && videoEl) {
       setJudgeDemoStageMode("video", {
@@ -5278,7 +5660,27 @@ function initJudgeQueueJudgesPopover() {
   }
 }
 
-function renderJudgeScoreQueue() {
+function judgeQueueSignature(entries) {
+  return entries
+    .map((e) => {
+      const others = otherScoreCountForEntry(e);
+      return `${e.id}:${e.scored ? 1 : 0}:${others}`;
+    })
+    .join("|");
+}
+
+function patchJudgeScoreQueueActive(target, selectedId) {
+  target.querySelectorAll("[data-judge-queue-id]").forEach((row) => {
+    const id = row.getAttribute("data-judge-queue-id");
+    const isActive = id === selectedId;
+    row.classList.toggle("is-active", isActive);
+    if (isActive) {
+      row.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+  });
+}
+
+function renderJudgeScoreQueue({ patchActiveOnly = false } = {}) {
   const target = document.getElementById("judge-score-queue");
   const countEl = document.getElementById("judge-rail-queue-count");
   if (!target) return;
@@ -5295,10 +5697,23 @@ function renderJudgeScoreQueue() {
   }
   if (!entries.length) {
     target.innerHTML = "";
+    target.dataset.queueSig = "";
     updateJudgeQuickRecap();
     return;
   }
+  const sig = judgeQueueSignature(entries);
+  if (
+    patchActiveOnly &&
+    sig === target.dataset.queueSig &&
+    target.childElementCount === entries.length
+  ) {
+    patchJudgeScoreQueueActive(target, selectedId);
+    updateJudgeQuickRecap();
+    return;
+  }
+  const scrollTop = target.scrollTop;
   const width = String(entries.length).length;
+  target.dataset.queueSig = sig;
   target.innerHTML = entries
     .map((e, idx) => {
       const isActive = e.id === selectedId;
@@ -5337,6 +5752,12 @@ function renderJudgeScoreQueue() {
       </div>`;
     })
     .join("");
+  const active = target.querySelector(".judge-rail-queue__row.is-active");
+  if (active) {
+    active.scrollIntoView({ block: "nearest" });
+  } else {
+    target.scrollTop = scrollTop;
+  }
   updateJudgeQuickRecap();
 }
 
@@ -5390,9 +5811,7 @@ function updateJudgeQuickRecap() {
   const scoreCount = yourScores.length;
   const judgeCount = panelCount;
 
-  recap.textContent = `Quick recap: avg ${avgLabel} · ${scoreCount} score${
-    scoreCount === 1 ? "" : "s"
-  } · ${judgeCount} judge${judgeCount === 1 ? "" : "s"}`;
+  recap.textContent = `Your avg ${avgLabel} · ${scoreCount} scored · panel ${judgeCount}`;
   recap.hidden = false;
 }
 
@@ -5408,13 +5827,7 @@ function renderJudgeSubmissionToolbar() {
     return;
   }
 
-  const scored = judgeName.trim()
-    ? scoredIdsForJudge(judgeName).has(id)
-    : false;
-  const hint = scored
-    ? `<p class="judge-toolbar-hint">You already saved a score for this project in this browser. Submitting again adds another local entry (amend / duplicate).</p>`
-    : "";
-  toolbar.innerHTML = hint;
+  toolbar.innerHTML = "";
 }
 
 function renderJudgeSubmissionSummary() {
@@ -5581,29 +5994,14 @@ async function handleJudgeForm(e) {
   if (notes) notes.value = "";
   updateJudgeRunningTotal();
 
-  // Refresh select so this submission shows [SCORED], then auto-advance.
   refreshJudgeSubmissionSelect();
-  const select = document.getElementById("judge-submission-select");
-  if (select) {
-    const idx = Array.from(select.options).findIndex(
-      (o) => o.value === scoredId
-    );
-    const nextIdx = idx >= 0 && idx < select.options.length - 1 ? idx + 1 : 0;
-    for (let i = nextIdx; i < select.options.length; i++) {
-      const opt = select.options[i];
-      if (opt.value && !opt.disabled) {
-        select.value = opt.value;
-        break;
-      }
-    }
-    renderJudgeSubmissionSummary();
+  const { entries } = getJudgeQueueEntries();
+  const idx = entries.findIndex((e) => e.id === scoredId);
+  if (idx >= 0 && entries.length > 1) {
+    setJudgeSubmissionByIndex(idx + 1);
+  } else {
     onJudgeSubmissionSelectChanged();
-    if (isJudgeSidePanelOpen()) {
-      const r = getJudgeApiRepoId();
-      if (r) loadDetails(r, detailElsForJudgeSidePanel());
-    }
   }
-  toast(`Score saved — ${formatJudgeScore(grandTotal)}/${judgeScoreTotalCap()}.`);
 }
 
 let _judgeSavedTimer = null;
@@ -5811,8 +6209,12 @@ function renderFlaggedList() {
   const rows = window.__summaryRows || [];
   const flagged = rows.filter((r) => hasAnyFlagWithAdmin(r)).slice(0, 30);
   if (flagged.length === 0) {
-    ul.innerHTML =
-      '<li style="justify-content:center;color:var(--muted);font-style:italic">No flags raised</li>';
+    const hint = !rows.length
+      ? "No submissions loaded."
+      : !summaryRowsLookAnalyzed(rows)
+        ? 'No commit metrics yet. Click <strong>Run integrity scan</strong> (needs GITHUB_TOKEN on the server).'
+        : "No integrity flags raised for this cohort.";
+    ul.innerHTML = `<li style="justify-content:center;color:var(--muted);font-style:italic">${hint}</li>`;
     return;
   }
   ul.innerHTML = flagged
@@ -5868,8 +6270,16 @@ function renderForkedList() {
     return getCachedForkStatus(url) === "fork";
   });
   if (forks.length === 0) {
-    ul.innerHTML =
-      '<li style="justify-content:center;color:var(--muted);font-style:italic">No forked repos detected (yet). Fork status resolves async after opening the Submissions tab.</li>';
+    const pending = (rows || []).some((r) => {
+      const url = r.repo || getSubmissionInfoForRow(r)?.repo_url || "";
+      return url && getCachedForkStatus(url) == null;
+    });
+    const hint = pending
+      ? "Checking fork status… refresh this tab in a moment."
+      : !rows.length
+        ? "No submissions loaded."
+        : "No forks detected in this cohort.";
+    ul.innerHTML = `<li style="justify-content:center;color:var(--muted);font-style:italic">${hint}</li>`;
     return;
   }
   ul.innerHTML = forks
@@ -6112,6 +6522,23 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("manager-modal")?.addEventListener("click", (e) => {
     const t = e.target;
     if (!t || !t.closest) return;
+    if (t.closest("#manager-reanalyze-btn")) {
+      e.preventDefault();
+      runManagerReanalyze();
+      return;
+    }
+    if (t.closest("#manager-integrity-scan-btn")) {
+      e.preventDefault();
+      runManagerIntegrityScan();
+      return;
+    }
+    const lbDetail = t.closest("[data-lb-open-detail]");
+    if (lbDetail) {
+      e.preventDefault();
+      const id = lbDetail.getAttribute("data-lb-open-detail");
+      if (id) openDrawer(id);
+      return;
+    }
     const editBtn = t.closest("[data-row-edit]");
     if (editBtn) {
       e.preventDefault();

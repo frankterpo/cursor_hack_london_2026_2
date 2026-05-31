@@ -342,6 +342,8 @@ async function analyzeGitHubRepo(repoUrl, settingsOverride = null) {
       language: repoData.language,
       stargazers_count: repoData.stargazers_count,
       default_branch: defaultBranch,
+      fork: repoData.fork === true,
+      parent_full_name: repoData.parent?.full_name || null,
     },
     summary: metrics.summary,
     time_distribution: metrics.time_distribution,
